@@ -1,0 +1,33 @@
+name: Daily security probe
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  anonymous-access:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify anonymous access stays closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://fnkgulfdcljwjkcqibxi.supabase.co'
+          key='sb_publishable_q1rkOmyUCFJ0AXRiT38rOg_9M6eMRT_'
+          for table in matters logs meta lcb_public_keys lcb_private_keys lcb_matter_keys security_events lcb_devices; do
+            code=$(curl -sS -o body -w '%{http_code}' "$base/rest/v1/$table?select=*&limit=1" -H "apikey: $key")
+            test "$code" = 401 || { cat body; exit 1; }
+          done
+          for rpc in lcb_register_device lcb_list_devices lcb_revoke_device; do
+            case "$rpc" in
+            lcb_register_device) payload='{"p_device_id":"probe","p_device_name":"probe","p_timezone":"UTC","p_latitude":null,"p_longitude":null}' ;;
+              lcb_revoke_device) payload='{"target_session":"00000000-0000-0000-0000-000000000000"}' ;;
+              *) payload='{}' ;;
+            esac
+            code=$(curl -sS -o body -w '%{http_code}' "$base/rest/v1/rpc/$rpc" -H "apikey: $key" -H 'Content-Type: application/json' --data "$payload")
+            test "$code" = 401 || { cat body; exit 1; }
+          done
+          code=$(curl -sS -o body -w '%{http_code}' "$base/auth/v1/signup" -H "apikey: $key" -H 'Content-Type: application/json' --data '{"email":"security-probe-invalid@example.invalid","password":"NotARealPassword-9081726354"}')
+          test "$code" = 422 && grep -q signup_disabled body
+          test "$(curl -fsSL https://benson-yiyan.github.io/Carol-s-Work-Helper/vendor/xlsx.full.min.js | sha256sum | cut -d' ' -f1)" = 'cc015130aa8521e7f088f88898eba949ccdcbfb38df0bd129b44b7273c3a6f41'
