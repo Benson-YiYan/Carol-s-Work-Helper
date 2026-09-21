@@ -1,5 +1,5 @@
-/* Carol's work & personal task manager · 单人事务管理器
-   数据通过个人版专用 Supabase 项目同步，不连接团队数据库。 */
+/* 母子事务管理器
+   数据通过母子版专用 Supabase 项目同步，不连接团队数据库。 */
 
 /* ------------------------------ 常量 ------------------------------ */
 
@@ -51,15 +51,15 @@ const LANG_INDEX = { zh: 0, en: 1, es: 2 };
 
 /* 每条： [简体中文, English, Español] */
 const STR = {
-  'app.title': ["Carol's work & personal task manager", "Carol's work & personal task manager", "Carol's work & personal task manager"],
-  'app.team': ['工作与个人事务管理器', 'Work & personal task manager', 'Gestor de asuntos laborales y personales'],
+  'app.title': ['母子事务管理器', 'Mother-Son Task Manager', 'Gestor de asuntos de madre e hijo'],
+  'app.team': ['Carol 与 Benson', 'Carol and Benson', 'Carol y Benson'],
 
   'login.email': ['邮箱', 'Email', 'Correo electrónico'],
   'login.password': ['密码', 'Password', 'Contraseña'],
   'login.signin': ['登录', 'Sign in', 'Iniciar sesión'],
-  'login.noSms': ['这是 Carol 的工作与个人事务管理器。',
-    "This is Carol's work & personal task manager.",
-    'Este es el gestor de asuntos laborales y personales de Carol.'],
+  'login.noSms': ['这是 Carol 与 Benson 的母子事务管理器。',
+    "This is Carol and Benson's task manager.",
+    'Este es el gestor de asuntos de Carol y Benson.'],
   'login.demoTitle': ['演示账号', 'Demo accounts', 'Cuentas de demostración'],
   'login.hint': ['用不同账号登录，可以看到权限差异：Héctor 登录后看不到任何制裁／涉美事项。',
     'Sign in with different accounts to see permissions at work: Héctor cannot see any sanctions / US matters.',
@@ -69,6 +69,7 @@ const STR = {
   'login.errExpired': ['登录已过期，请重新登录。', 'Your session expired. Please sign in again.', 'La sesión caducó. Vuelve a iniciar sesión.'],
   'login.errCooldown': ['密码连续输错，请等待 1 分钟再试。', 'Too many failed attempts. Try again in one minute.', 'Demasiados intentos fallidos. Inténtalo de nuevo en un minuto.'],
   'toast.welcome': ['欢迎回来，{name}', 'Welcome back, {name}', 'Bienvenido de nuevo, {name}'],
+  'toast.onlyOwnerEdit': ['只有负责人 {name} 或 Carol 可以修改事项资料。', 'Only the owner, {name}, or Carol can edit the matter.', 'Solo el responsable, {name}, o Carol puede modificar el asunto.'],
 
   'nav.dashboard': ['工作台', 'Dashboard', 'Panel'],
   'nav.matters': ['事项', 'Matters', 'Asuntos'],
@@ -247,6 +248,7 @@ const STR = {
   'stage.hold': ['暂停', 'On hold', 'En pausa'],
 
   'role.carol': ['中国律师 · 团队负责人', 'China-qualified lawyer · Team lead', 'Abogada en China · Líder del equipo'],
+  'role.benson': ['协作者', 'Collaborator', 'Colaborador'],
   'role.carlos': ['墨西哥律师', 'Mexican lawyer', 'Abogado en México'],
   'role.hector': ['墨西哥 + 纽约双执业', 'México + New York qualified', 'Abogado en México y Nueva York'],
 
@@ -442,9 +444,9 @@ const STR = {
   'calendar.previous': ['上个月', 'Previous', 'Anterior'],
   'calendar.today': ['今天', 'Today', 'Hoy'],
   'calendar.next': ['下个月', 'Next', 'Siguiente'],
-  'modal.new.membersHint': ['只有勾进来的人能打开这条事项。制裁／涉美事项通常只勾 Carol 与 Carlos，换业务类型会自动改默认值。',
-    'Only ticked people can open this matter. Sanctions / US matters usually tick only Carol and Carlos; changing the area resets the defaults.',
-    'Solo quienes estén marcados pueden abrirlo. Los asuntos de sanciones o de EE. UU. suelen marcar solo a Carol y Carlos; al cambiar el área se restablecen.'],
+  'modal.new.membersHint': ['默认只有创建者可见；勾选另一位成员后才会共享。Carol 作为管理员始终可见。',
+    'Only the creator can see it by default. Tick the other member to share it. Carol can always see it as administrator.',
+    'Por defecto solo lo ve quien lo crea. Marca al otro miembro para compartirlo. Carol siempre puede verlo como administradora.'],
   'modal.file.title': ['上传加密附件', 'Upload encrypted file', 'Subir archivo cifrado'],
   'modal.file.name': ['选择文件', 'Choose file', 'Elegir archivo'],
   'modal.file.hint': ['文件会先在本机加密，再上传到个人私有存储。最大 20 MB。', 'The file is encrypted on this device before upload to private storage. Maximum 20 MB.', 'El archivo se cifra en este dispositivo antes de subirlo al almacenamiento privado. Máximo 20 MB.'],
@@ -675,6 +677,7 @@ function areaName(id) { return AREA[id] ? L(AREA[id].name) : (id || ''); }
 
 const USERS = [
   { id: 'carol', name: 'Carol', short: 'C', email: '13726111370@163.com', roleKey: 'role.carol', admin: true },
+  { id: 'benson', name: 'Benson', short: 'B', email: 'yanyi13411696203@163.com', roleKey: 'role.benson', admin: false },
 ];
 const USER = Object.fromEntries(USERS.map(u => [u.id, u]));
 
@@ -1048,7 +1051,7 @@ async function deleteEncryptedFiles(matter) {
   }
 }
 
-async function signIn(email, password) {
+async function signIn(email, password, userId) {
   const res = await fetch(SUPABASE.url + '/auth/v1/token?grant_type=password', {
     method:'POST', headers:{ apikey:SUPABASE.key, 'Content-Type':'application/json' },
     body:JSON.stringify({ email, password }),
@@ -1062,7 +1065,7 @@ async function signIn(email, password) {
   };
   saveSessionValue(KEY.auth, authSession);
   consecutiveAuthFailures = 0;
-  await LCBCrypto.initialize('carol', password, sbFetch);
+  await LCBCrypto.initialize(userId, password, sbFetch);
 }
 
 async function refreshAuth() {
@@ -1291,8 +1294,9 @@ async function pushRemote() {
   try {
     if (matters.length) {
       const encrypted = await Promise.all(matters.map(m => LCBCrypto.prepareMatter(m, sbFetch)));
-      const shells = matters.map(m => ({ id:soloRemoteId(m.id), data:{ id:m.id, owner:'carol', team:['carol'], encrypted:'lcb-e2ee-pending' }, updated_at:new Date().toISOString() }));
-      const shellResult = await sbFetch('/matters', { method:'POST', headers:{ Prefer:'resolution=ignore-duplicates,return=minimal' }, body:JSON.stringify(shells) });
+      const shells = matters.map(m => ({ id:soloRemoteId(m.id), data:{ id:m.id, owner:m.owner, team:m.team || [], encrypted:'lcb-e2ee-pending' }, updated_at:new Date().toISOString() }));
+      // 先同步负责人/成员名单，后端才会允许为新成员保存对应的加密钥匙。
+      const shellResult = await sbFetch('/matters', { method:'POST', headers:UPSERT, body:JSON.stringify(shells) });
       if (!shellResult.ok) throw new Error('matter-shell-http-'+shellResult.status);
       await LCBCrypto.flushMatterKeys(sbFetch);
       const rows = encrypted.map((m,i) => ({ id:soloRemoteId(matters[i].id), data:m, updated_at:new Date().toISOString() }));
@@ -1310,8 +1314,8 @@ async function pushRemote() {
     await sbFetch('/meta', { method: 'POST', headers: UPSERT, body: JSON.stringify([{ key: 'solo_seq', value: seq }]) });
     for (const id of [...sync.purged]) {
       await sbFetch('/logs?matter_id=eq.' + encodeURIComponent(soloRemoteId(id)), { method: 'DELETE' });
-      await sbFetch('/matters?id=eq.' + encodeURIComponent(soloRemoteId(id)), { method: 'DELETE' });
       await sbFetch('/lcb_matter_keys?matter_id=eq.' + encodeURIComponent(String(id)), { method:'DELETE' });
+      await sbFetch('/matters?id=eq.' + encodeURIComponent(soloRemoteId(id)), { method: 'DELETE' });
       sync.purged.delete(id);
     }
     sync.status = 'ok';
@@ -1346,18 +1350,17 @@ function schedulePush() {
 }
 function currentUser() { return session ? USER[session.userId] : null; }
 
-// 门禁规则：只有被勾进「项目成员」的人能打开这条事项；Carol 是管理员，始终可见。
+// 门禁规则：只有负责人和被勾进「项目成员」的人能打开；Carol 是管理员，始终可见。
 // 业务类型不决定可见范围，只决定新建时默认勾谁。
 function defaultTeam(areaId) {
-  const a = AREA[areaId];
-  if (a && a.members) return a.members.slice();
-  return USERS.map(u => u.id);
+  const u = currentUser();
+  return u ? [u.id] : [];
 }
 function canSee(user, m) {
-  return !!(user && m);
+  return !!(user && m && (user.admin || m.owner === user.id || (m.team || []).includes(user.id)));
 }
 function visibleMatters(user) {
-  return matters.filter(m => m.kind !== 'schedule' && !m.deletedAt);
+  return matters.filter(m => m.kind !== 'schedule' && !m.deletedAt && canSee(user, m));
 }
 function trashedMatters(user) {
   const u = user || currentUser();
@@ -1374,7 +1377,7 @@ function isAdmin() {
 }
 // 当前步骤 = 这条事项正在推进的那一步，它的负责人就是「下一步负责人」
 function isStepOwner(user, m) {
-  return !!(user && m);
+  return !!(user && m && (user.admin || m.nextOwner === user.id));
 }
 function stepsOf(m) {
   return (m.steps || []).slice().sort((a, b) => b.at - a.at);
@@ -1399,7 +1402,8 @@ function canUndoMatterEdit(user, log) {
 }
 // 管理员可以代为完成步骤；撤销只给管理员和「刚完成这一步的人」
 function canUndoStep(user, m) {
-  return !!(user && m && lastStep(m));
+  const step = m && lastStep(m);
+  return !!(user && step && (user.admin || step.by === user.id));
 }
 function addLog(matterId, by, text) {
   logs.push({ id: 'l' + Math.random().toString(36).slice(2, 9), matterId, at: Date.now(), by, text });
@@ -1733,7 +1737,7 @@ function shell(route, content) {
   return `
   <div class="topbar">
     <div class="topbar-inner">
-      <div class="logo"><div class="brand-mark">C</div><span>Carol's work &amp; personal task manager</span></div>
+      <div class="logo"><div class="brand-mark">CB</div><span>${esc(t(APP_TITLE_KEY))}</span></div>
       <div class="nav-shell">
         <button class="nav-scroll-btn" type="button" data-action="nav-scroll-left" aria-label="${esc(L({zh:'向左滚动导航',en:'Scroll navigation left',es:'Desplazar navegación a la izquierda'}))}" title="${esc(L({zh:'向左滚动',en:'Scroll left',es:'Desplazar a la izquierda'}))}">‹</button>
         <nav class="nav">${navFor(route)}${langSwitcher('in-nav')}</nav>
@@ -1836,9 +1840,12 @@ function filterMatters() {
 function matterRowsHTML() {
   const list = sorted(filterMatters());
   if (!list.length) return '';
-  return list.map(m => `
+  const u = currentUser();
+  return list.map(m => {
+    const canDelete = u.admin || m.owner === u.id;
+    return `
     <tr class="${m.importError ? 'import-error' : ''}" data-action="open-matter" data-id="${m.id}">
-      <td class="bulk-cell"><input class="bulk-check" type="checkbox" data-action="toggle-bulk-matter" data-id="${m.id}" ${state.bulkSelected.has(String(m.id)) ? 'checked' : ''} aria-label="${esc(t('list.bulkDelete'))}: ${esc(m.no)}"></td>
+      <td class="bulk-cell">${canDelete ? `<input class="bulk-check" type="checkbox" data-action="toggle-bulk-matter" data-id="${m.id}" ${state.bulkSelected.has(String(m.id)) ? 'checked' : ''} aria-label="${esc(t('list.bulkDelete'))}: ${esc(m.no)}">` : ''}</td>
       <td class="nw">${m.importError ? `<div class="import-error-label">${esc(t('list.importError'))}</div>` : ''}${esc(m.no)}</td>
       <td>${esc(L(m.client))}</td>
       <td><b>${esc(L(m.title))}</b>${m.notes ? `<div class="small muted">${esc(L(m.notes))}</div>` : ''}</td>
@@ -1847,7 +1854,8 @@ function matterRowsHTML() {
       <td>${esc(L(m.next))}</td>
       <td class="nw">${fmtDateShort(m.due)}<div class="small muted">${dueText(m.due)}</div></td>
       <td class="nw">${esc(waitLabel(m.waiting))}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function viewMatters() {
@@ -1867,9 +1875,9 @@ function viewMatters() {
   const n = sorted(filterMatters()).length;
   const bulkCount = [...state.bulkSelected].filter(id => {
     const m = matterById(id);
-    return m && !m.deletedAt && canSee(currentUser(), m);
+    return m && !m.deletedAt && (currentUser().admin || m.owner === currentUser().id);
   }).length;
-  const selectable = sorted(filterMatters());
+  const selectable = sorted(filterMatters()).filter(m => currentUser().admin || m.owner === currentUser().id);
   const allSelected = selectable.length > 0 && selectable.every(m => state.bulkSelected.has(String(m.id)));
 
   return `
@@ -1998,6 +2006,7 @@ function viewMatter(id) {
   }
 
   const myLogs = logs.filter(l => String(l.matterId) === String(m.id)).sort((a, b) => b.at - a.at);
+  const canEdit = u.admin || m.owner === u.id;
   const steps = stepsOf(m);
   const last = lastStep(m);
   const lastEdit = lastMatterEditLog(m);
@@ -2005,6 +2014,8 @@ function viewMatter(id) {
   const stageField = selectWithCustom('data-field="stage"', m.stage, stageOptions(), t('form.customStagePh'));
   const waitField = selectWithCustom('data-field="waiting"', m.waiting, waitingOptions(), t('form.customWaitPh'));
   const statusOpts = Object.keys(STATUS).map(k => `<option value="${k}" ${m.status === k ? 'selected' : ''}>${STATUS[k].dot} ${esc(statusName(k))}</option>`).join('');
+  const ownerOpts = (u.admin ? USERS : USERS.filter(x=>x.id===m.owner)).map(x => `<option value="${x.id}" ${m.owner === x.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
+  const nextOwnerOpts = USERS.map(x => `<option value="${x.id}" ${m.nextOwner === x.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
 
   return `
     <a class="back" href="#/matters">${esc(t('back.toList'))}</a>
@@ -2016,12 +2027,13 @@ function viewMatter(id) {
       <div class="right">
         <button class="btn" type="button" data-action="export-csv" data-id="${m.id}">${esc(t('list.export'))}</button>
         ${lastEdit ? `<button class="btn" type="button" data-action="undo-matter-edit" data-id="${m.id}">${esc(t('detail.undoEdit'))}</button>` : ''}
-        <button class="btn btn-primary" type="button" data-action="save-matter" data-id="${m.id}">${esc(t('detail.save'))}</button>
+        ${canEdit ? `<button class="btn btn-primary" type="button" data-action="save-matter" data-id="${m.id}">${esc(t('detail.save'))}</button>` : ''}
       </div>
     </div>
     <div class="detail-grid">
       <div>
         <div class="card card-pad" data-matter="${m.id}">
+          <fieldset class="matter-edit-fields" ${canEdit ? '' : 'disabled'}>
           <div class="section-title">${esc(t('detail.info'))}</div>
           <div class="grid-2">
             <div class="field"><label>${esc(t('detail.client'))}</label><input data-field="client" value="${esc(L(m.client))}"></div>
@@ -2029,6 +2041,8 @@ function viewMatter(id) {
             <div class="field"><label>${esc(t('detail.area'))}</label>${areaField}</div>
             <div class="field"><label>${esc(t('detail.stage'))}</label>${stageField}</div>
             <div class="field"><label>${esc(t('detail.status'))}</label><select data-field="status">${statusOpts}</select></div>
+            <div class="field"><label>${esc(t('detail.owner'))}</label><select data-field="owner">${ownerOpts}</select></div>
+            <div class="field"><label>${esc(t('detail.nextOwner'))}</label><select data-field="nextOwner">${nextOwnerOpts}</select></div>
             <div class="field"><label>${esc(t('detail.due'))}</label><input type="date" data-field="due" value="${esc(m.due || '')}"></div>
             <div class="field"><label>${esc(t('detail.waiting'))}</label>${waitField}</div>
             <div class="field"><label>${esc(t('detail.lastContact'))}</label><input type="date" data-field="lastContact" value="${esc(m.lastContact || '')}"></div>
@@ -2036,8 +2050,10 @@ function viewMatter(id) {
           <div class="field"><label>${esc(t('detail.next'))}</label><input data-field="next" value="${esc(L(m.next))}"></div>
           <div class="field"><label>${esc(t('detail.reason'))}</label><input data-field="reason" value="${esc(L(m.reason))}" placeholder="${esc(t('detail.reasonPh'))}"></div>
           <div class="field"><label>${esc(t('detail.notes'))}</label><textarea data-field="notes" rows="3">${esc(L(m.notes))}</textarea></div>
+          <div class="field"><label>${esc(t('detail.members'))}</label><div class="member-list">${USERS.map(x => `<label class="member-item"><input type="checkbox" data-field="team" value="${x.id}" ${(m.team||[]).includes(x.id)?'checked':''}><span class="nm">${esc(x.name)}</span><span class="rl">${esc(t(x.roleKey))}</span></label>`).join('')}</div><div class="hint">${esc(t('detail.membersHint'))}</div></div>
+          </fieldset>
           <div class="danger-zone">
-            <button class="btn btn-danger btn-sm" type="button" data-action="delete-matter" data-id="${m.id}">${esc(t('detail.delete'))}</button>
+            ${canEdit ? `<button class="btn btn-danger btn-sm" type="button" data-action="delete-matter" data-id="${m.id}">${esc(t('detail.delete'))}</button>` : ''}
           </div>
         </div>
       </div>
@@ -2098,9 +2114,10 @@ function viewMatter(id) {
 
 function viewWeekly() {
   const list = sorted(visibleMatters(currentUser()));
+  const u = currentUser();
   const cols = `
     <div class="weekly-col">
-      <h3><span class="avatar" style="background:#dcfce7">C</span>Carol
+      <h3><span class="avatar" style="background:#dcfce7">${esc(u.short)}</span>${esc(u.name)}
         <span class="muted small">${esc(t('weekly.items', { n: list.length }))}</span></h3>
       ${list.map(m => `
         <div class="wcard" data-action="open-matter" data-id="${m.id}" style="cursor:pointer">
@@ -2134,14 +2151,14 @@ function viewSettings() {
     <div class="page-head">
       <div>
         <h1>${esc(L({zh:'信息',en:'Info',es:'Información'}))}</h1>
-        <div class="desc">${esc(L({zh:'Carol 的工作与个人事务管理器',en:"Carol's work & personal task manager",es:'Gestor de asuntos laborales y personales de Carol'}))}</div>
+        <div class="desc">${esc(t(APP_TITLE_KEY))} · ${esc(t(TEAM_NAME_KEY))}</div>
       </div>
     </div>
     <div class="detail-grid">
       <div>
         <div class="card card-pad">
           <div class="section-title">${esc(L({zh:'数据保存',en:'Data storage',es:'Almacenamiento de datos'}))}</div>
-          <p>${esc(L({zh:'这是单人版。独立云数据库接入前，数据暂时只保存在当前浏览器中，不会继续写入团队数据库。',en:'This is the single-user edition. Until its independent cloud database is connected, data stays in this browser and is not written to the team database.',es:'Esta es la edición individual. Hasta conectar su base de datos independiente, los datos permanecen en este navegador y no se escriben en la base del equipo.'}))}</p>
+          <p>${esc(L({zh:'这是母子版，使用独立云数据库。Benson 只能看到自己负责或被加入成员列表的事项；Carol 作为管理员可查看全部事项。',en:'This mother-son edition uses a separate cloud database. Benson sees only matters he owns or has been added to; Carol can see all matters as administrator.',es:'Esta edición para madre e hijo usa una base de datos separada. Benson solo ve los asuntos que dirige o a los que fue añadido; Carol puede verlos todos como administradora.'}))}</p>
           <div class="hint">${esc(L({zh:'建议定期使用“导出CSV表格”备份事项。',en:'Use Export CSV regularly to back up your matters.',es:'Usa Exportar CSV periódicamente para respaldar tus asuntos.'}))}</div>
         </div>
       </div>
@@ -2262,6 +2279,7 @@ function modalCompleteStep(mo) {
   const statusOpts = Object.keys(STATUS).map(k =>
     `<option value="${k}" ${m.status === k ? 'selected' : ''}>${STATUS[k].dot} ${esc(statusName(k))}</option>`).join('');
   const waitField = selectWithCustom('name="waiting"', m.waiting, waitingOptions(), t('form.customWaitPh'));
+  const ownerOpts = USERS.map(x => `<option value="${x.id}" ${m.nextOwner===x.id?'selected':''}>${esc(x.name)}</option>`).join('');
 
   return modalFrame(
     t('modal.complete.title'),
@@ -2280,6 +2298,7 @@ function modalCompleteStep(mo) {
        </div>
        <div class="field"><label class="req">${esc(t('form.next'))}</label>
          <input name="next" autocomplete="off" placeholder="${esc(t('form.nextPh'))}"></div>
+       <div class="field"><label class="req">${esc(t('detail.nextOwner'))}</label><select name="nextOwner">${ownerOpts}</select></div>
        <div class="field"><label>${esc(t('detail.reason'))}</label>
          <input name="reason" autocomplete="off" value="" placeholder="${esc(t('form.reasonPh'))}"></div>
      </form>`,
@@ -2358,10 +2377,13 @@ function modalScheduleDetails(mo) {
 
 function modalNewMatter() {
   if (!state.modal || state.modal.type !== 'new-matter') return '';
+  const u = currentUser();
   const areaField = selectWithCustom('name="area" data-area-picker', PRACTICE_AREAS[0].id, practiceAreaOptions(), t('form.customAreaPh'));
   const stageField = selectWithCustom('name="stage"', STAGES[0], stageOptions(), t('form.customStagePh'));
   const waitField = selectWithCustom('name="waiting"', 'none', waitingOptions(), t('form.customWaitPh'));
   const statusOpts = Object.keys(STATUS).map(k => `<option value="${k}" ${k === 'green' ? 'selected' : ''}>${STATUS[k].dot} ${esc(statusName(k))}</option>`).join('');
+  const ownerOpts = (u.admin ? USERS : [u]).map(x => `<option value="${x.id}" ${x.id===u.id?'selected':''}>${esc(x.name)}</option>`).join('');
+  const nextOwnerOpts = USERS.map(x => `<option value="${x.id}" ${x.id===u.id?'selected':''}>${esc(x.name)}</option>`).join('');
   return `
   <div class="modal-mask" data-mask="1">
     <div class="modal" data-stop="1">
@@ -2374,12 +2396,15 @@ function modalNewMatter() {
             <div class="field"><label class="req">${esc(t('detail.area'))}</label>${areaField}</div>
             <div class="field"><label class="req">${esc(t('detail.stage'))}</label>${stageField}</div>
             <div class="field"><label class="req">${esc(t('detail.status'))}</label><select name="status">${statusOpts}</select></div>
+            <div class="field"><label class="req">${esc(t('detail.owner'))}</label><select name="owner">${ownerOpts}</select></div>
+            <div class="field"><label>${esc(t('detail.nextOwner'))}</label><select name="nextOwner">${nextOwnerOpts}</select></div>
             <div class="field"><label class="req">${esc(t('detail.due'))}</label><input type="date" name="due" value="${esc(state.modal.due||'')}" required></div>
             <div class="field"><label>${esc(t('detail.waiting'))}</label>${waitField}</div>
           </div>
           <div class="field"><label class="req">${esc(t('detail.next'))}</label><input name="next" required></div>
           <div class="field"><label>${esc(t('detail.reason'))}</label>
             <input name="reason" autocomplete="off" value="" placeholder="${esc(t('form.reasonPh'))}"></div>
+          <div class="field"><label>${esc(t('detail.members'))}</label><div class="member-list">${USERS.map(x => `<label class="member-item"><input type="checkbox" name="team" value="${x.id}" ${x.id===u.id?'checked':''}><span class="nm">${esc(x.name)}</span><span class="rl">${esc(t(x.roleKey))}</span></label>`).join('')}</div><div class="hint">${esc(t('modal.new.membersHint'))}</div></div>
         </div>
         <div class="modal-foot">
           <button class="btn" type="button" data-action="close-modal">${esc(t('modal.cancel'))}</button>
@@ -2471,10 +2496,10 @@ function completeStep(id, data) {
   m.due = data.due;
   m.waiting = waiting || 'none';
   m.next = String(data.next).trim();
-  m.nextOwner = 'carol';
+  m.nextOwner = USER[data.nextOwner] ? data.nextOwner : m.owner;
   if (String(data.reason || '') !== L(m.reason)) m.reason = data.reason || '';
 
-  addLogKey(id, u.id, 'detail.entry.stepDone', { text: done.text, owner: 'Carol' });
+  addLogKey(id, u.id, 'detail.entry.stepDone', { text: done.text, owner: (USER[done.owner] || {}).name || done.owner });
   if (beforeStage !== m.stage) addLogKey(id, u.id, 'detail.entry.stageMove', { from: { __stage: beforeStage }, to: { __stage: m.stage } });
   addLogKey(id, u.id, 'detail.entry.advanced', {
     status: { __t: 'status.' + m.status, prefix: STATUS[m.status].dot + ' ' },
@@ -2522,13 +2547,16 @@ function createMatter(data) {
   if (area === null || stage === null || waiting === null) { toast(t('toast.needCustom')); return false; }
   seq += 1;
   const id = seq;
-  const team = ['carol'];
+  const creator = currentUser();
+  const owner = USER[data.owner] ? data.owner : creator.id;
+  const team = Array.isArray(data.team) ? data.team.filter(id => USER[id]) : [creator.id];
+  if (!team.includes(owner)) team.push(owner);
   const m = {
     id, no: `2026-${String(id).padStart(3, '0')}`,
     client: data.client, title: data.title, area,
-    owner: 'carol', team,
+    owner, team,
     stage: stage || STAGES[0], status: data.status, reason: data.reason || '',
-    next: data.next, nextOwner: 'carol',
+    next: data.next, nextOwner: USER[data.nextOwner] ? data.nextOwner : owner,
     due: data.due, waiting: waiting || 'none',
     importError: !!data.importError,
     files: [], lastContact: iso(today()), notes: '',
@@ -2545,6 +2573,7 @@ function saveMatterFromDom(id) {
   const box = document.querySelector(`[data-matter="${id}"]`);
   const m = matterById(id);
   if (!box || !m) return;
+  if (!currentUser().admin && currentUser().id !== m.owner) { toast(t('toast.onlyOwnerEdit', { name:(USER[m.owner]||{}).name||m.owner })); return; }
   const get = f => { const el = box.querySelector(`[data-field="${f}"]`); return el ? el.value : undefined; };
   const changes = [];
   const before = { ...m };
@@ -2573,9 +2602,9 @@ function saveMatterFromDom(id) {
     if (v === undefined || v === shown[f]) return;
     if (v !== m[f]) { m[f] = v; changes.push(f); }
   });
-  m.owner = 'carol';
-  m.nextOwner = 'carol';
-  m.team = ['carol'];
+  const team = [...box.querySelectorAll('[data-field="team"]:checked')].map(x => x.value).filter(id => USER[id]);
+  if (!team.includes(m.owner)) team.push(m.owner);
+  if (team.slice().sort().join() !== (m.team || []).slice().sort().join()) { m.team = team; changes.push('team'); }
 
   if (!m.client || !m.title || !m.next || !m.due) { toast(t('toast.needClient')); return; }
   if ((m.status === 'red' || m.status === 'yellow') && !String(L(m.reason) || '').trim()) { toast(t('toast.needReason')); return; }
@@ -2948,7 +2977,7 @@ document.addEventListener('click', async ev => {
     case 'confirm-bulk-delete-matters': {
       const ids = (state.modal && state.modal.ids || []).filter(id => {
         const m = matterById(id);
-        return m && !m.deletedAt && canSee(currentUser(), m);
+        return m && !m.deletedAt && (currentUser().admin || m.owner === currentUser().id);
       });
       ids.forEach(id => {
         const m = matterById(id);
@@ -3209,7 +3238,7 @@ document.addEventListener('submit', async ev => {
     const user = USERS.find(u => u.email.toLowerCase() === email);
     if (!user) { state.loginError=t('login.errNoUser'); render(); return; }
     if (Date.now() < loginBlockedUntil) { state.loginError=t('login.errCooldown'); render(); return; }
-    try { await signIn(email, pass); loginFailures=0; loginBlockedUntil=0; }
+    try { await signIn(email, pass, user.id); loginFailures=0; loginBlockedUntil=0; }
     catch (e) {
       loginFailures += 1;
       if (loginFailures >= LOGIN_FAILURE_LIMIT) { loginBlockedUntil=Date.now()+LOGIN_COOLDOWN_MS; state.loginError=t('login.errCooldown'); }
@@ -3217,6 +3246,7 @@ document.addEventListener('submit', async ev => {
       render(); return;
     }
     state.loginError = '';
+    clearPrivateCache();
     recordSecurityEvent('login_success', { client:'web' });
     session = { userId:user.id }; lastUserActivityAt = Date.now(); state.bulkSelected.clear(); state.trashSelected.clear();
     await loadDevices(true);
