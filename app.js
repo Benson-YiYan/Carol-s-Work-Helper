@@ -56,11 +56,11 @@ const SECURITY_NOTICE = {
     hide: '3 天内不再显示', close: '关闭',
     sections: [
       ['一、资料先加密，再上传', [
-        '事项、客户档案、日程和文件在离开你的电脑或手机前，就会先变成无法直接阅读的加密内容。',
+        '事项、客户档案、聊天、日程和文件在离开你的电脑或手机前，就会先变成无法直接阅读的加密内容。',
         'Supabase 云端主要保存加密后的内容，而不是可以直接打开阅读的客户资料。',
       ]],
       ['二、具体使用什么加密方法', [
-        'AES-256-GCM：用来加密事项正文和文件。这是成熟的高强度加密方法，每个事项都有一把不同的随机钥匙。',
+        'AES-256-GCM：用来加密事项正文、聊天记录和文件。这是成熟的高强度加密方法，每个事项都有一把不同的随机钥匙。',
         'RSA-OAEP 2048：把事项钥匙分别锁给获准成员。只有对应成员自己的解密钥匙才能打开。',
         'PBKDF2-SHA-256（31 万次运算）：用登录密码保护个人解密钥匙，并故意增加猜密码所需的时间。',
       ]],
@@ -86,11 +86,11 @@ const SECURITY_NOTICE = {
     hide: 'Do not show again for 3 days', close: 'Close',
     sections: [
       ['1. Data is encrypted before upload', [
-        'Before matter details, client records, schedules, or files leave your computer or phone, they are converted into encrypted data that cannot be read directly.',
+        'Before matter details, client records, chats, schedules, or files leave your computer or phone, they are converted into encrypted data that cannot be read directly.',
         'Supabase stores the encrypted data, not readable client information.',
       ]],
       ['2. The encryption methods we use', [
-        'AES-256-GCM encrypts matter details and files. It is a mature, strong encryption method, and every matter receives a different random key.',
+        'AES-256-GCM encrypts matter details, chats, and files. It is a mature, strong encryption method, and every matter receives a different random key.',
         'RSA-OAEP 2048 locks each matter key separately for approved members. Only the matching personal decryption key can unlock it.',
         'PBKDF2-SHA-256 (310,000 rounds) uses the login password to protect the personal decryption key and deliberately makes password guessing slower.',
       ]],
@@ -116,11 +116,11 @@ const SECURITY_NOTICE = {
     hide: 'No volver a mostrar durante 3 días', close: 'Cerrar',
     sections: [
       ['1. Los datos se cifran antes de subirlos', [
-        'Antes de que los datos de los asuntos, expedientes de clientes, agendas o archivos salgan de tu ordenador o teléfono, se convierten en datos cifrados que no pueden leerse directamente.',
+        'Antes de que los datos de los asuntos, expedientes de clientes, chats, agendas o archivos salgan de tu ordenador o teléfono, se convierten en datos cifrados que no pueden leerse directamente.',
         'Supabase guarda los datos cifrados, no la información legible de los clientes.',
       ]],
       ['2. Los métodos de cifrado utilizados', [
-        'AES-256-GCM cifra los datos de los asuntos y archivos. Es un método sólido y maduro, y cada asunto recibe una clave aleatoria diferente.',
+        'AES-256-GCM cifra los datos de los asuntos, chats y archivos. Es un método sólido y maduro, y cada asunto recibe una clave aleatoria diferente.',
         'RSA-OAEP 2048 cifra por separado la clave de cada asunto para cada miembro autorizado. Solo la clave privada correspondiente puede descifrarla.',
         'PBKDF2-SHA-256 (310.000 iteraciones) utiliza la contraseña de acceso para proteger la clave privada y dificulta los intentos de adivinar la contraseña.',
       ]],
@@ -147,12 +147,12 @@ const BEGINNER_TUTORIAL = {
     title: '新手教程', choose: '选择要学习使用的功能……', catalog: '返回目录', finish: '完成', skip: '关闭',
     steps: [
       ['首页', '首页集中显示紧急事项、本周到期、等待你推进的事项、可见事项总数和自动提醒。点击事项后，可选择“编辑事项”或“在事项中工作”。'],
-      ['事项', '这里可新建、搜索和筛选事项，也能批量删除、导入 Excel/CSV 或导出 CSV。编辑事项时可填写客户、负责人、成员、状态、阶段、下一步、截止日期、等待对象和重复规则。工作页面则用于完成步骤、上传加密文件和查看动态。'],
+      ['事项', '这里可新建、搜索和筛选事项，也能批量删除、导入 Excel/CSV、导出 CSV 或打开聊天。编辑事项时可填写客户、负责人、成员、状态、阶段、下一步、截止日期、等待对象和重复规则。工作页面则用于完成步骤、上传加密文件和查看动态。'],
       ['日历', '日历按截止日期显示事项。点击某一天，可新建截止日期已自动填写的事项，或创建当天指定时间的自定义提醒；提醒会同时进入“通知”。'],
       ['客户档案', '这里记录客户名称、联系人、电话、邮箱、沟通进度、最后联系时间和备注。支持新建、修改、批量删除及多文件 Excel/CSV 导入；档案中的客户会自动出现在新建事项的客户列表中。'],
       ['客户跟进', '这里汇总久未联系、等待客户或需要继续推进的客户。点击“更新为刚刚已联系”会记录当前时间，并同步更新客户档案和通知。右上角数字表示待跟进数量。'],
       ['团队负荷', '团队负荷按成员统计正在进行、紧急、逾期和等待本人推进的事项，帮助负责人了解分工是否均衡，以及谁需要优先支援。'],
-      ['通知', '事项修改、文件、客户操作和日程提醒会进入通知页。可标记已读或删除；允许系统通知后，电脑也会弹出提醒。侧边栏红色数字表示未读数量。'],
+      ['通知', '事项修改、聊天、文件、客户操作和日程提醒会进入通知页。可标记已读或删除；允许系统通知后，电脑也会弹出提醒。侧边栏红色数字表示未读数量。'],
       ['信息', '信息页展示成员和可见范围，并可查看登录设备的名称、位置、IP 和最后活动时间。可以退出单台或全部设备、查看安全记录，以及导出或恢复加密备份。'],
       ['回收站', '删除的事项和客户档案会先进入回收站。拥有权限的人可以恢复、单独永久删除或批量永久删除；永久删除后无法恢复，请确认后再操作。'],
     ],
@@ -161,12 +161,12 @@ const BEGINNER_TUTORIAL = {
     title: 'Quick tour', choose: 'Choose a feature to learn about…', catalog: 'Back to topics', finish: 'Done', skip: 'Close',
     steps: [
       ['Home', 'Home summarizes urgent matters, items due this week, matters waiting for you, all visible matters, and automatic reminders. Select a matter to edit it or work on it, or use the “+” button for quick creation.'],
-      ['Matters', 'Create, search, and filter matters; bulk-delete them; import Excel/CSV files; or export CSV data. Editing covers the client, owner, members, status, stage, next action, due date, waiting party, and recurrence. The work view handles completed steps, encrypted files, and activity.'],
+      ['Matters', 'Create, search, and filter matters; bulk-delete them; import Excel/CSV files; export CSV data; or open a chat. Editing covers the client, owner, members, status, stage, next action, due date, waiting party, and recurrence. The work view handles completed steps, encrypted files, and activity.'],
       ['Calendar', 'The calendar places matters on their due dates. Select a date to create a matter with the date already filled in or schedule a custom reminder for a specific time. Reminders are also saved under Notifications.'],
       ['Client records', 'Store the client name, contact person, phone, email, communication progress, latest contact time, and notes. You can create, edit, bulk-delete, or import multiple Excel/CSV files. Saved clients appear in the New matter client list.'],
       ['Client follow-up', 'This page gathers clients who have not been contacted recently, are being waited on, or need further action. “Mark as contacted now” records the current time and updates both the client record and notifications. The badge shows the number due for follow-up.'],
       ['Team workload', 'Team workload shows each member’s open, urgent, overdue, and waiting matters. It helps the team lead see whether work is balanced and who may need support first.'],
-      ['Notifications', 'Matter edits, file activity, client actions, and reminders appear here. Notifications can be marked as read or deleted. When system notifications are enabled, alerts can also appear on the computer. The red badge shows the unread count.'],
+      ['Notifications', 'Matter edits, chats, file activity, client actions, and reminders appear here. Notifications can be marked as read or deleted. When system notifications are enabled, alerts can also appear on the computer. The red badge shows the unread count.'],
       ['Information', 'Information shows members and visibility rules, plus each signed-in device’s name, location, IP address, and last active time. You can sign out one or all devices, review security events, and export or restore an encrypted backup.'],
       ['Recycle bin', 'Deleted matters and client records are moved here first. Authorized users can restore them, permanently remove one item, or permanently remove selected items in bulk. Permanent deletion cannot be undone.'],
     ],
@@ -175,12 +175,12 @@ const BEGINNER_TUTORIAL = {
     title: 'Guía rápida', choose: 'Elige una función para aprender a usarla…', catalog: 'Volver al índice', finish: 'Terminar', skip: 'Cerrar',
     steps: [
       ['Inicio', 'Inicio resume los asuntos urgentes, los que vencen esta semana, los que esperan tu intervención, todos los asuntos visibles y los recordatorios automáticos. Pulsa un asunto para editarlo o trabajar en él, o usa “+” para crearlo rápidamente.'],
-      ['Asuntos', 'Crea, busca y filtra asuntos; elimínalos en lote; importa archivos Excel/CSV o exporta datos CSV. La edición incluye cliente, responsable, miembros, estado, etapa, próxima acción, fecha límite, parte pendiente y repetición. La vista de trabajo gestiona pasos, archivos cifrados y actividad.'],
+      ['Asuntos', 'Crea, busca y filtra asuntos; elimínalos en lote; importa archivos Excel/CSV; exporta datos CSV o abre un chat. La edición incluye cliente, responsable, miembros, estado, etapa, próxima acción, fecha límite, parte pendiente y repetición. La vista de trabajo gestiona pasos, archivos cifrados y actividad.'],
       ['Calendario', 'El calendario muestra los asuntos en su fecha límite. Pulsa una fecha para crear un asunto con esa fecha ya rellenada o programar un recordatorio personalizado a una hora concreta. También se guarda en Notificaciones.'],
       ['Expedientes de clientes', 'Guarda nombre, persona de contacto, teléfono, correo, avance de la comunicación, último contacto y notas. Permite crear, editar, eliminar en lote e importar varios Excel/CSV. Los clientes guardados aparecen al crear un asunto.'],
       ['Seguimiento de clientes', 'Reúne clientes sin contacto reciente, pendientes de respuesta o que requieren otra acción. “Marcar como contactado ahora” registra la hora actual y actualiza el expediente y las notificaciones. El indicador muestra cuántos requieren seguimiento.'],
       ['Carga del equipo', 'Muestra por miembro los asuntos abiertos, urgentes, vencidos y pendientes de su intervención. Ayuda a comprobar si el reparto es equilibrado y quién necesita apoyo primero.'],
-      ['Notificaciones', 'Aquí aparecen cambios de asuntos, archivos, acciones sobre clientes y recordatorios. Se pueden marcar como leídas o eliminar. Si activas las notificaciones del sistema, los avisos también aparecen en el ordenador.'],
+      ['Notificaciones', 'Aquí aparecen cambios de asuntos, chats, archivos, acciones sobre clientes y recordatorios. Se pueden marcar como leídas o eliminar. Si activas las notificaciones del sistema, los avisos también aparecen en el ordenador.'],
       ['Información', 'Muestra miembros y reglas de visibilidad, además del nombre, ubicación, IP y última actividad de cada dispositivo conectado. Permite cerrar una sesión o todas, revisar eventos de seguridad y exportar o restaurar una copia cifrada.'],
       ['Papelera', 'Los asuntos y expedientes eliminados se trasladan primero aquí. Los usuarios autorizados pueden restaurarlos, borrar uno definitivamente o borrar varios en lote. La eliminación definitiva no se puede deshacer.'],
     ],
@@ -230,31 +230,36 @@ TUTORIAL_DETAILS.zh[1][5] += ' 截止日期可留空，也可选择 ASAP；ASAP 
 TUTORIAL_DETAILS.en[1][3] += ' The due date is optional and can be set to ASAP; ASAP matters generate one reminder each day.';
 TUTORIAL_DETAILS.es[1][3] += ' La fecha límite es opcional y puede marcarse como ASAP; los asuntos ASAP generan un aviso diario.';
 
-BEGINNER_TUTORIAL.zh.steps.splice(1,0,['全文搜索','搜索事项、客户、动态和文件名；结果严格按当前账号权限显示。']);
-BEGINNER_TUTORIAL.en.steps.splice(1,0,['Full search','Search matters, clients, activity, and filenames; results follow the current account permissions.']);
-BEGINNER_TUTORIAL.es.steps.splice(1,0,['Búsqueda completa','Busca asuntos, clientes, actividad y archivos; los resultados respetan los permisos actuales.']);
-BEGINNER_TUTORIAL.zh.steps.splice(7,0,['期限计算','按自然日或工作日计算截止日期，并可一键创建提前 7、3、1 天提醒。'],['工作报告','按时间、客户、负责人和业务类型汇总事项，可导出 Excel/CSV 或打印为 PDF。']);
-BEGINNER_TUTORIAL.en.steps.splice(7,0,['Deadline calculator','Calculate calendar or business-day deadlines and create reminders 7, 3, and 1 days in advance.'],['Work reports','Summarize matters by date, client, owner, and area; export Excel/CSV or print to PDF.']);
-BEGINNER_TUTORIAL.es.steps.splice(7,0,['Calculadora de plazos','Calcula plazos naturales o hábiles y crea avisos 7, 3 y 1 días antes.'],['Informes de trabajo','Resume asuntos por fecha, cliente, responsable y área; exporta Excel/CSV o imprime en PDF.']);
-TUTORIAL_DETAILS.zh.splice(1,0,['输入至少两个字符后点击“搜索”；结果包括事项、客户、动态和文件名。','点击结果打开相关事项或客户档案；没有权限的数据不会出现。']);
-TUTORIAL_DETAILS.en.splice(1,0,['Enter at least two characters and select Search; results include matters, clients, activity, and filenames.','Select a result to open it. Content outside your permissions never appears.']);
-TUTORIAL_DETAILS.es.splice(1,0,['Introduce al menos dos caracteres y pulsa Buscar; incluye asuntos, clientes, actividad y archivos.','Pulsa un resultado para abrirlo. Nunca aparece contenido sin permiso.']);
-TUTORIAL_DETAILS.zh.splice(7,0,['填写起始日期、天数和计算方式；工作日模式会排除周末及手工填写的节假日。','“计算截止日”显示结果；“创建 7／3／1 天前提醒”会把三次提醒加入日历和通知。','计算结果仅供工作管理，法定期限应由律师复核。'],['选择日期范围、客户、负责人和业务类型后点击“生成报告”。','“导出 Excel/CSV”下载表格；“打印／导出 PDF”打开浏览器打印窗口。','报告只统计当前账号有权查看的事项。']);
-TUTORIAL_DETAILS.en.splice(7,0,['Set the start date, number of days, and method. Business-day mode excludes weekends and entered holidays.','Calculate shows the date; Create reminders adds alerts 7, 3, and 1 days beforehand.','The result supports workflow planning and must be legally verified.'],['Choose the date range, client, owner, and area, then Generate.','Export Excel/CSV downloads a table; Print / export PDF opens the print dialog.','Reports include only matters this account may view.']);
-TUTORIAL_DETAILS.es.splice(7,0,['Indica fecha inicial, días y método. El modo hábil excluye fines de semana y festivos indicados.','Calcular muestra la fecha; Crear avisos añade recordatorios 7, 3 y 1 días antes.','El resultado sirve para gestión y debe verificarse jurídicamente.'],['Elige fechas, cliente, responsable y área, y pulsa Generar.','Exportar Excel/CSV descarga una tabla; Imprimir / exportar PDF abre la impresión.','El informe solo incluye asuntos permitidos.']);
-BEGINNER_TUTORIAL.zh.steps[2][1] = '这里可新建、搜索和筛选事项，也能批量删除、导入 Excel/CSV 或导出 CSV。点击事项后选择编辑或工作。';
-BEGINNER_TUTORIAL.en.steps[2][1] = 'Create, search, filter, bulk-delete, import Excel/CSV, or export CSV. Select a matter to edit or work on it.';
-BEGINNER_TUTORIAL.es.steps[2][1] = 'Crea, busca, filtra, elimina en lote, importa Excel/CSV o exporta CSV. Pulsa un asunto para editar o trabajar.';
-BEGINNER_TUTORIAL.zh.steps[9][1] = '事项、文件、客户操作和日程提醒进入通知页，可标记已读或删除。';
-BEGINNER_TUTORIAL.en.steps[9][1] = 'Matter, file, client, and schedule activity appears under Notifications.';
-BEGINNER_TUTORIAL.es.steps[9][1] = 'Los avisos de asuntos, archivos, clientes y agenda aparecen en Notificaciones.';
-TUTORIAL_DETAILS.zh[2][3] = '“新建事项”打开完整表单；点击事项行选择“编辑事项”或“在事项中工作”。';
-TUTORIAL_DETAILS.zh[2][9] = '“撤销已完成步骤”恢复最近完成步骤；“已完成的步骤”查看历史；“导出 CSV 表格”导出当前事项；“动态记录”查看创建、修改、步骤、文件和已读回执。';
-TUTORIAL_DETAILS.en[2][1] = 'Import Excel/CSV validates multiple files and offers a sample when needed. Export CSV uses current results. New matter opens the full form.';
-TUTORIAL_DETAILS.es[2][1] = 'Importar Excel/CSV valida varios archivos y ofrece una muestra. Exportar CSV usa los resultados. Nuevo asunto abre el formulario.';
-TUTORIAL_DETAILS.zh[9][6] = '通知来源包括事项创建/修改/删除、步骤完成、文件上传/移除、客户操作、日程及截止提醒。';
-TUTORIAL_DETAILS.en[9][4] = 'Delete removes only that notification. Sources include matter changes, steps, files, client actions, schedules, and deadlines.';
-TUTORIAL_DETAILS.es[9][4] = 'Eliminar borra solo ese aviso. Incluye cambios, pasos, archivos, clientes, agenda y fechas.';
+BEGINNER_TUTORIAL.zh.steps.splice(1,0,['全文搜索','搜索事项、客户、聊天、动态和文件名；结果严格按当前账号权限显示。']);
+BEGINNER_TUTORIAL.en.steps.splice(1,0,['Full search','Search matters, clients, chats, activity, and filenames; results follow the current account permissions.']);
+BEGINNER_TUTORIAL.es.steps.splice(1,0,['Búsqueda completa','Busca asuntos, clientes, chats, actividad y archivos; los resultados respetan los permisos actuales.']);
+BEGINNER_TUTORIAL.zh.steps.splice(8,0,['期限计算','按自然日或工作日计算截止日期，并可一键创建提前 7、3、1 天提醒。'],['工作报告','按时间、客户、负责人和业务类型汇总事项，可导出 Excel/CSV 或打印为 PDF。']);
+BEGINNER_TUTORIAL.en.steps.splice(8,0,['Deadline calculator','Calculate calendar or business-day deadlines and create reminders 7, 3, and 1 days in advance.'],['Work reports','Summarize matters by date, client, owner, and area; export Excel/CSV or print to PDF.']);
+BEGINNER_TUTORIAL.es.steps.splice(8,0,['Calculadora de plazos','Calcula plazos naturales o hábiles y crea avisos 7, 3 y 1 días antes.'],['Informes de trabajo','Resume asuntos por fecha, cliente, responsable y área; exporta Excel/CSV o imprime en PDF.']);
+BEGINNER_TUTORIAL.zh.steps.splice(11,0,['聊天','独立团队聊天支持 @ 多选成员，可引用事项、客户档案、步骤或事项文件，也可上传加密文件随消息发送。发送者可长期屏蔽成员。']);
+BEGINNER_TUTORIAL.en.steps.splice(11,0,['Chat','Team chat supports multi-select @ mentions, references to matters, clients, steps or matter files, and encrypted file uploads sent with a message. Senders can persistently block members.']);
+BEGINNER_TUTORIAL.es.steps.splice(11,0,['Chat','El chat admite menciones @ múltiples, referencias a asuntos, clientes, pasos o archivos y el envío de archivos cifrados. El remitente puede bloquear miembros de forma persistente.']);
+TUTORIAL_DETAILS.zh.splice(1,0,['输入至少两个字符后点击“搜索”；结果包括事项、客户、聊天、动态和文件名。','点击结果打开相关事项或客户档案；没有权限的数据不会出现。']);
+TUTORIAL_DETAILS.en.splice(1,0,['Enter at least two characters and select Search; results include matters, clients, chats, activity, and filenames.','Select a result to open it. Content outside your permissions never appears.']);
+TUTORIAL_DETAILS.es.splice(1,0,['Introduce al menos dos caracteres y pulsa Buscar; incluye asuntos, clientes, chats, actividad y archivos.','Pulsa un resultado para abrirlo. Nunca aparece contenido sin permiso.']);
+TUTORIAL_DETAILS.zh.splice(8,0,['填写起始日期、天数和计算方式；工作日模式会排除周末及手工填写的节假日。','“计算截止日”显示结果；“创建 7／3／1 天前提醒”会把三次提醒加入日历和通知。','计算结果仅供工作管理，法定期限应由律师复核。'],['选择日期范围、客户、负责人和业务类型后点击“生成报告”。','“导出 Excel/CSV”下载表格；“打印／导出 PDF”打开浏览器打印窗口。','报告只统计当前账号有权查看的事项。']);
+TUTORIAL_DETAILS.en.splice(8,0,['Set the start date, number of days, and method. Business-day mode excludes weekends and entered holidays.','Calculate shows the date; Create reminders adds alerts 7, 3, and 1 days beforehand.','The result supports workflow planning and must be legally verified.'],['Choose the date range, client, owner, and area, then Generate.','Export Excel/CSV downloads a table; Print / export PDF opens the print dialog.','Reports include only matters this account may view.']);
+TUTORIAL_DETAILS.es.splice(8,0,['Indica fecha inicial, días y método. El modo hábil excluye fines de semana y festivos indicados.','Calcular muestra la fecha; Crear avisos añade recordatorios 7, 3 y 1 días antes.','El resultado sirve para gestión y debe verificarse jurídicamente.'],['Elige fechas, cliente, responsable y área, y pulsa Generar.','Exportar Excel/CSV descarga una tabla; Imprimir / exportar PDF abre la impresión.','El informe solo incluye asuntos permitidos.']);
+TUTORIAL_DETAILS.zh.splice(11,0,['在消息框输入文字；“@ 成员”可同时勾选多人。','“引用”可选择事项、客户档案、已完成步骤或事项中的文件；文件卡片可按原事项权限安全下载。','“上传文件并发送”会先在本机加密，再把文件和消息一起发出；可一次选择多个文件。','“屏蔽”会保存选择；被屏蔽者看不到你之后发送的文字、引用卡片和文件，其他成员不受影响。','你发送的消息下方会用红字显示“已屏蔽 xxx”，只有你本人看得到。','收到或发出消息后聊天会自动滚到底部；同步不会清空正在输入的草稿。']);
+TUTORIAL_DETAILS.en.splice(11,0,['Write a message and select one or more people under @ Members.','Reference a matter, client record, completed step, or matter file. File cards download securely under the source matter permissions.','Upload files and send encrypts them on this device first and sends one or more files with the message.','Blocked members cannot see later text, cards, or files from you; other members are unaffected.','Only you see the red “Blocked for …” label under your own message.','Chat follows received and sent messages to the bottom, while sync preserves the draft being typed.']);
+TUTORIAL_DETAILS.es.splice(11,0,['Escribe un mensaje y elige una o varias personas en @ Miembros.','Referencia un asunto, cliente, paso completado o archivo del asunto. Las tarjetas descargan con los permisos del asunto original.','Subir archivos y enviar los cifra primero en este dispositivo y permite adjuntar varios al mensaje.','Los miembros bloqueados no verán tus textos, tarjetas ni archivos posteriores; los demás no se ven afectados.','Solo tú ves la etiqueta roja “Bloqueado para…” bajo tu mensaje.','El chat baja al final al recibir o enviar mensajes y la sincronización conserva el borrador.']);
+BEGINNER_TUTORIAL.zh.steps[2][1] = '这里可新建、搜索和筛选事项，也能批量删除、导入 Excel/CSV 或导出 CSV。点击事项后选择编辑或工作；团队消息统一在独立“聊天”页发送。';
+BEGINNER_TUTORIAL.en.steps[2][1] = 'Create, search, filter, bulk-delete, import Excel/CSV, or export CSV. Select a matter to edit or work on it; team messages are sent from the separate Chat page.';
+BEGINNER_TUTORIAL.es.steps[2][1] = 'Crea, busca, filtra, elimina en lote, importa Excel/CSV o exporta CSV. Pulsa un asunto para editar o trabajar; los mensajes se envían desde Chat.';
+BEGINNER_TUTORIAL.zh.steps[10][1] = '事项、文件、客户操作和日程提醒进入通知页，可标记已读或删除。聊天消息只在独立聊天页显示，但仍可触发系统通知。';
+BEGINNER_TUTORIAL.en.steps[10][1] = 'Matter, file, client, and schedule activity appears under Notifications. Chat stays on its own page but can still trigger system alerts.';
+BEGINNER_TUTORIAL.es.steps[10][1] = 'Los avisos de asuntos, archivos, clientes y agenda aparecen en Notificaciones. Los chats permanecen en su página, pero pueden generar alertas.';
+TUTORIAL_DETAILS.zh[2][3] = '“新建事项”打开完整表单；点击事项行选择“编辑事项”或“在事项中工作”。团队消息统一从侧边栏“聊天”进入。';
+TUTORIAL_DETAILS.en[2][1] = 'Import Excel/CSV validates multiple files and offers a sample when needed. Export CSV uses current results. New matter opens the full form; team messages are sent from Chat.';
+TUTORIAL_DETAILS.es[2][1] = 'Importar Excel/CSV valida varios archivos y ofrece una muestra. Exportar CSV usa los resultados. Nuevo asunto abre el formulario; los mensajes se envían desde Chat.';
+TUTORIAL_DETAILS.zh[10][6] = '通知来源包括事项创建/修改/删除、步骤完成、文件上传/移除、客户操作、日程及截止提醒；聊天消息不进入通知列表。';
+TUTORIAL_DETAILS.en[10][4] = 'Delete removes only that notification. Sources include matter changes, steps, files, client actions, schedules, and deadlines; chat messages stay out of this list.';
+TUTORIAL_DETAILS.es[10][4] = 'Eliminar borra solo ese aviso. Incluye cambios, pasos, archivos, clientes, agenda y fechas; los chats no aparecen en esta lista.';
 TUTORIAL_DETAILS.zh[5].push('客户档案支持多个联系人和多条关联关系；每行按界面提示用“|”分隔姓名、职务、电话、邮箱或关系说明。');
 TUTORIAL_DETAILS.en[5].push('Client records support multiple contacts and relationships; enter one per line using the “|” format shown in the form.');
 TUTORIAL_DETAILS.es[5].push('Los clientes admiten varios contactos y relaciones; escribe uno por línea con el formato “|” del formulario.');
@@ -329,6 +334,25 @@ const STR = {
   'nav.dashboard': ['首页', 'Home', 'Inicio'],
   'nav.matters': ['事项', 'Matters', 'Asuntos'],
   'nav.inbox': ['通知', 'Notifications', 'Notificaciones'],
+  'nav.chat': ['聊天', 'Chat', 'Chat'],
+  'chat.desc': ['团队全局聊天。可 @ 成员，引用事项、客户档案、步骤或文件，也可上传加密文件发送。', 'Team-wide chat. Mention members, reference matters, clients, steps or files, and send encrypted uploads.', 'Chat global del equipo. Menciona miembros, referencia asuntos, clientes, pasos o archivos y envía archivos cifrados.'],
+  'chat.mentions': ['@ 成员（可多选）', '@ Members (select multiple)', '@ Miembros (selección múltiple)'],
+  'chat.reference': ['+ 引用只读卡片', '+ Attach a read-only card', '+ Adjuntar tarjeta de solo lectura'],
+  'chat.noReference': ['不引用', 'No attachment', 'Sin adjunto'],
+  'chat.blocked': ['长期屏蔽成员', 'Members blocked from future messages', 'Miembros bloqueados para mensajes futuros'],
+  'chat.block': ['屏蔽', 'Block', 'Bloquear'],
+  'chat.memberPopup': ['@成员', '@ Members', '@ Miembros'],
+  'chat.referencePopup': ['引用', 'Reference', 'Referencia'],
+  'chat.blockedHint': ['被勾选成员看不到你之后发送的消息和引用卡片；该设置只影响你自己发送的内容。', 'Selected members cannot see messages or attached cards you send from now on. This setting affects only your own messages.', 'Los miembros seleccionados no verán los mensajes ni tarjetas que envíes desde ahora. Solo afecta a tus envíos.'],
+  'chat.blockedByMe': ['已屏蔽 {names}', 'Blocked for {names}', 'Bloqueado para {names}'],
+  'chat.messagePlaceholder': ['输入团队消息…', 'Write a team message…', 'Escribe un mensaje al equipo…'],
+  'chat.send': ['发送', 'Send', 'Enviar'],
+  'chat.matter': ['事项', 'Matter', 'Asunto'],
+  'chat.client': ['客户档案', 'Client record', 'Expediente de cliente'],
+  'chat.step': ['步骤', 'Step', 'Paso'],
+  'chat.file': ['文件', 'File', 'Archivo'],
+  'chat.uploadFiles': ['上传文件并发送', 'Upload files and send', 'Subir archivos y enviar'],
+  'chat.selectedFiles': ['已选择：{names}', 'Selected: {names}', 'Seleccionados: {names}'],
   'nav.clients': ['客户档案', 'Clients', 'Clientes'],
   'nav.settings': ['信息', 'Info', 'Información'],
   'nav.trash': ['回收站', 'Recycle bin', 'Papelera'],
@@ -412,11 +436,12 @@ const STR = {
   'th.next': ['当前步骤', 'Current step', 'Paso actual'],
   'th.due': ['截止', 'Due', 'Vence'],
   'th.waiting': ['等待谁', 'Waiting for', 'Esperando a'],
+  'th.chat': ['聊天', 'Chat', 'Chat'],
 
   'inbox.title': ['通知', 'Notifications', 'Notificaciones'],
-  'inbox.desc': ['事项、文件、客户和日程操作通知。',
-    'Matter, file, client, and schedule notifications.',
-    'Avisos de asuntos, archivos, clientes y agenda.'],
+  'inbox.desc': ['事项、文件、客户和日程操作通知。聊天消息请到独立的“聊天”页面查看。',
+    'Matter, file, client, and schedule notifications. Messages are kept on the separate Chat page.',
+    'Avisos de asuntos, archivos, clientes y agenda. Los mensajes están en la página Chat.'],
   'inbox.systemHint': ['开启后，新通知会同时弹出系统通知；需要保持网页打开，后台标签页也可以。',
     'Once enabled, new activity also appears as a system notification. Keep this site open; a background tab is fine.',
     'Al activarlas, la nueva actividad también aparecerá como notificación del sistema. Mantén el sitio abierto; puede estar en segundo plano.'],
@@ -461,6 +486,9 @@ const STR = {
   'inbox.fileRemove': ['{actor} 从事项“{title}”中删除了文件“{name}”。',
     '{actor} deleted the file “{name}” from “{title}”.',
     '{actor} eliminó el archivo «{name}» del asunto «{title}».'],
+  'inbox.chat': ['{actor} 在事项“{title}”中发送消息：“{message}”',
+    '{actor} sent a message in “{title}”: “{message}”',
+    '{actor} envió un mensaje en «{title}»: «{message}»'],
   'inbox.scheduleReminder': ['日程提醒：{message}', 'Schedule reminder: {message}', 'Recordatorio: {message}'],
   'inbox.deadlineReminder': ['截止提醒：{kind}，{title}，截止日期 {date}', 'Deadline reminder: {kind}, {title}, due {date}', 'Recordatorio de vencimiento: {kind}, {title}, vence {date}'],
   'inbox.clientCreated': ['{actor} 创建了客户档案“{client}”。', '{actor} created the client record “{client}”.', '{actor} creó el expediente del cliente «{client}».'],
@@ -609,8 +637,8 @@ const STR = {
   'detail.entry.stepDone': ['完成步骤：{text}（负责人 {owner}）', 'Step completed: {text} (owner {owner})', 'Paso completado: {text} (responsable {owner})'],
   'detail.entry.stageMove': ['阶段推进：{from} → {to}', 'Stage changed: {from} → {to}', 'Cambio de etapa: {from} → {to}'],
   'detail.entry.advanced': ['状态 {status}｜下一步：{next}（{owner}，{due}）', 'Status {status} | next: {next} ({owner}, {due})', 'Estado {status} | siguiente: {next} ({owner}, {due})'],
+  'detail.entry.chat': ['发送消息：{message}', 'Message sent: {message}', 'Mensaje enviado: {message}'],
   'detail.entry.readReceipt': ['{reader} 已读通知', '{reader} read the notification', '{reader} leyó la notificación'],
-
 
   'settings.title': ['信息', 'Info', 'Información'],
   'settings.desc': ['成员、可见范围和安全性。',
@@ -741,6 +769,13 @@ const STR = {
   'modal.matterAction.title': ['你想干什么？', 'What would you like to do?', '¿Qué deseas hacer?'],
   'modal.matterAction.edit': ['编辑事项', 'Edit matter', 'Editar asunto'],
   'modal.matterAction.work': ['在事项中工作', 'Work on matter', 'Trabajar en el asunto'],
+  'modal.chat.title': ['事项聊天', 'Matter chat', 'Chat del asunto'],
+  'modal.chat.to': ['发送给事项成员', 'Send to matter members', 'Enviar a los miembros del asunto'],
+  'modal.chat.members': ['群成员', 'Group members', 'Miembros del grupo'],
+  'modal.chat.empty': ['还没有消息，发一条开始聊天。', 'No messages yet. Start the conversation.', 'Aún no hay mensajes. Empieza la conversación.'],
+  'modal.chat.message': ['消息', 'Message', 'Mensaje'],
+  'modal.chat.placeholder': ['输入要发给事项成员的消息…', 'Type a message for the matter members…', 'Escribe un mensaje para los miembros del asunto…'],
+  'modal.chat.send': ['发送消息', 'Send message', 'Enviar mensaje'],
   'modal.complete.title': ['完成当前步骤', 'Complete the current step', 'Completar el paso actual'],
   'modal.complete.stage': ['下一步阶段', 'Next stage', 'Etapa siguiente'],
   'modal.complete.nextOwner': ['下一步负责人', 'Owner of the next step', 'Responsable del próximo paso'],
@@ -807,9 +842,9 @@ const STR = {
     '«{text}» vuelve a ser el paso pendiente (responsable {owner}, vence {due}) y se borra el registro de finalización.\n\nSirve para corregir un error.'],
   'modal.undo.confirm': ['撤销', 'Undo', 'Deshacer'],
   'modal.undoEdit.title': ['撤回上次修改？', 'Undo the last edit?', '¿Deshacer la última modificación?'],
-  'modal.undoEdit.body': ['将撤回 {name} 在 {when} 保存的那次事项修改。文件、步骤和删除记录不会受影响。',
-    'This will undo the matter edit saved by {name} at {when}. Files, steps and deletion history are not affected.',
-    'Se deshará la modificación del asunto guardada por {name} a las {when}. Los archivos, los pasos y el historial de eliminación no se verán afectados.'],
+  'modal.undoEdit.body': ['将撤回 {name} 在 {when} 保存的那次事项修改。聊天、文件、步骤和删除记录不会受影响。',
+    'This will undo the matter edit saved by {name} at {when}. Chat, files, steps and deletion history are not affected.',
+    'Se deshará la modificación del asunto guardada por {name} a las {when}. El chat, los archivos, los pasos y el historial de eliminación no se verán afectados.'],
   'modal.undoEdit.confirm': ['撤回修改', 'Undo edit', 'Deshacer modificación'],
   'modal.denyUndoEdit.title': ['无法撤回修改', 'Cannot undo this edit', 'No se puede deshacer esta modificación'],
   'modal.denyUndoEdit.body': ['只有 Carol，或上次修改事项的人 {name}，可以撤回这次修改。',
@@ -859,7 +894,9 @@ const STR = {
   'toast.fileTooLarge': ['文件不能超过 20 MB', 'File must be 20 MB or smaller', 'El archivo no puede superar 20 MB'],
   'toast.fileFailed': ['附件操作失败，请重试', 'Attachment operation failed. Try again.', 'Error con el archivo. Inténtalo de nuevo.'],
   'toast.logoutAllFailed': ['无法退出其他设备，请重试', 'Could not sign out other devices. Try again.', 'No se pudieron cerrar las otras sesiones. Inténtalo de nuevo.'],
+  'toast.chatSent': ['消息已发送', 'Message sent', 'Mensaje enviado'],
   'toast.needMessage': ['请输入消息或选择文件', 'Enter a message or choose a file', 'Escribe un mensaje o elige un archivo'],
+  'toast.needChatRecipient': ['请至少勾选一位事项成员', 'Select at least one matter member', 'Selecciona al menos un miembro del asunto'],
   'toast.markedRead': ['已标为已读', 'Marked as read', 'Marcado como leído'],
   'toast.markedAllRead': ['已将全部通知标为已读', 'All notifications marked as read', 'Todas las notificaciones se marcaron como leídas'],
   'toast.bulkNotificationsDeleted': ['已删除 {n} 条通知', '{n} notifications deleted', 'Se eliminaron {n} notificaciones'],
@@ -1321,6 +1358,9 @@ const state = {
   trashSelected: new Set(),
   notificationSelected: new Set(),
   loginDraft: { email:'', password:'' },
+  chatDraft: { message:'', mentions:[], blocked:null, referenceType:'matter', refMatter:'', refStep:'', refClient:'', refFile:'', files:[] },
+  chatScrollToBottom: false,
+  chatOpened: false,
   loginError: '',
   calendarOffset: 0,
   mobileNavOpen: false,
@@ -1526,6 +1566,8 @@ function finishLogout(options) {
   const expired=!!(options&&options.expired);
   session=null;authSession=null;consecutiveAuthFailures=0;
   state.loginDraft={email:'',password:''};
+  state.chatDraft={message:'',mentions:[],blocked:null,referenceType:'matter',refMatter:'',refStep:'',refClient:'',refFile:'',files:[]};
+  state.chatOpened=false;state.chatScrollToBottom=false;
   if(globalThis.LCBCrypto) LCBCrypto.lock();
   saveSessionValue(KEY.auth,null);save(KEY.session,null);clearPrivateCache();
   state.bulkSelected.clear();state.clientSelected.clear();state.trashSelected.clear();state.notificationSelected.clear();
@@ -1576,6 +1618,7 @@ function queueSyncRetry(kind) {
 function userIsInteracting() {
   if (state.modal) return true;
   const active = document.activeElement;
+  if (location.hash.startsWith('#/chat') && active && active.closest && active.closest('.chat-composer')) return false;
   if (active && (active.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName || ''))) return true;
   try {
     const selection = window.getSelection && window.getSelection();
@@ -1617,6 +1660,10 @@ async function pullRemote(opts) {
       JSON.stringify(nextLogs) !== JSON.stringify(logs) || nextSeq !== seq;
     // 请求发出后用户可能刚开始输入；这次结果留到下一轮再取。
     if (background && userIsInteracting()) { sync.busy = false; return; }
+    const activeUserBeforePull = currentUser();
+    if (location.hash.startsWith('#/chat') && activeUserBeforePull && LCBChatCore.hasNewVisibleMessage(logs,nextLogs,activeUserBeforePull.id)) {
+      state.chatScrollToBottom = true;
+    }
     matters = nextMatters;
     matterServerUpdatedAt.clear();
     matterPlainBaseline.clear();
@@ -1901,17 +1948,54 @@ function logText(l) {
 }
 function notificationEntries(user,source) {
   if (!user) return [];
-  return (source||logs).filter(l => l.key !== 'detail.entry.chat' && l.notice && (l.notifyTo || []).includes(user.id) && !(l.deletedBy || []).includes(user.id));
+  return (source||logs).filter(l => l.notice && (l.notifyTo || []).includes(user.id) && !(l.deletedBy || []).includes(user.id));
 }
 function inboxEntries(user) {
   return notificationEntries(user)
     .sort((a, b) => b.at - a.at);
 }
 function unreadNotifications(user) {
-  return inboxEntries(user).filter(l => l.key !== 'detail.entry.chat' && !(l.readBy || []).includes(user.id));
+  return inboxEntries(user).filter(l => l.key !== LCBChatCore.CHAT_KEY && !(l.readBy || []).includes(user.id));
 }
 function notificationOnlyEntries(user) {
-  return inboxEntries(user).filter(l => l.key !== 'detail.entry.chat');
+  return inboxEntries(user).filter(l => l.key !== LCBChatCore.CHAT_KEY);
+}
+function chatMessages(user) {
+  return LCBChatCore.visibleMessages(logs, user && user.id).sort((a,b)=>a.at-b.at);
+}
+function chatSeenKey(userId) { return KEY.chatSeen + ':' + userId; }
+function chatBlockKey(userId) { return KEY.chatBlocks + ':' + userId; }
+function chatBlocks(userId) { const ids=load(chatBlockKey(userId),[]); return Array.isArray(ids)?ids.filter(id=>USER[id]&&id!==userId):[]; }
+function unreadChats(user) { return user ? LCBChatCore.unreadCount(logs,user.id,load(chatSeenKey(user.id),0)) : 0; }
+function ensureGlobalChatChannel() {
+  let channel=matters.find(m=>m.kind==='chat-channel'&&!m.deletedAt);
+  if(channel)return channel;
+  const u=currentUser();
+  channel={id:'global_chat',kind:'chat-channel',no:'CHAT',client:'',title:{zh:'团队聊天',en:'Team chat',es:'Chat del equipo'},owner:u.id,team:USERS.map(x=>x.id),status:'green',stage:'',next:'',nextOwner:u.id,due:'',waiting:'none',files:[],steps:[],deletedAt:null};
+  matters.push(channel);return channel;
+}
+function chatReferenceOptions() {
+  const rows=[];
+  visibleMatters(currentUser()).forEach(m=>{
+    rows.push({value:`matter:${m.id}`,label:`${t('chat.matter')} · ${m.no} · ${L(m.title)}`});
+    (m.steps||[]).forEach((step,index)=>rows.push({value:`step:${m.id}:${step.id||index}`,label:`${t('chat.step')} · ${m.no} · ${L(step.text)}`}));
+    (m.files||[]).forEach((file,index)=>rows.push({value:`file:${m.id}:${index}`,label:`${t('chat.file')} · ${m.no} · ${L(file.name)}`}));
+  });
+  clientProfiles().forEach(c=>rows.push({value:`client:${c.id}`,label:`${t('chat.client')} · ${c.clientName}`}));
+  return rows;
+}
+function chatReferenceFromValue(value) {
+  const parts=String(value||'').split(':');
+  if(parts[0]==='matter'){const m=matterById(parts[1]);return m?{type:'matter',id:String(m.id),title:`${m.no} · ${L(m.title)}`,subtitle:L(m.client),details:[areaName(m.area),L(m.next),fmtDate(m.due)].filter(Boolean)}:null;}
+  if(parts[0]==='client'){const c=matterById(parts[1]);return c?{type:'client',id:String(c.id),title:c.clientName,subtitle:c.communicationProgress||'',details:[c.contactPerson,c.phone,c.email].filter(Boolean)}:null;}
+  if(parts[0]==='step'){const m=matterById(parts[1]),step=m&&(m.steps||[]).find((s,i)=>String(s.id||i)===parts[2]);return m&&step?{type:'step',matterId:String(m.id),id:String(step.id||parts[2]),title:L(step.text),subtitle:`${m.no} · ${L(m.title)}`,details:[(USER[step.owner]||{}).name||step.owner,fmtDate(step.due)].filter(Boolean)}:null;}
+  if(parts[0]==='file'){const m=matterById(parts[1]),file=m&&(m.files||[])[Number(parts[2])];return m&&file?{type:'file',matterId:String(m.id),id:String(file.storagePath||parts[2]),title:L(file.name),subtitle:`${m.no} · ${L(m.title)}`,details:[file.size?`${Math.max(1,Math.round(file.size/1024))} KB`:'',file.uploadedAt?fmtStamp(file.uploadedAt):''].filter(Boolean)}:null;}
+  return null;
+}
+function chatReferenceCard(reference) {
+  if(!reference)return '';
+  const attributes=reference.type==='file'?` role="button" tabindex="0" data-action="download-chat-file" data-id="${esc(reference.matterId||'')}" data-file-id="${esc(reference.id||'')}"`:'';
+  return `<div class="chat-reference-card ${reference.type==='file'?'chat-file-card':''}"${attributes}><span>${esc(t('chat.'+reference.type))}</span><b>${esc(reference.title||'')}</b><small>${esc(reference.subtitle||'')}</small>${(reference.details||[]).length?`<div>${reference.details.map(x=>`<em>${esc(x)}</em>`).join('')}</div>`:''}</div>`;
 }
 function inboxText(l) {
   if (!l || !l.notice) return '';
@@ -1992,7 +2076,7 @@ function deliverSystemNotifications(nextLogs) {
       const notice = new Notification(t('system.title'), { body: inboxText(l), tag: 'lcb-' + l.id });
       notice.onclick = () => {
         if (window.focus) window.focus();
-        location.hash = '#/inbox';
+        location.hash = l.key === LCBChatCore.CHAT_KEY ? '#/chat' : '#/inbox';
         render();
         if (notice.close) notice.close();
       };
@@ -2311,6 +2395,7 @@ function navFor(route) {
     ['#/deadline', null, L({zh:'期限计算',en:'Deadline',es:'Plazos'})],
     ['#/reports', null, L({zh:'工作报告',en:'Reports',es:'Informes'})],
     ['#/inbox', 'nav.inbox'],
+    ['#/chat', 'nav.chat'],
     ['#/settings', 'nav.settings'],
     ['#/trash', 'nav.trash'],
   ];
@@ -2320,6 +2405,10 @@ function navFor(route) {
     if (key === 'nav.matters') badge = `<span class="nav-count">${visibleMatters(currentUser()).length}</span>`;
     if (key === 'nav.inbox') {
       const unread = unreadNotifications(currentUser()).length;
+      if (unread) badge = `<span class="nav-count unread-count">${unread}</span>`;
+    }
+    if (key === 'nav.chat') {
+      const unread = unreadChats(currentUser());
       if (unread) badge = `<span class="nav-count unread-count">${unread}</span>`;
     }
     if (href === '#/followups') {
@@ -2334,7 +2423,7 @@ function navFor(route) {
 
 function shell(route, content) {
   const u = currentUser();
-  const unread = unreadNotifications(u).length;
+  const unread = unreadNotifications(u).length + unreadChats(u);
   return `
   <div class="topbar ${state.mobileNavOpen?'mobile-nav-open':''}">
     <div class="topbar-inner">
@@ -2527,7 +2616,7 @@ function globalSearchMatches(rawQuery) {
   visibleMatters(currentUser()).forEach(m=>add(L({zh:'事项',en:'Matter',es:'Asunto'}),`${m.no||''} ${L(m.title)||''}`.trim(),[L(m.client),m.counterparties,m.relatedParties,L(m.next)].filter(Boolean).join(' · '),`#/matters/${m.id}`,[m.no,m.title,m.client,m.counterparties,m.relatedParties,m.next,m.notes,(m.files||[]).map(f=>f.name)]));
   clientProfiles().forEach(c=>add(L({zh:'客户',en:'Client',es:'Cliente'}),c.clientName,[c.contactPerson,c.phone,c.email].filter(Boolean).join(' · '),'#/clients',[c.clientName,c.contactPerson,c.phone,c.email,c.notes,c.contacts,c.relations]));
   const ids=new Set(visibleMatters(currentUser()).map(m=>String(m.id)));
-  logs.filter(l=>l.key!=='detail.entry.chat'&&ids.has(String(l.matterId))).forEach(l=>{const m=matterById(l.matterId);add(L({zh:'动态',en:'Activity',es:'Actividad'}),m?L(m.title):String(l.matterId),inboxText(l),m?`#/matters/${m.id}`:'#/inbox',[inboxText(l),l.vars]);});
+  logs.filter(l=>ids.has(String(l.matterId))).forEach(l=>{const m=matterById(l.matterId);add(L({zh:'聊天／动态',en:'Chat / activity',es:'Chat / actividad'}),m?L(m.title):String(l.matterId),inboxText(l),m?`#/matters/${m.id}`:'#/inbox',[inboxText(l),l.vars]);});
   const seen=new Set();
   return rows.filter(row=>{const key=JSON.stringify(row);if(seen.has(key))return false;seen.add(key);return true;}).slice(0,80);
 }
@@ -2535,7 +2624,7 @@ function globalSearchMatches(rawQuery) {
 function viewGlobalSearch() {
   const q=state.globalSearch||'', rows=globalSearchMatches(q);
   const body=q.trim().length<2?`<div class="empty">${esc(L({zh:'请输入至少 2 个字符。',en:'Enter at least two characters.',es:'Introduce al menos dos caracteres.'}))}</div>`:rows.length?rows.map(row=>`<a class="search-result" href="${esc(row.href)}"><span class="search-type">${esc(row.type)}</span><b>${esc(row.title)}</b><small>${esc(row.subtitle||'')}</small></a>`).join(''):`<div class="empty">${esc(L({zh:'没有找到符合权限范围的结果。',en:'No permitted records matched.',es:'No se encontraron registros permitidos.'}))}</div>`;
-  return `<div class="page-head"><div><h1>${esc(L({zh:'全文搜索',en:'Full search',es:'Búsqueda completa'}))}</h1><div class="desc">${esc(L({zh:'搜索事项、客户、动态和文件名，只显示你有权查看的内容。',en:'Search matters, clients, activity, and filenames within your permissions.',es:'Busca asuntos, clientes, actividad y archivos dentro de tus permisos.'}))}</div></div></div><div class="card card-pad"><form data-action="global-search" class="search-form"><input name="q" type="search" value="${esc(q)}" placeholder="${esc(L({zh:'输入名称、编号、动态文字或文件名',en:'Name, number, activity text, or filename',es:'Nombre, número, actividad o archivo'}))}"><button class="btn btn-primary" type="submit">${esc(L({zh:'搜索',en:'Search',es:'Buscar'}))}</button></form></div><div class="card search-results">${body}</div>`;
+  return `<div class="page-head"><div><h1>${esc(L({zh:'全文搜索',en:'Full search',es:'Búsqueda completa'}))}</h1><div class="desc">${esc(L({zh:'搜索事项、客户、聊天、动态和文件名，只显示你有权查看的内容。',en:'Search matters, clients, chats, activity, and filenames within your permissions.',es:'Busca asuntos, clientes, chats, actividad y archivos dentro de tus permisos.'}))}</div></div></div><div class="card card-pad"><form data-action="global-search" class="search-form"><input name="q" type="search" value="${esc(q)}" placeholder="${esc(L({zh:'输入名称、编号、聊天文字或文件名',en:'Name, number, chat text, or filename',es:'Nombre, número, chat o archivo'}))}"><button class="btn btn-primary" type="submit">${esc(L({zh:'搜索',en:'Search',es:'Buscar'}))}</button></form></div><div class="card search-results">${body}</div>`;
 }
 
 function addBusinessDays(start,days,holidays){
@@ -2736,6 +2825,42 @@ function viewInbox() {
       <button class="btn btn-danger" type="button" data-action="bulk-delete-notifications" ${selectedCount ? '' : 'disabled'}>${esc(t('inbox.bulkDelete'))}${selectedCount ? ` (${selectedCount})` : ''}</button></div></div>
     <div class="inbox-bulkbar"><label><input class="bulk-check" type="checkbox" data-action="toggle-all-notifications" ${allSelected ? 'checked' : ''} ${entries.length ? '' : 'disabled'}> ${esc(t('inbox.selectAll'))}</label></div>
     <div class="card inbox-list">${rows}</div>`;
+}
+
+function viewChat() {
+  const u = currentUser();
+  const messages = chatMessages(u);
+  const latest = messages.reduce((n,l)=>Math.max(n,Number(l.at)||0),Number(load(chatSeenKey(u.id),0)||0));
+  if(latest)save(chatSeenKey(u.id),latest);
+  const names=Object.fromEntries(USERS.map(x=>[x.id,x.name]));
+  const rows = messages.length ? messages.map(l => {
+    const blocked=LCBChatCore.blockedLabel(l,u.id,names),mentions=(l.vars&&l.vars.mentions||[]).map(id=>(USER[id]||{}).name||id);
+    const attachments=(l.vars&&l.vars.attachments||[]).map(chatReferenceCard).join('');
+    return `<div class="chat-message ${l.by===u.id?'mine':''}"><div class="chat-message-meta"><b>${esc((USER[l.by]||{}).name||l.by)}</b><span>${esc(fmtStamp(l.at))}</span>${mentions.length?`<span>@ ${esc(mentions.join('、'))}</span>`:''}</div>${l.vars&&l.vars.message?`<div class="chat-message-body">${esc(L(l.vars.message))}</div>`:''}${chatReferenceCard(l.vars&&l.vars.reference)}${attachments}${blocked?`<div class="chat-blocked-label">${esc(t('chat.blockedByMe',{names:blocked}))}</div>`:''}</div>`;
+  }).join('') : `<div class="chat-empty">${esc(t('modal.chat.empty'))}</div>`;
+  if(state.chatDraft.blocked===null)state.chatDraft.blocked=chatBlocks(u.id);
+  const draft=state.chatDraft,blocked=new Set(draft.blocked),options=chatReferenceOptions(),others=USERS.filter(x=>x.id!==u.id);
+  const optionList=(type,value)=>`<option value="">${esc(t('chat.noReference'))}</option>${options.filter(x=>x.value.startsWith(type+':')).map(x=>`<option value="${esc(x.value)}" ${x.value===value?'selected':''}>${esc(x.label.replace(/^.*? · /,''))}</option>`).join('')}`;
+  const checked=(list,id)=>list.includes(id)?'checked':'';
+  const fileNames=(draft.files||[]).map(file=>file.name).join('、');
+  const closeTool=`<button class="chat-tool-close" type="button" data-action="close-chat-tool" aria-label="${esc(L({zh:'关闭弹窗',en:'Close popup',es:'Cerrar ventana'}))}">×</button>`;
+  return `<div class="page-head"><div><h1>${esc(t('nav.chat'))}</h1><div class="desc">${esc(t('chat.desc'))}</div></div></div>
+    <div class="card card-pad chat-workspace">
+      <div class="chat-history chat-global-history" aria-live="polite">${rows}</div>
+      <form data-action="send-global-chat" class="chat-composer">
+        <div class="chat-compose-row">
+          <div class="chat-tool-rail">
+            <details class="chat-tool"><summary title="${esc(t('chat.memberPopup'))}">@</summary><div class="chat-tool-pop">${closeTool}<b>${esc(t('chat.memberPopup'))}</b><div class="chat-choice-list">${others.map(x=>`<label><input type="checkbox" name="mentions" value="${x.id}" ${checked(draft.mentions,x.id)}> ${esc(x.name)}</label>`).join('')}</div></div></details>
+            <details class="chat-tool"><summary class="chat-block-button" title="${esc(t('chat.block'))}">${esc(t('chat.block'))}</summary><div class="chat-tool-pop">${closeTool}<b>${esc(t('chat.block'))}</b><div class="chat-choice-list">${others.map(x=>`<label><input type="checkbox" name="blocked" value="${x.id}" ${checked(draft.blocked,x.id)}> ${esc(x.name)}</label>`).join('')}</div><small>${esc(t('chat.blockedHint'))}</small></div></details>
+            <details class="chat-tool"><summary title="${esc(t('chat.referencePopup'))}">+</summary><div class="chat-tool-pop chat-reference-pop">${closeTool}<b>${esc(t('chat.referencePopup'))}</b><div class="reference-switch">
+              ${['matter','step','client','file'].map(type=>`<input id="ref-${type}" type="radio" name="referenceType" value="${type}" ${draft.referenceType===type?'checked':''}><label for="ref-${type}">${esc(t('chat.'+type))}</label>`).join('')}
+              <div class="reference-panels"><div data-reference-panel="matter"><select name="refMatter">${optionList('matter',draft.refMatter)}</select></div><div data-reference-panel="step"><select name="refStep">${optionList('step',draft.refStep)}</select></div><div data-reference-panel="client"><select name="refClient">${optionList('client',draft.refClient)}</select></div><div data-reference-panel="file"><select name="refFile">${optionList('file',draft.refFile)}</select></div></div>
+            </div></div></details>
+          </div>
+          <div class="chat-input-area"><div class="chat-input-stack"><textarea name="message" rows="3" placeholder="${esc(t('chat.messagePlaceholder'))}">${esc(draft.message)}</textarea><label class="chat-upload-button"><input type="file" name="chatFiles" multiple><span>📎 ${esc(t('chat.uploadFiles'))}</span></label>${fileNames?`<small class="chat-selected-files">${esc(t('chat.selectedFiles',{names:fileNames}))}</small>`:''}</div><button class="btn btn-primary" type="submit">${esc(t('chat.send'))}</button></div>
+        </div>
+      </form>
+    </div>`;
 }
 
 /* ------------------------------ 视图：事项详情 ------------------------------ */
@@ -3197,7 +3322,7 @@ function modalMatterAction(mo) {
 
 let fileUploadInFlight = false;
 
-async function uploadEncryptedAttachment(id,file) {
+async function uploadEncryptedAttachment(id,file,options) {
   const m=matterById(id);
   if(!m||!file) return false;
   try {
@@ -3215,7 +3340,7 @@ async function uploadEncryptedAttachment(id,file) {
     const version=sameVersions.reduce((max,item)=>Math.max(max,Number(item.version)||1),0)+1;
     const uploadedFile={name:safeName,type:file.type,size:file.size,storagePath,encrypted:'lcb-e2ee-v1',uploadedBy:currentUser().id,uploadedAt:Date.now(),versionGroup,version};
     m.files.push(uploadedFile);
-    addLogKey(id,currentUser().id,'detail.entry.fileAdd',{name:safeName},{
+    if(!(options&&options.silent))addLogKey(id,currentUser().id,'detail.entry.fileAdd',{name:safeName},{
       key:'inbox.fileAdd',vars:noticeVars(m,currentUser().id,{name:safeName}),
     });
     commit();
@@ -3423,6 +3548,7 @@ function viewForRoute(route) {
   if (route.startsWith('/deadline')) return viewDeadlineCalculator();
   if (route.startsWith('/reports')) return viewReports();
   if (route.startsWith('/inbox')) return viewInbox();
+  if (route.startsWith('/chat')) return viewChat();
   if (route.startsWith('/settings')) return viewSettings();
   if (route.startsWith('/trash')) return viewTrash();
   return viewDashboard();
@@ -3430,6 +3556,11 @@ function viewForRoute(route) {
 
 function pageMarkup(content) {
   return `${CAN_PERSIST ? '' : `<div class="warn">${esc(t('banner.noStorage'))}</div>`}${content}`;
+}
+
+function scrollChatToBottom() {
+  const history=document.querySelector('.chat-global-history');
+  if(history)history.scrollTop=history.scrollHeight;
 }
 
 function render() {
@@ -3450,6 +3581,10 @@ function render() {
 
   app.innerHTML = shell(route, content);
   requestAnimationFrame(updateNavScrollControls);
+  if(route.startsWith('/chat')&&(state.chatScrollToBottom||!state.chatOpened)){
+    state.chatOpened=true;state.chatScrollToBottom=false;
+    requestAnimationFrame(scrollChatToBottom);
+  } else if(!route.startsWith('/chat')) state.chatOpened=false;
   modalRoot.innerHTML = renderModal() + renderGuide();
   if (state.modal && state.modal.type === 'file') {
     const first = document.getElementById('file-form');
@@ -4026,6 +4161,11 @@ document.addEventListener('click', async ev => {
   const action = el.getAttribute('data-action');
 
   switch (action) {
+    case 'close-chat-tool': {
+      const tool=el.closest('details.chat-tool');
+      if(tool)tool.open=false;
+      break;
+    }
     case 'local-login': {
       if(!LOCAL_TEST_MODE)break;
       const userId=el.getAttribute('data-user');
@@ -4411,6 +4551,14 @@ document.addEventListener('click', async ev => {
       render();
       break;
     }
+    case 'download-chat-file': {
+      const id=el.getAttribute('data-id'),fileId=el.getAttribute('data-file-id');
+      const m=matterById(id),idx=m?(m.files||[]).findIndex((file,index)=>String(file.storagePath||index)===String(fileId)):-1;
+      const file=m&&idx>=0&&(m.files||[])[idx];
+      if(!file||!file.storagePath||!canSee(currentUser(),m))break;
+      state.modal={type:'confirm',titleKey:'modal.fileDownload.title',body:t('modal.fileDownload.body',{name:L(file.name)}),confirmKey:'modal.fileDownload.confirm',action:'confirm-download-file',id,idx};
+      render();break;
+    }
     case 'confirm-download-file': {
       const pending=state.modal;
       if(pending) await downloadEncryptedAttachment(pending.id,pending.idx);
@@ -4726,6 +4874,24 @@ document.addEventListener('click', async ev => {
 });
 
 document.addEventListener('change', ev => {
+  const chatForm=ev.target.closest('.chat-composer');
+  if(chatForm){
+    const name=ev.target.name;
+    if(name==='mentions')state.chatDraft.mentions=[...chatForm.querySelectorAll('[name="mentions"]:checked')].map(x=>x.value);
+    if(name==='blocked'){
+      state.chatDraft.blocked=[...chatForm.querySelectorAll('[name="blocked"]:checked')].map(x=>x.value);
+      const u=currentUser();if(u)save(chatBlockKey(u.id),state.chatDraft.blocked);
+    }
+    if(name==='referenceType')state.chatDraft.referenceType=ev.target.value;
+    if(['refMatter','refStep','refClient','refFile'].includes(name))state.chatDraft[name]=ev.target.value;
+    if(name==='chatFiles'){
+      state.chatDraft.files=[...(ev.target.files||[])];
+      const label=chatForm.querySelector('.chat-selected-files');
+      if(label)label.textContent=t('chat.selectedFiles',{names:state.chatDraft.files.map(file=>file.name).join('、')});
+      else render();
+    }
+    return;
+  }
   // 业务类型 / 阶段 / 等待谁 选了「自定义…」就露出输入框
   const custom = ev.target.closest('[data-custom-select]');
   if (custom) {
@@ -4759,6 +4925,10 @@ document.addEventListener('change', ev => {
 });
 
 document.addEventListener('input', ev => {
+  if(ev.target.matches('.chat-composer textarea[name="message"]')){
+    state.chatDraft.message=ev.target.value;
+    return;
+  }
   const el = ev.target.closest('[data-filter="q"]');
   if (!el) return;
   state.filters.q = el.value;
@@ -4798,6 +4968,36 @@ document.addEventListener('submit', async ev => {
   if (!form) return;
   ev.preventDefault();
   const action = form.getAttribute('data-action');
+  if(action==='send-global-chat'){
+    const u=currentUser(),message=String(form.message&&form.message.value||'').trim();
+    const pendingFiles=[...(state.chatDraft.files||[])];
+    if(!u||(!message&&!pendingFiles.length)){toast(t('toast.needMessage'));return;}
+    if(pendingFiles.some(file=>file.size>20*1024*1024)){toast(t('toast.fileTooLarge'));return;}
+    if(!setFormBusy(form,pendingFiles.length?t('modal.file.uploading'):t('chat.send')))return;
+    const mentions=[...form.querySelectorAll('[name="mentions"]:checked')].map(x=>x.value).filter(id=>USER[id]&&id!==u.id);
+    const blocked=[...form.querySelectorAll('[name="blocked"]:checked')].map(x=>x.value).filter(id=>USER[id]&&id!==u.id);
+    save(chatBlockKey(u.id),blocked);
+    const channel=ensureGlobalChatChannel();
+    const referenceType=(form.querySelector('[name="referenceType"]:checked')||{}).value||'';
+    const referenceValue=LCBChatCore.pickReferenceValue(referenceType,{matter:form.refMatter&&form.refMatter.value,step:form.refStep&&form.refStep.value,client:form.refClient&&form.refClient.value,file:form.refFile&&form.refFile.value});
+    const reference=chatReferenceFromValue(referenceValue);
+    const attachments=[];
+    for(const file of pendingFiles){
+      const uploaded=await uploadEncryptedAttachment(channel.id,file,{silent:true});
+      if(!uploaded){clearFormBusy(form);return;}
+      attachments.push({type:'file',matterId:String(channel.id),id:String(uploaded.storagePath),title:uploaded.name,subtitle:t('nav.chat'),details:[uploaded.size?`${Math.max(1,Math.round(uploaded.size/1024))} KB`:''].filter(Boolean)});
+    }
+    const recipients=LCBChatCore.messageRecipients(USERS.map(x=>x.id),u.id,blocked);
+    addLogKey(channel.id,u.id,LCBChatCore.CHAT_KEY,{message,mentions,blockedTo:blocked,reference,attachments},{key:'inbox.chat',vars:{actor:u.name,title:L(channel.title),message:message||attachments.map(x=>x.title).join('、')},to:recipients});
+    commit();
+    deliverOperationNotification();
+    save(chatSeenKey(u.id),Date.now());
+    state.chatDraft={message:'',mentions:[],blocked:blocked.slice(),referenceType:'matter',refMatter:'',refStep:'',refClient:'',refFile:'',files:[]};
+    state.chatScrollToBottom=true;
+    render();
+    toast(t('toast.chatSent'));
+    return;
+  }
   if(action==='global-search'){state.globalSearch=String(form.q.value||'').trim();render();return;}
   if(action==='calculate-deadline'){
     const data=readForm(form),start=parseISO(data.startDate),days=Math.max(0,Number(data.days)||0),holidays=String(data.holidays||'').split(/[,，\s]+/).map(x=>x.trim()).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x));
@@ -4957,6 +5157,11 @@ document.addEventListener('wheel', event => {
   if(!nav || nav.scrollWidth<=nav.clientWidth || Math.abs(event.deltaX)>Math.abs(event.deltaY)) return;
   event.preventDefault(); nav.scrollLeft+=event.deltaY; updateNavScrollControls();
 }, {passive:false});
+document.addEventListener('toggle', event => {
+  const opened=event.target;
+  if(!opened.matches||!opened.matches('.chat-tool[open]'))return;
+  document.querySelectorAll('.chat-tool[open]').forEach(item=>{if(item!==opened)item.open=false;});
+}, true);
 window.addEventListener('error', event => showSystemError(event.error || event.message));
 window.addEventListener('unhandledrejection', event => {
   event.preventDefault();

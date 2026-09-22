@@ -21,6 +21,8 @@
       securityNoticeUntil: 'carol_solo_security_notice_until_v3',
       tutorialCompleted: 'carol_solo_tutorial_completed_v1',
       deviceId: 'carol_solo_device_id_v1',
+      chatSeen: 'carol_solo_chat_seen_v1',
+      chatBlocks: 'carol_solo_chat_blocks_v1',
     }),
     users: Object.freeze([
       Object.freeze({ id: 'carol', name: 'Carol', short: 'C', email: '13726111370@163.com', roleKey: 'role.carol', admin: true }),
