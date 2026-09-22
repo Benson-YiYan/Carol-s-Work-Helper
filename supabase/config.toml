@@ -1,0 +1,4 @@
+project_id = "fnkgulfdcljwjkcqibxi"
+
+[functions.lcb-login]
+verify_jwt = false

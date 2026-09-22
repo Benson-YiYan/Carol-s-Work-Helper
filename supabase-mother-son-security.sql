@@ -177,7 +177,7 @@ create policy family_files_remove on storage.objects for delete to authenticated
   )
 );
 
-create or replace function public.lcb_register_device(p_device_id text,p_device_name text,p_timezone text,p_latitude double precision,p_longitude double precision) returns void
+create or replace function public.lcb_register_device_safe(p_device_id text,p_device_name text,p_timezone text) returns void
 language plpgsql security definer set search_path=public as $$
 declare sid uuid; old_sid uuid; current_ip inet; uid text:=public.lcb_app_user_id();
 begin
@@ -186,15 +186,15 @@ begin
   select s.ip into current_ip from auth.sessions s where s.id=sid;
   select d.session_id into old_sid from public.lcb_devices d where d.user_id=uid and d.device_id=p_device_id;
   if old_sid is not null and old_sid<>sid then delete from auth.sessions where id=old_sid; end if;
-  insert into public.lcb_devices(session_id,user_id,device_id,device_name,timezone,latitude,longitude,ip_address)
-  values(sid,uid,left(p_device_id,100),left(coalesce(p_device_name,'Unknown device'),120),left(coalesce(p_timezone,'Unknown'),80),p_latitude,p_longitude,current_ip)
-  on conflict(user_id,device_id) do update set session_id=excluded.session_id,device_name=excluded.device_name,timezone=excluded.timezone,latitude=excluded.latitude,longitude=excluded.longitude,ip_address=excluded.ip_address,last_seen=now();
+  insert into public.lcb_devices(session_id,user_id,device_id,device_name,timezone,ip_address)
+  values(sid,uid,left(p_device_id,100),left(coalesce(p_device_name,'Unknown device'),120),left(coalesce(p_timezone,'Unknown'),80),current_ip)
+  on conflict(user_id,device_id) do update set session_id=excluded.session_id,device_name=excluded.device_name,timezone=excluded.timezone,ip_address=excluded.ip_address,last_seen=now();
 end $$;
 
-create or replace function public.lcb_list_devices()
-returns table(session_id uuid,user_id text,device_name text,timezone text,latitude double precision,longitude double precision,ip_address text,created_at timestamptz,last_seen timestamptz,is_current boolean)
+create or replace function public.lcb_list_devices_safe()
+returns table(session_id uuid,user_id text,device_name text,timezone text,city text,ip_address text,created_at timestamptz,last_seen timestamptz,is_current boolean)
 language sql security definer set search_path=public as $$
-  select d.session_id,d.user_id,d.device_name,d.timezone,d.latitude,d.longitude,host(d.ip_address),d.created_at,d.last_seen,d.session_id=(auth.jwt()->>'session_id')::uuid
+  select d.session_id,d.user_id,d.device_name,d.timezone,null::text,host(d.ip_address),d.created_at,d.last_seen,d.session_id=(auth.jwt()->>'session_id')::uuid
   from public.lcb_devices d join auth.sessions s on s.id=d.session_id
   where d.user_id=public.lcb_app_user_id() order by d.last_seen desc
 $$;
@@ -208,8 +208,16 @@ begin
   delete from auth.sessions where id=target_session;
   delete from public.lcb_devices where session_id=target_session;
 end $$;
-revoke all on function public.lcb_register_device(text,text,text,double precision,double precision),public.lcb_list_devices(),public.lcb_revoke_device(uuid) from public,anon;
-grant execute on function public.lcb_register_device(text,text,text,double precision,double precision),public.lcb_list_devices(),public.lcb_revoke_device(uuid) to authenticated;
+do $$ begin
+  if to_regprocedure('public.lcb_register_device(text,text,text,double precision,double precision)') is not null then
+    execute 'revoke all on function public.lcb_register_device(text,text,text,double precision,double precision) from public,anon,authenticated';
+  end if;
+  if to_regprocedure('public.lcb_list_devices()') is not null then
+    execute 'revoke all on function public.lcb_list_devices() from public,anon,authenticated';
+  end if;
+end $$;
+revoke all on function public.lcb_register_device_safe(text,text,text),public.lcb_list_devices_safe(),public.lcb_revoke_device(uuid) from public,anon;
+grant execute on function public.lcb_register_device_safe(text,text,text),public.lcb_list_devices_safe(),public.lcb_revoke_device(uuid) to authenticated;
 
 create or replace function public.lcb_record_security_event(event_type text,details jsonb default '{}'::jsonb) returns void
 language plpgsql security definer set search_path=public as $$

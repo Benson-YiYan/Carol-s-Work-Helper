@@ -1493,7 +1493,7 @@ async function loadDevices(register) {
     const saved=await sbFetch('/rpc/lcb_register_device_safe',{method:'POST',body:JSON.stringify({p_device_id:stableDeviceId(),p_device_name:deviceDescription(),p_timezone:timezone})});
     if(!saved.ok) throw new Error('device-register-http-'+saved.status+': '+await saved.text());
   }
-  const res=await sbFetch('/rpc/lcb_list_devices',{method:'POST',body:'{}'});
+  const res=await sbFetch('/rpc/lcb_list_devices_safe',{method:'POST',body:'{}'});
   if(!res.ok) throw new Error('device-list-http-'+res.status);
   const devices=await res.json();
   if(authSession===checkedSession) state.devices=devices;
