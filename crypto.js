@@ -183,7 +183,7 @@
   }
   function logPayload(log) {
     const payload = Object.assign({}, log);
-    delete payload.readBy; delete payload.deletedFor;
+    delete payload.readBy; delete payload.deletedBy; delete payload.deletedFor;
     return payload;
   }
   async function prepareLog(log, request) {
@@ -197,7 +197,8 @@
     }
     return {
       id:log.id, matterId:log.matterId, at:log.at, by:log.by, key:log.key,
-      notifyTo:log.notifyTo || [], readBy:log.readBy || [], deletedFor:log.deletedFor || [],
+      notifyTo:log.notifyTo || [], readBy:log.readBy || [],
+      deletedFor:log.deletedBy || log.deletedFor || [],
       encrypted:'lcb-e2ee-v1', sealed:cached.sealed,
     };
   }
@@ -205,7 +206,7 @@
     if (!data || data.encrypted !== 'lcb-e2ee-v1') return data;
     const payload = await openJson(await loadMatterKey(data.matterId, request), data.sealed);
     payload.readBy = data.readBy || [];
-    payload.deletedFor = data.deletedFor || [];
+    payload.deletedBy = data.deletedBy || data.deletedFor || [];
     sealedLogCache.set(String(data.id), { fingerprint:JSON.stringify(logPayload(payload)), sealed:data.sealed });
     return payload;
   }
