@@ -3,31 +3,20 @@
 
 /* ------------------------------ 常量 ------------------------------ */
 
-const KEY = {
-  matters: 'carol_solo_matters_v1',
-  logs: 'carol_solo_logs_v1',
-  session: 'carol_solo_session_v1',
-  seq: 'carol_solo_seq_v1',
-  lang: 'carol_solo_lang_v1',
-  systemSeen: 'carol_solo_notice_seen_v1',
-  systemEnabled: 'carol_solo_notice_enabled_v1',
-  auth: 'carol_solo_supabase_auth_v1',
-  deviceId: 'carol_solo_device_id_v1',
-};
+const SITE_CONFIG = globalThis.LCBSiteConfig;
+if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
+const KEY = SITE_CONFIG.storageKeys;
 
 /* ------------------------------ 多设备同步（个人版专用 Supabase） ------------------------------
    publishable key 设计成可以公开，配合数据库里的权限规则使用。 */
-const SUPABASE = {
-  url: 'https://fnkgulfdcljwjkcqibxi.supabase.co',
-  key: 'sb_publishable_q1rkOmyUCFJ0AXRiT38rOg_9M6eMRT_',
-};
+const SUPABASE = SITE_CONFIG.supabase;
 const SOLO_PREFIX = 'solo_';
 const REMOTE_ENABLED = !!(SUPABASE.url && SUPABASE.key) && typeof fetch === 'function';
 const SYNC_EVERY_MS = 15000;
 const IDLE_LOGOUT_MS = 24 * 60 * 60 * 1000;
 const LOGIN_FAILURE_LIMIT = 5;
 const LOGIN_COOLDOWN_MS = 60 * 1000;
-const ENCRYPTED_BUCKET = 'carol-encrypted-files';
+const ENCRYPTED_BUCKET = SITE_CONFIG.bucket;
 const sync = {
   status: REMOTE_ENABLED ? 'loading' : 'off',  // loading | ok | error | off
   lastAt: 0,
@@ -51,8 +40,8 @@ const LANG_INDEX = { zh: 0, en: 1, es: 2 };
 
 /* 每条： [简体中文, English, Español] */
 const STR = {
-  'app.title': ['母子事务管理器', 'Mother-Son Task Manager', 'Gestor de asuntos de madre e hijo'],
-  'app.team': ['Carol 与 Benson', 'Carol and Benson', 'Carol y Benson'],
+  'app.title': [SITE_CONFIG.branding.title, SITE_CONFIG.branding.titleEn, SITE_CONFIG.branding.titleEs],
+  'app.team': [SITE_CONFIG.branding.team, SITE_CONFIG.branding.teamEn, SITE_CONFIG.branding.teamEs],
 
   'login.email': ['邮箱', 'Email', 'Correo electrónico'],
   'login.password': ['密码', 'Password', 'Contraseña'],
@@ -675,10 +664,7 @@ const PRACTICE_AREAS = [
 const AREA = Object.fromEntries(PRACTICE_AREAS.map(a => [a.id, a]));
 function areaName(id) { return AREA[id] ? L(AREA[id].name) : (id || ''); }
 
-const USERS = [
-  { id: 'carol', name: 'Carol', short: 'C', email: '13726111370@163.com', roleKey: 'role.carol', admin: true },
-  { id: 'benson', name: 'Benson', short: 'B', email: 'yanyi13411696203@163.com', roleKey: 'role.benson', admin: false },
-];
+const USERS = SITE_CONFIG.users;
 const USER = Object.fromEntries(USERS.map(u => [u.id, u]));
 
 const STAGES = ['Engagement', 'Consultation', 'Due Diligence', 'Legal Research', 'Drafting', 'Filing / Submission', 'Government Review', 'Closing', 'On Hold'];

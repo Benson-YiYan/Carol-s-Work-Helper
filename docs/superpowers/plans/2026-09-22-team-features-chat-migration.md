@@ -19,6 +19,7 @@
 - Mother-son production code must contain no team Supabase project ID `tvavifjfbdwgkehtbxum`, team storage bucket `lcb-encrypted-files`, or team-only user mapping.
 - Chat is required in Chinese, English, and Spanish; weekly view is forbidden in code, UI, routes, styles, and tutorials.
 - All database changes must be additive and backward-compatible; no table truncation, destructive reset, or storage-path rewrite.
+- Do not request, transmit, return, or render precise device latitude/longitude; device location is limited to city-level network estimates or “not collected”.
 - Do not commit `.DS_Store`, credentials, service-role keys, Turnstile secret keys, database dumps, or user passwords.
 
 ---
@@ -398,6 +399,9 @@ assert.equal(source.includes("bucket_id='lcb-encrypted-files'"), false);
 for (const required of ['lcb_app_user_id', 'lcb_matter_visible', 'lcb-login', 'carol-encrypted-files']) {
   assert.equal(source.includes(required), true, `missing isolation control: ${required}`);
 }
+const frontend = fs.readFileSync('app.js', 'utf8');
+assert.equal(frontend.includes('navigator.geolocation'), false, 'precise browser geolocation must not be requested');
+assert.equal(/latitude|longitude/.test(frontend), false, 'frontend must not transmit or render exact coordinates');
 ```
 
 - [ ] **Step 2: Run and verify failure**
@@ -412,7 +416,7 @@ Port the current team versioning, login lock, key RPC, device, security event, a
 
 - [ ] **Step 4: Adapt identity and RLS**
 
-Keep the mother-son email-to-ID mapping from `supabase-mother-son-security.sql`. Admin visibility remains `carol`; ordinary users may select matters when owner or team member, and may mutate only according to the same team rules. Logs, wrapped keys, chat references, notifications, and files must verify the associated matter/conversation visibility server-side.
+Keep the mother-son email-to-ID mapping from `supabase-mother-son-security.sql`. Admin visibility remains `carol`; ordinary users may select matters when owner or team member, and may mutate only according to the same team rules. Logs, wrapped keys, chat references, notifications, and files must verify the associated matter/conversation visibility server-side. Replace device registration/listing RPCs so they do not accept or return `latitude` or `longitude`; existing columns remain inaccessible compatibility storage until the user separately approves clearing historical values.
 
 - [ ] **Step 5: Adapt secure login**
 
@@ -491,7 +495,7 @@ Serve the repository on `127.0.0.1`, open it in a real browser, and verify the m
 
 - [ ] **Step 4: Run two-account permission tests against mother-son Supabase**
 
-With two existing mother-son accounts: create a matter owned by one account; verify a non-member cannot see it; add the second account; verify it appears; send a chat message and attachment; remove membership; verify matter, chat reference, and file access are denied again.
+With two existing mother-son accounts: create a matter owned by one account; verify a non-member cannot see it; add the second account; verify it appears; send a chat message and attachment; remove membership; verify matter, chat reference, and file access are denied again. Confirm browser permissions show no location request, device registration payloads contain no coordinates, the device-list RPC response has no latitude/longitude fields, and the rendered device page contains no exact coordinates.
 
 - [ ] **Step 5: Prove cross-site isolation**
 
