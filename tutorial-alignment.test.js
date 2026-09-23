@@ -21,7 +21,7 @@ for (const lang of ['zh', 'en', 'es']) {
 
 assert.equal(tutorial.GUIDE_ROUTES.includes('#/chat'), true);
 assert.equal(tutorial.GUIDE_ROUTES.includes('#/weekly'), false);
-for (const marker of ['屏蔽', 'Block', 'Bloquear', '引用', 'Reference', 'Referencia']) {
+for (const marker of ['引用', 'Reference', 'Referencia']) {
   assert.equal(app.includes(marker), true, `missing trilingual chat copy: ${marker}`);
 }
 

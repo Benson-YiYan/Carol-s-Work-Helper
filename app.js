@@ -236,18 +236,18 @@ BEGINNER_TUTORIAL.es.steps.splice(1,0,['Búsqueda completa','Busca asuntos, clie
 BEGINNER_TUTORIAL.zh.steps.splice(7,0,['期限计算','按自然日或工作日计算截止日期，并可一键创建提前 7、3、1 天提醒。'],['工作报告','按时间、客户、负责人和业务类型汇总事项，可导出 Excel/CSV 或打印为 PDF。']);
 BEGINNER_TUTORIAL.en.steps.splice(7,0,['Deadline calculator','Calculate calendar or business-day deadlines and create reminders 7, 3, and 1 days in advance.'],['Work reports','Summarize matters by date, client, owner, and area; export Excel/CSV or print to PDF.']);
 BEGINNER_TUTORIAL.es.steps.splice(7,0,['Calculadora de plazos','Calcula plazos naturales o hábiles y crea avisos 7, 3 y 1 días antes.'],['Informes de trabajo','Resume asuntos por fecha, cliente, responsable y área; exporta Excel/CSV o imprime en PDF.']);
-BEGINNER_TUTORIAL.zh.steps.splice(10,0,['聊天','母子聊天支持引用事项、客户档案、步骤或事项文件，也可上传加密文件随消息发送。发送者可长期屏蔽成员。']);
-BEGINNER_TUTORIAL.en.steps.splice(10,0,['Chat','Private family chat supports references to matters, clients, steps or matter files, encrypted file uploads, and persistent member blocking.']);
-BEGINNER_TUTORIAL.es.steps.splice(10,0,['Chat','El chat familiar admite referencias a asuntos, clientes, pasos o archivos, archivos cifrados y bloqueo persistente de miembros.']);
+BEGINNER_TUTORIAL.zh.steps.splice(10,0,['聊天','母子聊天支持引用事项、客户档案、步骤或事项文件，也可上传加密文件随消息发送。']);
+BEGINNER_TUTORIAL.en.steps.splice(10,0,['Chat','Private family chat supports references to matters, clients, steps or matter files and encrypted file uploads.']);
+BEGINNER_TUTORIAL.es.steps.splice(10,0,['Chat','El chat familiar admite referencias a asuntos, clientes, pasos o archivos y archivos cifrados.']);
 TUTORIAL_DETAILS.zh.splice(1,0,['输入至少两个字符后点击“搜索”；结果包括事项、客户、聊天、动态和文件名。','点击结果打开相关事项或客户档案；没有权限的数据不会出现。']);
 TUTORIAL_DETAILS.en.splice(1,0,['Enter at least two characters and select Search; results include matters, clients, chats, activity, and filenames.','Select a result to open it. Content outside your permissions never appears.']);
 TUTORIAL_DETAILS.es.splice(1,0,['Introduce al menos dos caracteres y pulsa Buscar; incluye asuntos, clientes, chats, actividad y archivos.','Pulsa un resultado para abrirlo. Nunca aparece contenido sin permiso.']);
 TUTORIAL_DETAILS.zh.splice(7,0,['填写起始日期、天数和计算方式；工作日模式会排除周末及手工填写的节假日。','“计算截止日”显示结果；“创建 7／3／1 天前提醒”会把三次提醒加入日历和通知。','计算结果仅供工作管理，法定期限应由律师复核。'],['选择日期范围、客户、负责人和业务类型后点击“生成报告”。','“导出 Excel/CSV”下载表格；“打印／导出 PDF”打开浏览器打印窗口。','报告只统计当前账号有权查看的事项。']);
 TUTORIAL_DETAILS.en.splice(7,0,['Set the start date, number of days, and method. Business-day mode excludes weekends and entered holidays.','Calculate shows the date; Create reminders adds alerts 7, 3, and 1 days beforehand.','The result supports workflow planning and must be legally verified.'],['Choose the date range, client, owner, and area, then Generate.','Export Excel/CSV downloads a table; Print / export PDF opens the print dialog.','Reports include only matters this account may view.']);
 TUTORIAL_DETAILS.es.splice(7,0,['Indica fecha inicial, días y método. El modo hábil excluye fines de semana y festivos indicados.','Calcular muestra la fecha; Crear avisos añade recordatorios 7, 3 y 1 días antes.','El resultado sirve para gestión y debe verificarse jurídicamente.'],['Elige fechas, cliente, responsable y área, y pulsa Generar.','Exportar Excel/CSV descarga una tabla; Imprimir / exportar PDF abre la impresión.','El informe solo incluye asuntos permitidos.']);
-TUTORIAL_DETAILS.zh.splice(10,0,['在消息框输入文字。','“引用”可选择事项、客户档案、已完成步骤或事项中的文件；文件卡片可按原事项权限安全下载。','“上传文件并发送”已整合到“+”菜单，会先在本机加密，再把文件和消息一起发出。','“屏蔽”会保存选择；被屏蔽者看不到你之后发送的文字、引用卡片和文件。','你发送的消息下方会用红字显示“已屏蔽 xxx”，只有你本人看得到。','收到或发出消息后聊天会自动滚到底部；同步不会清空正在输入的草稿。']);
-TUTORIAL_DETAILS.en.splice(10,0,['Write a message.','Reference a matter, client record, completed step, or matter file. File cards download securely under the source matter permissions.','Upload files and send is inside the + menu; files are encrypted on this device first.','Blocked members cannot see later text, cards, or files from you.','Only you see the red “Blocked for …” label under your own message.','Chat follows received and sent messages to the bottom, while sync preserves the draft being typed.']);
-TUTORIAL_DETAILS.es.splice(10,0,['Escribe un mensaje.','Referencia un asunto, cliente, paso completado o archivo del asunto. Las tarjetas descargan con los permisos del asunto original.','Subir archivos y enviar está dentro del menú +; los archivos se cifran primero en este dispositivo.','Los miembros bloqueados no verán tus textos, tarjetas ni archivos posteriores.','Solo tú ves la etiqueta roja “Bloqueado para…” bajo tu mensaje.','El chat baja al final al recibir o enviar mensajes y la sincronización conserva el borrador.']);
+TUTORIAL_DETAILS.zh.splice(10,0,['在消息框输入文字。','“引用”可选择事项、客户档案、已完成步骤或事项中的文件；文件卡片可按原事项权限安全下载。','“上传文件并发送”已整合到“+”菜单，会先在本机加密，再把文件和消息一起发出。','收到或发出消息后聊天会自动滚到底部；同步不会清空正在输入的草稿。']);
+TUTORIAL_DETAILS.en.splice(10,0,['Write a message.','Reference a matter, client record, completed step, or matter file. File cards download securely under the source matter permissions.','Upload files and send is inside the + menu; files are encrypted on this device first.','Chat follows received and sent messages to the bottom, while sync preserves the draft being typed.']);
+TUTORIAL_DETAILS.es.splice(10,0,['Escribe un mensaje.','Referencia un asunto, cliente, paso completado o archivo del asunto. Las tarjetas descargan con los permisos del asunto original.','Subir archivos y enviar está dentro del menú +; los archivos se cifran primero en este dispositivo.','El chat baja al final al recibir o enviar mensajes y la sincronización conserva el borrador.']);
 BEGINNER_TUTORIAL.zh.steps[2][1] = '这里可新建、搜索和筛选事项，也能批量删除、导入 Excel/CSV 或导出 CSV。点击事项后选择编辑或工作；团队消息统一在独立“聊天”页发送。';
 BEGINNER_TUTORIAL.en.steps[2][1] = 'Create, search, filter, bulk-delete, import Excel/CSV, or export CSV. Select a matter to edit or work on it; team messages are sent from the separate Chat page.';
 BEGINNER_TUTORIAL.es.steps[2][1] = 'Crea, busca, filtra, elimina en lote, importa Excel/CSV o exporta CSV. Pulsa un asunto para editar o trabajar; los mensajes se envían desde Chat.';
@@ -339,11 +339,7 @@ const STR = {
   'chat.mentions': ['@ 成员（可多选）', '@ Members (select multiple)', '@ Miembros (selección múltiple)'],
   'chat.reference': ['+ 引用只读卡片', '+ Attach a read-only card', '+ Adjuntar tarjeta de solo lectura'],
   'chat.noReference': ['不引用', 'No attachment', 'Sin adjunto'],
-  'chat.blocked': ['长期屏蔽成员', 'Members blocked from future messages', 'Miembros bloqueados para mensajes futuros'],
-  'chat.block': ['屏蔽', 'Block', 'Bloquear'],
   'chat.referencePopup': ['引用', 'Reference', 'Referencia'],
-  'chat.blockedHint': ['被勾选成员看不到你之后发送的消息和引用卡片；该设置只影响你自己发送的内容。', 'Selected members cannot see messages or attached cards you send from now on. This setting affects only your own messages.', 'Los miembros seleccionados no verán los mensajes ni tarjetas que envíes desde ahora. Solo afecta a tus envíos.'],
-  'chat.blockedByMe': ['已屏蔽 {names}', 'Blocked for {names}', 'Bloqueado para {names}'],
   'chat.messagePlaceholder': ['输入团队消息…', 'Write a team message…', 'Escribe un mensaje al equipo…'],
   'chat.send': ['发送', 'Send', 'Enviar'],
   'chat.matter': ['事项', 'Matter', 'Asunto'],
@@ -2833,12 +2829,12 @@ function viewChat() {
   if(latest)save(chatSeenKey(u.id),latest);
   const names=Object.fromEntries(USERS.map(x=>[x.id,x.name]));
   const rows = messages.length ? messages.map(l => {
-    const blocked=LCBChatCore.blockedLabel(l,u.id,names),mentions=(l.vars&&l.vars.mentions||[]).map(id=>(USER[id]||{}).name||id);
+    const mentions=(l.vars&&l.vars.mentions||[]).map(id=>(USER[id]||{}).name||id);
     const attachments=(l.vars&&l.vars.attachments||[]).map(chatReferenceCard).join('');
-    return `<div class="chat-message ${l.by===u.id?'mine':''}"><div class="chat-message-meta"><b>${esc((USER[l.by]||{}).name||l.by)}</b><span>${esc(fmtStamp(l.at))}</span>${mentions.length?`<span>@ ${esc(mentions.join('、'))}</span>`:''}</div>${l.vars&&l.vars.message?`<div class="chat-message-body">${esc(L(l.vars.message))}</div>`:''}${chatReferenceCard(l.vars&&l.vars.reference)}${attachments}${blocked?`<div class="chat-blocked-label">${esc(t('chat.blockedByMe',{names:blocked}))}</div>`:''}</div>`;
+    return `<div class="chat-message ${l.by===u.id?'mine':''}"><div class="chat-message-meta"><b>${esc((USER[l.by]||{}).name||l.by)}</b><span>${esc(fmtStamp(l.at))}</span>${mentions.length?`<span>@ ${esc(mentions.join('、'))}</span>`:''}</div>${l.vars&&l.vars.message?`<div class="chat-message-body">${esc(L(l.vars.message))}</div>`:''}${chatReferenceCard(l.vars&&l.vars.reference)}${attachments}</div>`;
   }).join('') : `<div class="chat-empty">${esc(t('modal.chat.empty'))}</div>`;
   if(state.chatDraft.blocked===null)state.chatDraft.blocked=chatBlocks(u.id);
-  const draft=state.chatDraft,blocked=new Set(draft.blocked),options=chatReferenceOptions(),others=USERS.filter(x=>x.id!==u.id);
+  const draft=state.chatDraft,options=chatReferenceOptions();
   const optionList=(type,value)=>`<option value="">${esc(t('chat.noReference'))}</option>${options.filter(x=>x.value.startsWith(type+':')).map(x=>`<option value="${esc(x.value)}" ${x.value===value?'selected':''}>${esc(x.label.replace(/^.*? · /,''))}</option>`).join('')}`;
   const checked=(list,id)=>list.includes(id)?'checked':'';
   const fileNames=(draft.files||[]).map(file=>file.name).join('、');
@@ -2849,7 +2845,6 @@ function viewChat() {
       <form data-action="send-global-chat" class="chat-composer">
         <div class="chat-compose-row">
           <div class="chat-tool-rail">
-            <details class="chat-tool"><summary class="chat-block-button" title="${esc(t('chat.block'))}">${esc(t('chat.block'))}</summary><div class="chat-tool-pop">${closeTool}<b>${esc(t('chat.block'))}</b><div class="chat-choice-list">${others.map(x=>`<label><input type="checkbox" name="blocked" value="${x.id}" ${checked(draft.blocked,x.id)}> ${esc(x.name)}</label>`).join('')}</div><small>${esc(t('chat.blockedHint'))}</small></div></details>
             <details class="chat-tool"><summary title="${esc(t('chat.referencePopup'))}">+</summary><div class="chat-tool-pop chat-reference-pop">${closeTool}<b>${esc(t('chat.referencePopup'))}</b><div class="reference-switch">
               ${['matter','step','client','file'].map(type=>`<input id="ref-${type}" type="radio" name="referenceType" value="${type}" ${draft.referenceType===type?'checked':''}><label for="ref-${type}">${esc(t('chat.'+type))}</label>`).join('')}
               <div class="reference-panels"><div data-reference-panel="matter"><select name="refMatter">${optionList('matter',draft.refMatter)}</select></div><div data-reference-panel="step"><select name="refStep">${optionList('step',draft.refStep)}</select></div><div data-reference-panel="client"><select name="refClient">${optionList('client',draft.refClient)}</select></div><div data-reference-panel="file"><select name="refFile">${optionList('file',draft.refFile)}</select></div></div>
@@ -4972,8 +4967,7 @@ document.addEventListener('submit', async ev => {
     if(pendingFiles.some(file=>file.size>20*1024*1024)){toast(t('toast.fileTooLarge'));return;}
     if(!setFormBusy(form,pendingFiles.length?t('modal.file.uploading'):t('chat.send')))return;
     const mentions=[];
-    const blocked=[...form.querySelectorAll('[name="blocked"]:checked')].map(x=>x.value).filter(id=>USER[id]&&id!==u.id);
-    save(chatBlockKey(u.id),blocked);
+    const blocked=[];
     const channel=ensureGlobalChatChannel();
     const referenceType=(form.querySelector('[name="referenceType"]:checked')||{}).value||'';
     const referenceValue=LCBChatCore.pickReferenceValue(referenceType,{matter:form.refMatter&&form.refMatter.value,step:form.refStep&&form.refStep.value,client:form.refClient&&form.refClient.value,file:form.refFile&&form.refFile.value});
@@ -4989,7 +4983,7 @@ document.addEventListener('submit', async ev => {
     commit();
     deliverOperationNotification();
     save(chatSeenKey(u.id),Date.now());
-    state.chatDraft={message:'',mentions:[],blocked:blocked.slice(),referenceType:'matter',refMatter:'',refStep:'',refClient:'',refFile:'',files:[]};
+    state.chatDraft={message:'',mentions:[],blocked:[],referenceType:'matter',refMatter:'',refStep:'',refClient:'',refFile:'',files:[]};
     state.chatScrollToBottom=true;
     render();
     toast(t('toast.chatSent'));
