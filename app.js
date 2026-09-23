@@ -2855,9 +2855,9 @@ function viewChat() {
             <details class="chat-tool"><summary title="${esc(t('chat.referencePopup'))}">+</summary><div class="chat-tool-pop chat-reference-pop">${closeTool}<b>${esc(t('chat.referencePopup'))}</b><div class="reference-switch">
               ${['matter','step','client','file'].map(type=>`<input id="ref-${type}" type="radio" name="referenceType" value="${type}" ${draft.referenceType===type?'checked':''}><label for="ref-${type}">${esc(t('chat.'+type))}</label>`).join('')}
               <div class="reference-panels"><div data-reference-panel="matter"><select name="refMatter">${optionList('matter',draft.refMatter)}</select></div><div data-reference-panel="step"><select name="refStep">${optionList('step',draft.refStep)}</select></div><div data-reference-panel="client"><select name="refClient">${optionList('client',draft.refClient)}</select></div><div data-reference-panel="file"><select name="refFile">${optionList('file',draft.refFile)}</select></div></div>
-            </div></div></details>
+            </div><label class="chat-upload-button"><input type="file" name="chatFiles" multiple><span>📎 ${esc(t('chat.uploadFiles'))}</span></label>${fileNames?`<small class="chat-selected-files">${esc(t('chat.selectedFiles',{names:fileNames}))}</small>`:''}</div></details>
           </div>
-          <div class="chat-input-area"><div class="chat-input-stack"><textarea name="message" rows="3" placeholder="${esc(t('chat.messagePlaceholder'))}">${esc(draft.message)}</textarea><label class="chat-upload-button"><input type="file" name="chatFiles" multiple><span>📎 ${esc(t('chat.uploadFiles'))}</span></label>${fileNames?`<small class="chat-selected-files">${esc(t('chat.selectedFiles',{names:fileNames}))}</small>`:''}</div><button class="btn btn-primary" type="submit">${esc(t('chat.send'))}</button></div>
+          <div class="chat-input-area"><textarea name="message" rows="1" placeholder="${esc(t('chat.messagePlaceholder'))}">${esc(draft.message)}</textarea><button class="btn btn-primary" type="submit">${esc(t('chat.send'))}</button></div>
         </div>
       </form>
     </div>`;
