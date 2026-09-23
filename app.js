@@ -4870,10 +4870,6 @@ document.addEventListener('change', ev => {
   const chatForm=ev.target.closest('.chat-composer');
   if(chatForm){
     const name=ev.target.name;
-    if(name==='blocked'){
-      state.chatDraft.blocked=[...chatForm.querySelectorAll('[name="blocked"]:checked')].map(x=>x.value);
-      const u=currentUser();if(u)save(chatBlockKey(u.id),state.chatDraft.blocked);
-    }
     if(name==='referenceType')state.chatDraft.referenceType=ev.target.value;
     if(['refMatter','refStep','refClient','refFile'].includes(name))state.chatDraft[name]=ev.target.value;
     if(name==='chatFiles'){
