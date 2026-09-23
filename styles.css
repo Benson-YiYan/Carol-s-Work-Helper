@@ -6,8 +6,8 @@
   --line-2:#eef2f6;
   --bg:#f5f7fa;
   --card:#ffffff;
-  --brand:#1f5eff;
-  --brand-soft:#eef3ff;
+  --brand:#c9362b;
+  --brand-soft:#fff2ef;
   --red:#d92d20;
   --red-soft:#fef3f2;
   --yellow:#b54708;
@@ -33,7 +33,7 @@ input,select,textarea{font:inherit;color:inherit}
   background:radial-gradient(1200px 600px at 15% -10%,#e8efff 0%,transparent 60%),var(--bg)}
 .login-card{width:100%;max-width:430px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px;box-shadow:var(--shadow)}
 .login-brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
-.brand-mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#1f5eff,#0a2fb0);color:#fff;
+.brand-mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#d92d20 0%,#027a48 100%);color:#fff;
   display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;letter-spacing:.5px}
 .login-card h1{font-size:20px;margin:0;letter-spacing:-.2px}
 .login-card .sub{color:var(--ink-3);font-size:13px;margin:2px 0 22px}

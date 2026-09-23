@@ -2317,7 +2317,7 @@ function viewLogin() {
   <div class="login-wrap">
     <div class="login-card">
       <div class="login-brand">
-        <div class="brand-mark">LCB</div>
+        <div class="brand-mark">C</div>
         <div>
           <h1>${esc(t(APP_TITLE_KEY))}</h1>
           <div class="sub">${esc(t(TEAM_NAME_KEY))}</div>
@@ -2428,7 +2428,7 @@ function shell(route, content) {
   <div class="topbar ${state.mobileNavOpen?'mobile-nav-open':''}">
     <div class="topbar-inner">
       <button class="mobile-nav-toggle" type="button" data-action="mobile-nav-toggle" aria-expanded="${state.mobileNavOpen?'true':'false'}" aria-label="${esc(L({zh:'打开导航菜单',en:'Open navigation menu',es:'Abrir menú de navegación'}))}" title="${esc(L({zh:'导航菜单',en:'Navigation menu',es:'Menú de navegación'}))}"><span class="menu-glyph">☰</span>${unread?`<span class="nav-toggle-count">${unread}</span>`:''}</button>
-      <div class="logo"><div class="brand-mark">LCB</div><span>${esc(t(APP_TITLE_KEY))}</span></div>
+      <div class="logo"><div class="brand-mark">C</div><span>${esc(t(APP_TITLE_KEY))}</span></div>
       <div class="nav-shell">
         <div class="mobile-drawer-head"><b>${esc(t(APP_TITLE_KEY))}</b><button type="button" data-action="mobile-nav-close" aria-label="${esc(L({zh:'关闭导航菜单',en:'Close navigation menu',es:'Cerrar menú de navegación'}))}">×</button></div>
         <button class="nav-scroll-btn" type="button" data-action="nav-scroll-left" aria-label="${esc(L({zh:'向左滚动导航',en:'Scroll navigation left',es:'Desplazar navegación a la izquierda'}))}" title="${esc(L({zh:'向左滚动',en:'Scroll left',es:'Desplazar a la izquierda'}))}">‹</button>
