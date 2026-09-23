@@ -8,6 +8,7 @@
   --card:#ffffff;
   --brand:#c9362b;
   --brand-soft:#fff2ef;
+  --brand-gradient:linear-gradient(135deg,#d92d20 0%,#027a48 100%);
   --red:#d92d20;
   --red-soft:#fef3f2;
   --yellow:#b54708;
@@ -386,6 +387,11 @@ table.grid td.nw{white-space:nowrap}
 .guide-coach{position:fixed;z-index:92;left:50%;bottom:22px;transform:translateX(-50%);width:min(620px,calc(100vw - 28px));max-height:44vh;overflow:auto;background:#fff;border:1px solid #d8e0ea;border-radius:12px;padding:16px 18px;box-shadow:0 22px 60px rgba(0,0,0,.35)}
 .guide-coach-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.guide-coach-head b{font-size:16px}.guide-coach-head span{font-size:12px;color:var(--ink-3)}
 .guide-coach p{margin:0;color:var(--ink-2);font-size:14px;line-height:1.65}.guide-try{margin-top:9px;color:var(--brand);font-size:12px;font-weight:650}.guide-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.guide-actions .btn-ghost{margin-right:auto}
+.btn-primary,.btn-primary:hover,.btn-primary:focus{background:var(--brand-gradient);border-color:transparent;color:#fff;box-shadow:none}
+.brand-mark{background:var(--brand-gradient)}
+.chat-tool>summary:hover,.chat-tool[open]>summary,.chat-upload-button:hover span,.tutorial-topic:hover{border-color:#d46a55;background:linear-gradient(135deg,#fff2ef 0%,#ecfdf3 100%);color:#a52e28}
+.nav a.active,.lang-switch button.on{background:var(--brand-gradient);color:#fff}
+.field input:focus,.field select:focus,.field textarea:focus,.chat-input-area textarea:focus{border-color:#c64b3d;box-shadow:0 0 0 3px rgba(201,54,43,.14)}
 @media (max-width:520px){.tutorial-topics{grid-template-columns:1fr}.tutorial-step{grid-template-columns:1fr;min-height:190px}.tutorial-number{width:36px;height:36px}.modal-foot{flex-wrap:wrap}}
 .reminder-card{margin-top:16px;padding:16px 18px}
 .reminder-row{width:100%;display:grid;grid-template-columns:110px 1fr;gap:12px;text-align:left;border:0;border-top:1px solid var(--line-2);padding:11px 0;background:none;cursor:pointer;color:var(--ink)}
