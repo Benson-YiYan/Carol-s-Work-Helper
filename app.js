@@ -445,7 +445,7 @@ const STR = {
   'inbox.systemEnabled': ['系统通知已开启', 'System notifications enabled', 'Notificaciones del sistema activadas'],
   'inbox.systemDisable': ['关闭系统通知', 'Turn off system notifications', 'Desactivar notificaciones del sistema'],
   'inbox.systemUnsupported': ['此浏览器不支持系统通知', 'System notifications are not supported', 'Este navegador no admite notificaciones del sistema'],
-  'system.title': ['LCB 新通知', 'New LCB notification', 'Nueva notificación de LCB'],
+  'system.title': ['新通知', 'New notification', 'Nueva notificación'],
   'inbox.empty': ['还没有通知。', 'No notifications yet.', 'Todavía no hay notificaciones.'],
   'inbox.markRead': ['已读', 'Mark read', 'Marcar como leído'],
   'inbox.markAllRead': ['全部已读', 'Mark all as read', 'Marcar todo como leído'],
@@ -2292,8 +2292,12 @@ function showWebNotification(entry) {
   const body = document.createElement('div');
   body.className = 'web-notice-body';
   body.textContent = inboxText(entry);
+  const read = document.createElement('button');
+  read.type = 'button';
+  read.className = 'web-notice-read';
+  read.textContent = t('inbox.markRead');
   heading.append(title, close);
-  card.append(heading, body);
+  card.append(heading, body, read);
   root.appendChild(card);
   let removed = false;
   const dismiss = () => {
@@ -2303,6 +2307,14 @@ function showWebNotification(entry) {
     setTimeout(() => card.remove(), 220);
   };
   close.addEventListener('click', dismiss);
+  read.addEventListener('click', () => {
+    const user = currentUser();
+    if (user && markNotificationRead(entry.id, user.id)) {
+      pushRemote();
+      toast(t('toast.markedRead'));
+    }
+    dismiss();
+  });
   setTimeout(dismiss, 5000);
 }
 function go(hash) { location.hash = hash; }

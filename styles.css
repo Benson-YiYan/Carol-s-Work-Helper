@@ -325,6 +325,7 @@ table.grid td.nw{white-space:nowrap}
 .web-notice-card.is-leaving{animation:webNoticeOut .2s ease-in both}
 .web-notice-heading{display:flex;align-items:center;gap:10px}.web-notice-heading b{min-width:0;flex:1;font-size:13.5px}.web-notice-body{margin-top:5px;color:var(--ink-2);font-size:13px;line-height:1.55;word-break:break-word}
 .web-notice-close{width:28px;height:28px;flex:none;border:0;border-radius:6px;background:transparent;color:var(--ink-3);font-size:21px;line-height:1}.web-notice-close:hover{background:#eef2f6;color:var(--ink)}
+.web-notice-read{display:block;margin:9px 0 0 auto;border:0;border-radius:6px;padding:6px 12px;background:var(--brand);color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.web-notice-read:hover{filter:brightness(.94)}
 @keyframes webNoticeIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
 @keyframes webNoticeOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(24px)}}
 
