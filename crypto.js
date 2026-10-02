@@ -181,6 +181,32 @@
     });
     pendingRecipientSets.clear();
   }
+  async function repairMatterRecipients(matters, request) {
+    if (!state.ready) return 0;
+    const keys = await directory(request);
+    const repairs = [];
+    for (const matter of matters || []) {
+      const id = String(matter && matter.id);
+      const key = matterKeys.get(id);
+      const canManageKeys = matter && (matter.owner === state.userId || state.userId === 'carol');
+      if (!key || !canManageKeys) continue;
+      const recipients = [...new Set([...(matter.team || []), matter.owner, 'carol'].filter(Boolean))].sort();
+      const existing = await requestJson(request, `/lcb_matter_keys?select=user_id&matter_id=eq.${encodeURIComponent(id)}`);
+      const present = new Set(existing.map(row => row.user_id));
+      if (recipients.every(userId => present.has(userId))) continue;
+      const missing = recipients.filter(userId => !keys.has(userId));
+      if (missing.length) throw new Error('missing-public-keys:' + missing.join(','));
+      // The server replaces the complete recipient set for each repaired matter.
+      for (const userId of recipients) {
+        repairs.push({ matter_id:id, user_id:userId, wrapped_key:await wrapMatterKey(key, keys.get(userId)) });
+      }
+    }
+    if (!repairs.length) return 0;
+    await requestJson(request, '/rpc/lcb_store_wrapped_keys', {
+      method:'POST', body:JSON.stringify({ payload:repairs }),
+    });
+    return repairs.length;
+  }
   function logPayload(log) {
     const payload = Object.assign({}, log);
     delete payload.readBy; delete payload.deletedBy; delete payload.deletedFor;
@@ -223,6 +249,6 @@
 
   globalThis.LCBCrypto = {
     state, initialize, lock, generateMatterKey, wrapMatterKey, unwrapMatterKey, sealJson, openJson,
-    prepareMatter, openMatter, flushMatterKeys, prepareLog, openLog, encryptFile, decryptFile,
+    prepareMatter, openMatter, flushMatterKeys, repairMatterRecipients, prepareLog, openLog, encryptFile, decryptFile,
   };
 })();

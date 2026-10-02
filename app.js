@@ -1646,6 +1646,9 @@ async function pullRemote(opts) {
     const nextMatters = globalThis.LCBCrypto && LCBCrypto.state.ready
       ? await Promise.all(mRows.map(r => LCBCrypto.openMatter(r.data, sbFetch)))
       : mRows.map(r => r.data);
+    if (globalThis.LCBCrypto && LCBCrypto.state.ready) {
+      await LCBCrypto.repairMatterRecipients(nextMatters, sbFetch);
+    }
     const nextLogs = globalThis.LCBCrypto && LCBCrypto.state.ready
       ? await Promise.all(lRows.map(r => LCBCrypto.openLog(r.data, sbFetch)))
       : lRows.map(r => r.data);
@@ -1722,8 +1725,12 @@ async function pushRemote() {
     if(!await ensureActiveServerSession()){sync.busy=false;return;}
     const changedMatters=matters.filter(m=>matterPlainBaseline.get(String(m.id))!==JSON.stringify(m));
     if (changedMatters.length) {
-      const encrypted = globalThis.LCBCrypto && LCBCrypto.state.ready
-        ? await Promise.all(changedMatters.map(m => LCBCrypto.prepareMatter(m, sbFetch))) : changedMatters;
+      let encrypted = changedMatters;
+      if (globalThis.LCBCrypto && LCBCrypto.state.ready) {
+        encrypted = [];
+        // prepareMatter writes to one shared pending-key queue, so matters must be prepared in order.
+        for (const matter of changedMatters) encrypted.push(await LCBCrypto.prepareMatter(matter, sbFetch));
+      }
       const pushedAt = new Date().toISOString();
       const rows = encrypted.map((m, i) => ({ id: String(changedMatters[i].id), data: m, updated_at: pushedAt }));
       if (globalThis.LCBCrypto && LCBCrypto.state.ready) {
