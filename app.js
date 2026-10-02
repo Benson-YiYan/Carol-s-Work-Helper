@@ -1728,15 +1728,18 @@ async function pushRemote() {
       const rows = encrypted.map((m, i) => ({ id: String(changedMatters[i].id), data: m, updated_at: pushedAt }));
       if (globalThis.LCBCrypto && LCBCrypto.state.ready) {
         // 新事项先建立不含敏感正文的访问空壳，密钥成功写入后才上传密文。
-        const shells = changedMatters.map(m => ({
+        const newMatters = changedMatters.filter(m => !matterServerUpdatedAt.has(String(m.id)));
+        const shells = newMatters.map(m => ({
           id:String(m.id),
           data:{ id:m.id, owner:m.owner, team:m.team || [], deletedAt:m.deletedAt || null, encrypted:'lcb-e2ee-pending' },
           updated_at:new Date().toISOString(),
         }));
-        const shellResult = await sbFetch('/matters', {
-          method:'POST', headers:{ Prefer:'resolution=ignore-duplicates,return=minimal' }, body:JSON.stringify(shells),
-        });
-        if (!shellResult.ok) throw new Error('matter-shell-http-' + shellResult.status);
+        if (shells.length) {
+          const shellResult = await sbFetch('/matters', {
+            method:'POST', headers:{ Prefer:'resolution=ignore-duplicates,return=minimal' }, body:JSON.stringify(shells),
+          });
+          if (!shellResult.ok) throw new Error('matter-shell-http-' + shellResult.status);
+        }
         await LCBCrypto.flushMatterKeys(sbFetch);
       }
       const versionedRows=rows.map(row=>Object.assign({},row,{expected_updated_at:matterServerUpdatedAt.get(String(row.id))||null}));
@@ -3467,7 +3470,7 @@ function modalClientImport() {
 function modalNewMatter() {
   if (!state.modal || state.modal.type !== 'new-matter') return '';
   const areaField = selectWithCustom('name="area" data-area-picker', PRACTICE_AREAS[0].id, practiceAreaOptions(), t('form.customAreaPh'));
-  const ownerOpts = USERS.map(u => `<option value="${u.id}">${esc(u.name)}</option>`).join('');
+  const ownerOpts = USERS.map(u => `<option value="${u.id}" ${u.id === currentUser().id ? 'selected' : ''}>${esc(u.name)}</option>`).join('');
   const nextOwnerOpts = ownerOpts;
   const stageField = selectWithCustom('name="stage"', STAGES[0], stageOptions(), t('form.customStagePh'));
   const waitField = selectWithCustom('name="waiting"', 'none', waitingOptions(), t('form.customWaitPh'));
@@ -3912,6 +3915,7 @@ function potentialConflicts(data, excludeId) {
 }
 
 function createMatter(data) {
+  if (!currentUser().admin && data.owner !== currentUser().id) data.owner = currentUser().id;
   const customClient=data.client==='__custom__';
   const client=resolveCustom(data.client,data.clientCustom);
   data.client=client;
