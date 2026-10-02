@@ -75,6 +75,7 @@ input,select,textarea{font:inherit;color:inherit}
 .topbar-inner{max-width:1180px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.2px;white-space:nowrap}
 .logo .brand-mark{width:30px;height:30px;border-radius:9px;font-size:13px}
+.logo-copy{display:flex;flex-direction:column;line-height:1.15}.app-version{display:block;color:var(--ink-3);font-size:10px;font-weight:500;letter-spacing:.3px;line-height:1.2;margin-top:2px}
 .nav-shell{display:flex;align-items:center;min-width:0;flex:1;margin-left:6px}
 .nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;align-items:center;min-width:0;flex:1;scroll-behavior:smooth}
 .nav::-webkit-scrollbar{display:none}
