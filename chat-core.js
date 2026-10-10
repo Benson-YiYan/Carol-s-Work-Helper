@@ -12,6 +12,7 @@
   function canViewMessage(message, userId) {
     if (!message || message.key !== CHAT_KEY || !userId) return false;
     const id = String(userId);
+    if ((message.deletedBy || message.deletedFor || []).map(String).includes(id)) return false;
     if (String(message.by) === id) return true;
     return (message.notifyTo || []).map(String).includes(id) && !blockedIds(message).includes(id);
   }
@@ -57,5 +58,9 @@
     return ['matter', 'step', 'client', 'file'].includes(type) ? String(values && values[type] || '') : '';
   }
 
-  return { CHAT_KEY, canViewMessage, visibleMessages, latestVisibleMessageAt, hasNewVisibleMessage, messageRecipients, unreadCount, blockedLabel, normalizeReference, pickReferenceValue };
+  function scrollTopFromBottomDistance(scrollHeight, clientHeight, distanceFromBottom) {
+    return Math.max(0, Number(scrollHeight || 0) - Number(clientHeight || 0) - Math.max(0, Number(distanceFromBottom || 0)));
+  }
+
+  return { CHAT_KEY, canViewMessage, visibleMessages, latestVisibleMessageAt, hasNewVisibleMessage, messageRecipients, unreadCount, blockedLabel, normalizeReference, pickReferenceValue, scrollTopFromBottomDistance };
 });

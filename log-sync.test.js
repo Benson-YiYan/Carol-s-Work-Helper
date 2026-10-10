@@ -1,5 +1,13 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const LogSync = require('./log-sync.js');
+
+assert.equal(LogSync.hasPendingChanges(7, 8), true, 'edits made during a push require another push');
+assert.equal(LogSync.hasPendingChanges(8, 8), false, 'unchanged revision can be marked clean');
+const app = fs.readFileSync('app.js', 'utf8');
+assert.match(app, /const pullRevision = localRevision/);
+assert.match(app, /hasPendingChanges\(pullRevision, localRevision\)[\s\S]{0,180}schedulePush\(\)/, 'pull must not overwrite an edit made while the request was in flight');
+assert.match(app, /hasPendingChanges\(pushRevision, localRevision\)/, 'push must schedule edits made while it was in flight');
 
 const logs = [
   { id:'old', readBy:['carol'], deletedBy:[] },

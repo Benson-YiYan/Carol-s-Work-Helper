@@ -15,5 +15,8 @@
     });
     return {newLogs,stateUpdates};
   }
-  return {stateFingerprint,partition};
+  function hasPendingChanges(startRevision,currentRevision){
+    return Number(startRevision)!==Number(currentRevision);
+  }
+  return {stateFingerprint,partition,hasPendingChanges};
 });

@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610021518';
+const APP_VERSION = '202610101648';
 
 /* ------------------------------ 共享数据（Supabase） ------------------------------
    页面是纯静态的，所以要三个人共用一份数据，必须有个服务器那一侧。
@@ -249,6 +249,9 @@ TUTORIAL_DETAILS.es.splice(7,0,['Indica fecha inicial, días y método. El modo 
 TUTORIAL_DETAILS.zh.splice(10,0,['在消息框输入文字。','“引用”可选择事项、客户档案、已完成步骤或事项中的文件；文件卡片可按原事项权限安全下载。','“上传文件并发送”已整合到“+”菜单，会先在本机加密，再把文件和消息一起发出。','收到或发出消息后聊天会自动滚到底部；同步不会清空正在输入的草稿。']);
 TUTORIAL_DETAILS.en.splice(10,0,['Write a message.','Reference a matter, client record, completed step, or matter file. File cards download securely under the source matter permissions.','Upload files and send is inside the + menu; files are encrypted on this device first.','Chat follows received and sent messages to the bottom, while sync preserves the draft being typed.']);
 TUTORIAL_DETAILS.es.splice(10,0,['Escribe un mensaje.','Referencia un asunto, cliente, paso completado o archivo del asunto. Las tarjetas descargan con los permisos del asunto original.','Subir archivos y enviar está dentro del menú +; los archivos se cifran primero en este dispositivo.','El chat baja al final al recibir o enviar mensajes y la sincronización conserva el borrador.']);
+TUTORIAL_DETAILS.zh[10].push('在任意消息上点击右键可选择“删除”；删除只会让这条消息对你隐藏，另一名成员仍然可以看到。');
+TUTORIAL_DETAILS.en[10].push('Right-click any message and choose Delete to hide it only for your account; the other member can still see it.');
+TUTORIAL_DETAILS.es[10].push('Haz clic derecho en cualquier mensaje y elige Eliminar para ocultarlo solo en tu cuenta; el otro miembro seguirá viéndolo.');
 BEGINNER_TUTORIAL.zh.steps[2][1] = '这里可新建、搜索和筛选事项，也能批量删除、导入 Excel/CSV 或导出 CSV。点击事项后选择编辑或工作；团队消息统一在独立“聊天”页发送。';
 BEGINNER_TUTORIAL.en.steps[2][1] = 'Create, search, filter, bulk-delete, import Excel/CSV, or export CSV. Select a matter to edit or work on it; team messages are sent from the separate Chat page.';
 BEGINNER_TUTORIAL.es.steps[2][1] = 'Crea, busca, filtra, elimina en lote, importa Excel/CSV o exporta CSV. Pulsa un asunto para editar o trabajar; los mensajes se envían desde Chat.';
@@ -453,6 +456,7 @@ const STR = {
   'inbox.selectAll': ['全选通知', 'Select all notifications', 'Seleccionar todas las notificaciones'],
   'inbox.bulkDelete': ['批量删除', 'Delete selected', 'Eliminar seleccionadas'],
   'inbox.delete': ['删除消息', 'Delete message', 'Eliminar mensaje'],
+  'chat.delete': ['删除', 'Delete', 'Eliminar'],
   'inbox.read': ['已读', 'Read', 'Leído'],
   'inbox.unread': ['未读', 'Unread', 'No leído'],
   'inbox.new': ['{actor} 新建了事项“{title}”。当前步骤：“{next}”，由 {owner} 负责。当前事项状态：{status}。',
@@ -1357,6 +1361,7 @@ const state = {
   chatDraft: { message:'', mentions:[], blocked:null, referenceType:'matter', refMatter:'', refStep:'', refClient:'', refFile:'', files:[] },
   chatScrollToBottom: false,
   chatOpened: false,
+  chatContextMenu: null,
   loginError: '',
   calendarOffset: 0,
   mobileNavOpen: false,
@@ -1384,6 +1389,7 @@ const systemNotice = {
   requesting: false,
   enabled: load(KEY.systemEnabled, null) !== false,
 };
+let localRevision = 0;
 // 第一次启用时不把历史通知一口气全弹出来，只推送之后新同步到的通知。
 if (!Array.isArray(savedSystemSeen)) {
   logs.forEach(l => (l.notifyTo || []).forEach(userId => systemNotice.seen.add(userId + ':' + l.id)));
@@ -1391,6 +1397,7 @@ if (!Array.isArray(savedSystemSeen)) {
 }
 
 function commit() {
+  localRevision += 1;
   if (!REMOTE_ENABLED) {
     save(KEY.matters, matters);
     save(KEY.logs, logs);
@@ -1630,6 +1637,7 @@ async function pullRemote(opts) {
   if (background && userIsInteracting()) return;
   if (!REMOTE_ENABLED || sync.busy || !authSession) return;
   if (sync.dirty) return;              // 本地还有没推上去的改动，先别覆盖
+  const pullRevision = localRevision;
   sync.busy = true;
   try {
     if(!await ensureActiveServerSession()){sync.busy=false;return;}
@@ -1657,6 +1665,12 @@ async function pullRemote(opts) {
     const nextSeq = seqRow && typeof seqRow.value === 'number' ? seqRow.value : seq;
     const changed = JSON.stringify(nextMatters) !== JSON.stringify(matters) ||
       JSON.stringify(nextLogs) !== JSON.stringify(logs) || nextSeq !== seq;
+    // 请求飞行期间产生的本地改动优先，不能被较旧的拉取快照覆盖。
+    if (LCBLogSync.hasPendingChanges(pullRevision, localRevision)) {
+      sync.busy = false;
+      schedulePush();
+      return;
+    }
     // 请求发出后用户可能刚开始输入；这次结果留到下一轮再取。
     if (background && userIsInteracting()) { sync.busy = false; return; }
     const activeUserBeforePull = currentUser();
@@ -1721,6 +1735,7 @@ async function pushRemote() {
   if (!REMOTE_ENABLED || !authSession) return;
   if (sync.busy) return;
   if (pushTimer) { clearTimeout(pushTimer); pushTimer = null; }
+  const pushRevision = localRevision;
   sync.busy = true;
   try {
     if(!await ensureActiveServerSession()){sync.busy=false;return;}
@@ -1793,7 +1808,7 @@ async function pushRemote() {
     resetSyncRetries();
     sync.lastAt = Date.now();
     sync.error = '';
-    sync.dirty = false;
+    sync.dirty = LCBLogSync.hasPendingChanges(pushRevision, localRevision);
   } catch (e) {
     // 推失败：把改动留在本机，标成"未同步"，下次同步时再试
     sync.error = String((e && e.message) || e);
@@ -1810,6 +1825,7 @@ async function pushRemote() {
     return;
   }
   sync.busy = false;
+  if (sync.dirty) schedulePush();
   render();
 }
 
@@ -2854,7 +2870,7 @@ function viewChat() {
   const rows = messages.length ? messages.map(l => {
     const mentions=(l.vars&&l.vars.mentions||[]).map(id=>(USER[id]||{}).name||id);
     const attachments=(l.vars&&l.vars.attachments||[]).map(chatReferenceCard).join('');
-    return `<div class="chat-message ${l.by===u.id?'mine':''}"><div class="chat-message-meta"><b>${esc((USER[l.by]||{}).name||l.by)}</b><span>${esc(fmtStamp(l.at))}</span>${mentions.length?`<span>@ ${esc(mentions.join('、'))}</span>`:''}</div>${l.vars&&l.vars.message?`<div class="chat-message-body">${esc(L(l.vars.message))}</div>`:''}${chatReferenceCard(l.vars&&l.vars.reference)}${attachments}</div>`;
+    return `<div class="chat-message ${l.by===u.id?'mine':''}" data-message-id="${esc(l.id)}"><div class="chat-message-meta"><b>${esc((USER[l.by]||{}).name||l.by)}</b><span>${esc(fmtStamp(l.at))}</span>${mentions.length?`<span>@ ${esc(mentions.join('、'))}</span>`:''}</div>${l.vars&&l.vars.message?`<div class="chat-message-body">${esc(L(l.vars.message))}</div>`:''}${chatReferenceCard(l.vars&&l.vars.reference)}${attachments}</div>`;
   }).join('') : `<div class="chat-empty">${esc(t('modal.chat.empty'))}</div>`;
   if(state.chatDraft.blocked===null)state.chatDraft.blocked=chatBlocks(u.id);
   const draft=state.chatDraft,options=chatReferenceOptions();
@@ -2876,7 +2892,7 @@ function viewChat() {
           <div class="chat-input-area"><textarea name="message" rows="1" placeholder="${esc(t('chat.messagePlaceholder'))}">${esc(draft.message)}</textarea><button class="btn btn-primary" type="submit">${esc(t('chat.send'))}</button></div>
         </div>
       </form>
-    </div>`;
+    </div>${state.chatContextMenu?`<div class="chat-context-menu" style="left:${Number(state.chatContextMenu.x)||0}px;top:${Number(state.chatContextMenu.y)||0}px"><button type="button" data-action="delete-chat-message" data-id="${esc(state.chatContextMenu.id)}">${esc(t('chat.delete'))}</button></div>`:''}`;
 }
 
 /* ------------------------------ 视图：事项详情 ------------------------------ */
@@ -3584,6 +3600,10 @@ function render() {
   const modalRoot = document.getElementById('modal-root');
   const route = (location.hash || '#/').slice(1);
   const u = currentUser();
+  const history=route.startsWith('/chat')?document.querySelector('.chat-global-history'):null;
+  const previousChatBottomDistance=history
+    ? Math.max(0,history.scrollHeight-history.clientHeight-history.scrollTop)
+    : null;
 
   if (!u) {
     app.innerHTML = viewLogin();
@@ -3600,6 +3620,11 @@ function render() {
   if(route.startsWith('/chat')&&(state.chatScrollToBottom||!state.chatOpened)){
     state.chatOpened=true;state.chatScrollToBottom=false;
     requestAnimationFrame(scrollChatToBottom);
+  } else if(route.startsWith('/chat')&&previousChatBottomDistance!==null){
+    requestAnimationFrame(()=>{
+      const history=document.querySelector('.chat-global-history');
+      if(history)history.scrollTop=LCBChatCore.scrollTopFromBottomDistance(history.scrollHeight,history.clientHeight,previousChatBottomDistance);
+    });
   } else if(!route.startsWith('/chat')) state.chatOpened=false;
   modalRoot.innerHTML = renderModal() + renderGuide();
   if (state.modal && state.modal.type === 'file') {
@@ -4173,11 +4198,26 @@ document.addEventListener('click', async ev => {
   if (mask && ev.target === mask) {
     state.modal = null; render(); return;
   }
+  if(state.chatContextMenu&&!ev.target.closest('.chat-context-menu')){
+    state.chatContextMenu=null;render();return;
+  }
   const el = ev.target.closest('[data-action]');
   if (!el) return;
   const action = el.getAttribute('data-action');
 
   switch (action) {
+    case 'delete-chat-message': {
+      const u=currentUser(),id=String(el.getAttribute('data-id')||'');
+      const item=chatMessages(u).find(message=>String(message.id)===id);
+      if(item){
+        item.deletedBy=[...new Set([...(item.deletedBy||[]),u.id])];
+        commit();
+        toast(t('toast.notificationDeleted'));
+      }
+      state.chatContextMenu=null;
+      render();
+      break;
+    }
     case 'close-chat-tool': {
       const tool=el.closest('details.chat-tool');
       if(tool)tool.open=false;
@@ -4888,6 +4928,18 @@ document.addEventListener('click', async ev => {
       break;
     }
   }
+});
+
+document.addEventListener('contextmenu', ev => {
+  const message=ev.target.closest('.chat-message[data-message-id]');
+  if(!message||!location.hash.startsWith('#/chat'))return;
+  ev.preventDefault();
+  state.chatContextMenu={
+    id:String(message.getAttribute('data-message-id')),
+    x:Math.max(8,Math.min(ev.clientX,window.innerWidth-150)),
+    y:Math.max(8,Math.min(ev.clientY,window.innerHeight-60)),
+  };
+  render();
 });
 
 document.addEventListener('change', ev => {

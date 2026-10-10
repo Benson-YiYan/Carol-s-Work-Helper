@@ -17,6 +17,10 @@ assert.equal(ChatCore.canViewMessage(message, 'guest'), false, 'blocked member c
 assert.deepEqual(ChatCore.visibleMessages([message], 'guest'), []);
 assert.deepEqual(ChatCore.visibleMessages([message], 'benson'), [message]);
 
+const deletedForBenson = { ...message, deletedBy: ['benson'] };
+assert.equal(ChatCore.canViewMessage(deletedForBenson, 'benson'), false, 'deleter no longer sees the message');
+assert.equal(ChatCore.canViewMessage(deletedForBenson, 'carol'), true, 'other members still see a privately deleted message');
+
 assert.deepEqual(
   ChatCore.messageRecipients(users, 'carol', ['guest']),
   ['carol', 'benson'],
@@ -42,6 +46,7 @@ assert.equal(ChatCore.latestVisibleMessageAt([message], 'benson'), 200);
 assert.equal(ChatCore.latestVisibleMessageAt([message], 'guest'), 0);
 assert.equal(ChatCore.hasNewVisibleMessage([], [message], 'benson'), true);
 assert.equal(ChatCore.hasNewVisibleMessage([message], [message], 'benson'), false);
+assert.equal(ChatCore.scrollTopFromBottomDistance(1000, 300, 50), 650, 'sync restores distance from chat bottom');
 
 const app = fs.readFileSync('app.js', 'utf8');
 assert.match(app, /active\.closest\('\.chat-composer'\)/, 'sync must preserve the active chat composer');
@@ -50,5 +55,9 @@ assert.match(app, /chatScrollToBottom\s*=\s*true/, 'new messages must request a 
 assert.match(app, /download-chat-file/, 'matter files must be referenceable from chat');
 assert.match(app, /name="chatFiles" multiple/, 'chat must accept multiple uploaded files');
 assert.match(app, /data-action="close-chat-tool"/, 'each chat popup must provide a close control');
+assert.match(app, /document\.addEventListener\('contextmenu'/, 'right-click must open the chat message menu');
+assert.match(app, /data-action="delete-chat-message"/, 'chat context menu must expose private delete');
+assert.match(app, /deletedBy=\[\.\.\.new Set/, 'private delete must use the per-user deletion list');
+assert.match(app, /scrollHeight-history\.clientHeight-history\.scrollTop/, 'render must preserve distance from chat bottom');
 
 console.log('chat behavior tests passed');
