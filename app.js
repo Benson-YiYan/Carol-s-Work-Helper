@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610101648';
+const APP_VERSION = '202610101843';
 
 /* ------------------------------ 共享数据（Supabase） ------------------------------
    页面是纯静态的，所以要三个人共用一份数据，必须有个服务器那一侧。
@@ -1452,8 +1452,11 @@ let sessionValidation=null;
 async function ensureActiveServerSession() {
   if(!authSession) return false;
   if(sessionValidation) return sessionValidation;
-  const checkedSession=authSession;
   sessionValidation=(async()=>{
+    // Supabase access tokens are intentionally short lived. Renew them before
+    // the server-side session probe so token expiry never becomes a logout.
+    if(!await LCBAuthSession.ensureFreshSession({session:authSession,refresh:refreshAuth})) return false;
+    const checkedSession=authSession;
     const res=await sbFetch('/rpc/lcb_session_active',{method:'POST',body:'{}'});
     if(!authSession||authSession!==checkedSession) return false;
     if(res.status===401){expireAuthSession();return false;}
