@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610101843';
+const APP_VERSION = '202610101905';
 
 /* ------------------------------ 共享数据（Supabase） ------------------------------
    页面是纯静态的，所以要三个人共用一份数据，必须有个服务器那一侧。
@@ -4140,7 +4140,7 @@ function exportCSV(onlyId) {
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = onlyId ? `${matterById(onlyId).no}.csv` : t('csv.filename');
+  a.download = onlyId ? `${matterById(onlyId).no}.csv` : LCBExportFilename.mattersCsvName(new Date());
   a.click();
   URL.revokeObjectURL(a.href);
   toast(t('toast.exported'));
