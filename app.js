@@ -11,7 +11,12 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610130920';
+const APP_VERSION = '202610131554';
+let newerVersion = '';
+let versionNoticeClosed = false;
+async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return false; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {} return false; }
+function forceUpdate() { const url=new URL(location.href); url.searchParams.set('v',newerVersion||Date.now()); location.replace(url.toString()); }
+function versionNotice() { if(!newerVersion||versionNoticeClosed)return ''; const copy=L({zh:'检测到新版本，当前版本已经无法使用，没有任何功能。\n如果你正在输入，请复制你正在输入的内容，然后点击右上角更新网页，以免丢失。',en:'A new version is available. This version can no longer be used.\nIf you are typing, copy your text, then click Update in the top right to avoid losing it.',es:'Hay una nueva versión. Esta versión ya no se puede usar.\nSi estás escribiendo, copia el texto y pulsa Actualizar arriba a la derecha para no perderlo.'}); return modalFrame(L({zh:'检测到新版本',en:'New version detected',es:'Nueva versión detectada'}),`<div class="hint" style="white-space:pre-line">${esc(copy)}</div>`,`<button class="btn" type="button" data-action="close-version-notice">${esc(L({zh:'关闭',en:'Close',es:'Cerrar'}))}</button><button class="btn btn-primary" type="button" data-action="force-update">${esc(L({zh:'现在更新',en:'Update now',es:'Actualizar ahora'}))}</button>`); }
 
 /* ------------------------------ 共享数据（Supabase） ------------------------------
    页面是纯静态的，所以要三个人共用一份数据，必须有个服务器那一侧。
@@ -2503,6 +2508,7 @@ function shell(route, content) {
         <div class="mobile-drawer-account"><span class="avatar">${esc(u.short)}</span><span><b>${esc(u.name)}</b><small>${esc(t(u.roleKey))}</small></span><button class="btn btn-sm" type="button" data-action="logout">${esc(t('topbar.signout'))}</button></div>
       </div>
       <div class="topbar-right">
+        ${newerVersion?`<button class="btn btn-sm btn-primary" type="button" data-action="force-update">${esc(L({zh:'更新',en:'Update',es:'Actualizar'}))}</button>`:''}
         ${langSwitcher('topbar-lang')}
         ${syncBadge()}
         <div class="user-chip" aria-label="${esc(u.name)}" style="pointer-events:none;cursor:default">
@@ -3672,7 +3678,7 @@ function render() {
       if(history)history.scrollTop=LCBChatCore.scrollTopFromBottomDistance(history.scrollHeight,history.clientHeight,previousChatBottomDistance);
     });
   } else if(!route.startsWith('/chat')) state.chatOpened=false;
-  modalRoot.innerHTML = renderModal() + renderGuide();
+  modalRoot.innerHTML = versionNotice() || (renderModal() + renderGuide());
   if (state.modal && state.modal.type === 'file') {
     const first = document.getElementById('file-form');
     if (first && first.fileName) first.fileName.focus();
@@ -4250,6 +4256,8 @@ document.addEventListener('click', async ev => {
   const el = ev.target.closest('[data-action]');
   if (!el) return;
   const action = el.getAttribute('data-action');
+  if (action === 'force-update') { forceUpdate(); return; }
+  if (action === 'close-version-notice') { versionNoticeClosed = true; render(); return; }
 
   switch (action) {
     case 'delete-chat-message': {
@@ -5345,6 +5353,8 @@ if (!REMOTE_ENABLED && !load(KEY.matters, null)) {
 render();
 
 if (REMOTE_ENABLED) {
+  checkForNewVersion();
+  setInterval(checkForNewVersion, 5 * 60 * 1000);
   clearPrivateCache();
   refreshAuth().then(ok => {
     if (ok) pullRemote({ initial: true });
