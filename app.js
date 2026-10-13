@@ -11,10 +11,10 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610131834';
+const APP_VERSION = '202610131926';
 let newerVersion = '';
 let versionNoticeClosed = false;
-async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return false; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {} return false; }
+async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
 function forceUpdate() { const url=new URL(location.href); url.searchParams.set('v',newerVersion||Date.now()); location.replace(url.toString()); }
 function versionNotice() { if(!newerVersion||versionNoticeClosed)return ''; const copy=L({zh:'检测到新版本，当前版本已经无法使用，没有任何功能。\n如果你正在输入，请复制你正在输入的内容，然后点击右上角更新网页，以免丢失。',en:'A new version is available. This version can no longer be used.\nIf you are typing, copy your text, then click Update in the top right to avoid losing it.',es:'Hay una nueva versión. Esta versión ya no se puede usar.\nSi estás escribiendo, copia el texto y pulsa Actualizar arriba a la derecha para no perderlo.'}); return modalFrame(L({zh:'检测到新版本',en:'New version detected',es:'Nueva versión detectada'}),`<div class="hint" style="white-space:pre-line">${esc(copy)}</div>`,`<button class="btn" type="button" data-action="close-version-notice">${esc(L({zh:'关闭',en:'Close',es:'Cerrar'}))}</button><button class="btn btn-primary" type="button" data-action="force-update">${esc(L({zh:'现在更新',en:'Update now',es:'Actualizar ahora'}))}</button>`); }
 
@@ -3163,6 +3163,7 @@ function viewSettings() {
         <h1>${esc(t('settings.title'))}</h1>
         <div class="desc">${esc(t('settings.desc'))}</div>
       </div>
+      <div class="right"><button class="btn btn-primary" type="button" data-action="check-update">${esc(L({zh:'检查更新',en:'Check for updates',es:'Buscar actualizaciones'}))}</button></div>
     </div>
     <div class="detail-grid">
       <div>
@@ -4275,6 +4276,17 @@ document.addEventListener('click', async ev => {
   const action = el.getAttribute('data-action');
   if (action === 'force-update') { forceUpdate(); return; }
   if (action === 'close-version-notice') { versionNoticeClosed = true; render(); return; }
+  if (action === 'check-update') {
+    el.disabled=true;
+    el.textContent=L({zh:'正在检查…',en:'Checking…',es:'Buscando…'});
+    versionNoticeClosed=false;
+    const available=await checkForNewVersion();
+    if(available===false) toast(L({zh:'当前已是最新版本',en:'You are up to date',es:'Tienes la última versión'}));
+    if(available===null) toast(L({zh:'检查更新失败，请检查网络后重试',en:'Update check failed. Check your connection and try again.',es:'No se pudo buscar actualizaciones. Revisa tu conexión e inténtalo de nuevo.'}));
+    el.disabled=false;
+    el.textContent=L({zh:'检查更新',en:'Check for updates',es:'Buscar actualizaciones'});
+    return;
+  }
 
   switch (action) {
     case 'delete-chat-message': {
