@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610101905';
+const APP_VERSION = '202610130920';
 
 /* ------------------------------ 共享数据（Supabase） ------------------------------
    页面是纯静态的，所以要三个人共用一份数据，必须有个服务器那一侧。
@@ -230,6 +230,9 @@ TUTORIAL_DETAILS.es[1][3] = 'La edición incluye antecedentes, prioridad, fecha 
 TUTORIAL_DETAILS.zh[1][5] += ' 截止日期可留空，也可选择 ASAP；ASAP 事项每天提醒一次。';
 TUTORIAL_DETAILS.en[1][3] += ' The due date is optional and can be set to ASAP; ASAP matters generate one reminder each day.';
 TUTORIAL_DETAILS.es[1][3] += ' La fecha límite es opcional y puede marcarse como ASAP; los asuntos ASAP generan un aviso diario.';
+TUTORIAL_DETAILS.zh[1].push('最后一步负责人可点击“完成事项”；完成后事项变灰、沉底并默认折叠。展开后，仅事项总负责人本人可确认删除并移入回收站。');
+TUTORIAL_DETAILS.en[1].push('The final-step owner can select Complete matter. Completed matters turn gray, move to the bottom, and collapse by default. After expanding, only the matter owner can confirm deletion to the Recycle Bin.');
+TUTORIAL_DETAILS.es[1].push('El responsable del último paso puede elegir Completar asunto. Los asuntos completados se vuelven grises, pasan al final y quedan contraídos. Al expandirlos, solo el responsable general puede confirmar su envío a la papelera.');
 
 BEGINNER_TUTORIAL.zh.steps.splice(1,0,['全文搜索','搜索事项、客户、聊天、动态和文件名；结果严格按当前账号权限显示。']);
 BEGINNER_TUTORIAL.en.steps.splice(1,0,['Full search','Search matters, clients, chats, activity, and filenames; results follow the current account permissions.']);
@@ -477,6 +480,9 @@ const STR = {
   'inbox.stepDone': ['{actor} 完成了事项“{title}”步骤“{step}”，下一步“{next}”由 {owner} 负责。当前事项状态：{status}。',
     '{actor} completed the “{step}” step in “{title}”. Next, “{next}” is assigned to {owner}. Current status: {status}.',
     '{actor} completó el paso «{step}» de «{title}». El siguiente paso, «{next}», está a cargo de {owner}. Estado actual: {status}.'],
+  'inbox.matterCompleted': ['事项“{title}”已完成，最后一步负责人是“{owner}”。',
+    'Matter “{title}” is complete. The final-step owner was “{owner}”.',
+    'El asunto «{title}» se completó. El responsable del último paso fue «{owner}».'],
   'inbox.stepUndo': ['{actor} 撤回了事项“{title}”的步骤完成记录，当前步骤回到“{step}”，由 {owner} 负责。',
     '{actor} undid a completed step in “{title}”. The current step is again “{step}”, assigned to {owner}.',
     '{actor} deshizo un paso completado de «{title}». El paso actual vuelve a ser «{step}», a cargo de {owner}.'],
@@ -591,6 +597,12 @@ const STR = {
   'detail.trashAdminOnly': ['仅事项负责人 {name} 可操作', 'Only the matter owner, {name}, can take this action', 'Solo el responsable del asunto, {name}, puede realizar esta acción'],
   'detail.step.title': ['当前步骤', 'Current step', 'Paso actual'],
   'detail.step.button': ['完成当前步骤 →', 'Complete this step →', 'Completar este paso →'],
+  'detail.matterComplete': ['完成事项', 'Complete matter', 'Completar asunto'],
+  'detail.completed': ['事项已完成', 'Matter completed', 'Asunto completado'],
+  'detail.completedMeta': ['完成于 {when} · 最后一步负责人：{owner}', 'Completed {when} · Final-step owner: {owner}', 'Completado {when} · Responsable del último paso: {owner}'],
+  'detail.completedExpand': ['展开', 'Expand', 'Expandir'],
+  'detail.completedCollapse': ['收起', 'Collapse', 'Contraer'],
+  'detail.deleteCompleted': ['删除已完成事项', 'Delete completed matter', 'Eliminar asunto completado'],
   'detail.step.hintOwner': ['完成时会让你填写下一步：阶段、状态、截止日期、在等谁、下一步做什么、下一步负责人。',
     'When you complete this step, you will enter the next stage, status, due date, who or what you are waiting for, the next action, and its owner.',
     'Al completar este paso, indicarás la etapa, el estado y la fecha límite siguientes, a quién o qué se espera, la próxima acción y su responsable.'],
@@ -635,6 +647,7 @@ const STR = {
   'detail.entry.restored': ['从回收站恢复', 'Restored from recycle bin', 'Restaurado desde la papelera'],
   'detail.entry.stepUndo': ['撤销到上一步：{text}', 'Returned to the previous step: {text}', 'Se volvió al paso anterior: {text}'],
   'detail.entry.stepDone': ['完成步骤：{text}（负责人 {owner}）', 'Step completed: {text} (owner {owner})', 'Paso completado: {text} (responsable {owner})'],
+  'detail.entry.matterCompleted': ['事项已完成（最后一步负责人 {owner}）', 'Matter completed (final-step owner {owner})', 'Asunto completado (responsable del último paso: {owner})'],
   'detail.entry.stageMove': ['阶段推进：{from} → {to}', 'Stage changed: {from} → {to}', 'Cambio de etapa: {from} → {to}'],
   'detail.entry.advanced': ['状态 {status}｜下一步：{next}（{owner}，{due}）', 'Status {status} | next: {next} ({owner}, {due})', 'Estado {status} | siguiente: {next} ({owner}, {due})'],
   'detail.entry.chat': ['发送消息：{message}', 'Message sent: {message}', 'Mensaje enviado: {message}'],
@@ -784,6 +797,12 @@ const STR = {
     'Once you save, the matter moves to the next step. Fill in the new state <b>after</b> completion.',
     'Al guardar, el asunto pasa al siguiente paso. Rellena el estado <b>posterior</b>.'],
   'modal.complete.submit': ['完成这一步', 'Complete step', 'Completar paso'],
+  'modal.completeMatter.title': ['完成这个事项？', 'Complete this matter?', '¿Completar este asunto?'],
+  'modal.completeMatter.body': ['确认事项“{title}”已经全部完成吗？\n\n完成后会通知事项成员，并在列表中变灰、沉底和折叠。', 'Confirm that “{title}” is fully complete?\n\nMembers will be notified, and the matter will turn gray, move to the bottom, and collapse in the list.', '¿Confirmas que «{title}» está totalmente completado?\n\nSe avisará a los miembros y el asunto se volverá gris, pasará al final y quedará contraído.'],
+  'modal.completeMatter.confirm': ['确认完成事项', 'Complete matter', 'Completar asunto'],
+  'modal.deleteCompleted.title': ['删除已完成事项？', 'Delete completed matter?', '¿Eliminar el asunto completado?'],
+  'modal.deleteCompleted.body': ['确定删除“{title}”吗？\n\n删除后会进入回收站。只有事项总负责人本人可以执行此操作。', 'Delete “{title}”?\n\nIt will move to the Recycle Bin. Only the matter owner can do this.', '¿Eliminar «{title}»?\n\nPasará a la papelera. Solo el responsable general puede hacerlo.'],
+  'modal.deleteCompleted.confirm': ['删除已完成事项', 'Delete completed matter', 'Eliminar asunto completado'],
   'form.next': ['下一步做什么', 'What is the next step', '¿Cuál es el próximo paso?'],
   'form.waiting': ['正在等待谁', 'Who are we waiting for?', '¿A quién estamos esperando?'],
   'form.nextPh': ['例如：把修改稿发给客户确认', 'e.g. Send the revised draft to the client', 'p. ej. Enviar el borrador revisado al cliente'],
@@ -889,6 +908,8 @@ const STR = {
   'toast.purged': ['已彻底删除', 'Permanently deleted', 'Eliminado definitivamente'],
   'toast.bulkPurged': ['已彻底删除 {n} 条事项', '{n} matters permanently deleted', 'Se eliminaron definitivamente {n} asuntos'],
   'toast.stepDone': ['已完成这一步，事项进入下一步', 'Step completed — the matter moved on', 'Paso completado: el asunto ha avanzado'],
+  'toast.matterCompleted': ['事项已完成', 'Matter completed', 'Asunto completado'],
+  'toast.onlyMatterOwnerDeleteCompleted': ['只有事项总负责人 {name} 本人可以删除该已完成事项', 'Only the matter owner, {name}, can delete this completed matter', 'Solo el responsable general, {name}, puede eliminar este asunto completado'],
   'toast.fileAdded': ['加密文件已上传', 'Encrypted file upload complete', 'Carga de archivos cifrados completada'],
   'toast.fileDownloaded': ['附件已安全解密', 'Attachment decrypted securely', 'Archivo descifrado de forma segura'],
   'toast.fileTooLarge': ['文件不能超过 20 MB', 'File must be 20 MB or smaller', 'El archivo no puede superar 20 MB'],
@@ -1357,6 +1378,7 @@ const state = {
   clientSelected: new Set(),
   trashSelected: new Set(),
   notificationSelected: new Set(),
+  expandedCompleted: new Set(),
   loginDraft: { email:'', password:'' },
   chatDraft: { message:'', mentions:[], blocked:null, referenceType:'matter', refMatter:'', refStep:'', refClient:'', refFile:'', files:[] },
   chatScrollToBottom: false,
@@ -1883,6 +1905,10 @@ function isAdmin() {
 function isStepOwner(user, m) {
   return !!user && user.id === m.nextOwner;
 }
+function canDeleteMatter(user,m) {
+  if (!user || !m) return false;
+  return LCBMatterCompletion.isCompleted(m) ? LCBMatterCompletion.canDeleteCompleted(user,m) : (user.id===m.owner || user.admin);
+}
 function stepsOf(m) {
   return (m.steps || []).slice().sort((a, b) => b.at - a.at);
 }
@@ -2165,6 +2191,8 @@ function setLang(id) {
 function matterById(id) { return matters.find(m => String(m.id) === String(id)); }
 function sorted(list) {
   return [...list].sort((a, b) => {
+    const completed = Number(LCBMatterCompletion.isCompleted(a)) - Number(LCBMatterCompletion.isCompleted(b));
+    if (completed !== 0) return completed;
     const s = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
     if (s !== 0) return s;
     const dueKey = value => value === 'ASAP' ? '0000' : (value || '9999');
@@ -2174,6 +2202,7 @@ function sorted(list) {
 
 function reminderItems(user) {
   return sorted(visibleMatters(user).filter(m => {
+    if (LCBMatterCompletion.isCompleted(m)) return false;
     const due = daysFromToday(m.due);
     const contact = m.lastContact ? -daysFromToday(m.lastContact) : 999;
     return m.due === 'ASAP' || (due !== null && due <= 3) || m.waiting === 'client' || contact >= 7;
@@ -2514,7 +2543,7 @@ function updateNavScrollControls() {
 
 function viewDashboard() {
   const u = currentUser();
-  const list = visibleMatters(u);
+  const list = visibleMatters(u).filter(m => !LCBMatterCompletion.isCompleted(m));
   const red = list.filter(m => m.status === 'red');
   const dueWeek = list.filter(m => isThisWeek(m.due));
   const waitingMe = list.filter(m => m.waiting === u.id || (USER[m.nextOwner] && m.nextOwner === u.id));
@@ -2580,7 +2609,7 @@ function viewCalendar() {
   const first = new Date(year, month, 1);
   const start = new Date(first); start.setDate(first.getDate() - first.getDay());
   const names = lang === 'zh' ? ['日','一','二','三','四','五','六'] : (lang === 'es' ? ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']);
-  const list = visibleMatters(currentUser());
+  const list = visibleMatters(currentUser()).filter(m => !LCBMatterCompletion.isCompleted(m));
   const cells = [];
   for (let i = 0; i < 42; i++) {
     const d = new Date(start); d.setDate(start.getDate() + i);
@@ -2623,7 +2652,7 @@ function viewClients() {
 }
 
 function viewTeamWorkload() {
-  const list = visibleMatters(currentUser());
+  const list = visibleMatters(currentUser()).filter(m => !LCBMatterCompletion.isCompleted(m));
   const cards = USERS.map(u => {
     const own = list.filter(m => m.owner === u.id || m.nextOwner === u.id);
     const red = own.filter(m => m.status === 'red').length;
@@ -2741,7 +2770,17 @@ function filterMatters() {
 function matterRowsHTML() {
   const list = sorted(filterMatters());
   if (!list.length) return '';
-  return list.map(m => `
+  return list.map(m => {
+    if (LCBMatterCompletion.isCompleted(m)) {
+      const expanded = state.expandedCompleted.has(String(m.id));
+      const finalOwner = (USER[m.finalStepOwner || m.nextOwner] || {}).name || m.finalStepOwner || m.nextOwner;
+      return `<tr class="matter-completed-row ${expanded ? 'is-expanded' : ''}" data-action="toggle-completed-matter" data-id="${m.id}">
+        <td class="bulk-cell"></td><td class="nw">${esc(m.no)}</td><td>${esc(L(m.client))}</td>
+        <td colspan="5"><b>${esc(L(m.title))}</b><div class="small muted">✓ ${esc(t('detail.completedMeta',{when:fmtStamp(m.completedAt),owner:finalOwner}))}</div></td>
+        <td colspan="2" class="completed-row-actions"><button class="btn btn-sm" type="button" data-action="toggle-completed-matter" data-id="${m.id}">${esc(t(expanded?'detail.completedCollapse':'detail.completedExpand'))}</button></td>
+      </tr>${expanded ? `<tr class="matter-completed-detail"><td colspan="10"><div class="completed-detail-inner"><span>${esc(L(m.next))}</span><span class="completed-detail-actions"><button class="btn btn-sm" type="button" data-action="choose-matter-action" data-id="${m.id}">${esc(t('modal.matterAction.work'))}</button>${LCBMatterCompletion.canDeleteCompleted(currentUser(),m)?`<button class="btn btn-danger btn-sm" type="button" data-action="delete-completed-matter" data-id="${m.id}">${esc(t('detail.deleteCompleted'))}</button>`:''}</span></div></td></tr>` : ''}`;
+    }
+    return `
     <tr class="${m.importStatusError ? 'import-error' : ''}" data-action="choose-matter-action" data-id="${m.id}">
       <td class="bulk-cell"><input class="bulk-check" type="checkbox" data-action="toggle-bulk-matter" data-id="${m.id}" ${state.bulkSelected.has(String(m.id)) ? 'checked' : ''} ${currentUser().id === m.owner || isAdmin() ? '' : 'disabled'} aria-label="${esc(t('list.bulkDelete'))}: ${esc(m.no)}"></td>
       <td class="nw">${m.importStatusError ? `<div class="import-error-label">${esc(t('list.importError'))}</div>` : ''}${esc(m.no)}</td>
@@ -2753,7 +2792,8 @@ function matterRowsHTML() {
       <td>${esc(L(m.next))}</td>
       <td class="nw">${fmtDateShort(m.due)}<div class="small muted">${dueText(m.due)}</div></td>
       <td class="nw">${esc(waitLabel(m.waiting))}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function viewMatters() {
@@ -2774,9 +2814,9 @@ function viewMatters() {
   const n = sorted(filterMatters()).length;
   const bulkCount = [...state.bulkSelected].filter(id => {
     const m = matterById(id);
-    return m && !m.deletedAt && canSee(currentUser(), m) && (currentUser().id === m.owner || isAdmin());
+    return m && !m.deletedAt && canSee(currentUser(), m) && canDeleteMatter(currentUser(),m);
   }).length;
-  const selectable = sorted(filterMatters()).filter(m => currentUser().id === m.owner || isAdmin());
+  const selectable = sorted(filterMatters()).filter(m => canDeleteMatter(currentUser(),m));
   const allSelected = selectable.length > 0 && selectable.every(m => state.bulkSelected.has(String(m.id)));
 
   return `
@@ -2942,6 +2982,7 @@ function viewMatter(id,mode) {
   const recurrenceOpts = [['none',ft('recurrenceNone')],['weekly',ft('recurrenceWeekly')],['monthly',ft('recurrenceMonthly')]]
     .map(([v,n]) => `<option value="${v}" ${(m.recurrence || 'none') === v ? 'selected' : ''}>${esc(n)}</option>`).join('');
   const handoff = m.handoff && !m.handoff.acceptedAt ? m.handoff : null;
+  const completed = LCBMatterCompletion.isCompleted(m);
 
   const teamBoxes = USERS.map(x => `
     <label class="member-item">
@@ -3005,19 +3046,19 @@ function viewMatter(id,mode) {
             <div class="hint">${esc(t('detail.membersHint'))}</div></div>
           <button class="btn" type="button" data-action="check-matter-conflicts" data-id="${m.id}">${esc(t('conflict.check'))}</button>
           </fieldset>
-          <div class="danger-zone">
+          ${completed ? '' : `<div class="danger-zone">
             <button class="btn btn-danger btn-sm" type="button" data-action="delete-matter" data-id="${m.id}">${esc(t('detail.delete'))}</button>
             <span class="small muted">${u.id === m.owner
               ? esc(t('detail.deleteHintOwner'))
               : (u.admin
                 ? esc(t('detail.deleteHintAdmin'))
                 : esc(t('detail.deleteHintOther', { name: (USER[m.owner] || {}).name || m.owner })))}</span>
-          </div>
+          </div>`}
         </div>
       </div>
       <div class="matter-work-pane">
         <div class="card card-pad" style="margin-bottom:16px">
-          ${handoff ? `<div class="handoff-banner"><div><b>${esc(ft('handoffPending', { name:(USER[handoff.to] || {}).name || handoff.to }))}</b><span>${esc((USER[handoff.from] || {}).name || handoff.from)} → ${esc((USER[handoff.to] || {}).name || handoff.to)}</span></div>${u.id === handoff.to ? `<button class="btn btn-sm btn-primary" data-action="accept-handoff" data-id="${m.id}">${esc(ft('handoffAccept'))}</button>` : ''}</div>` : ''}
+          ${completed ? `<div class="matter-completed-summary"><div class="section-title">✓ ${esc(t('detail.completed'))}</div><div>${esc(t('detail.completedMeta',{when:fmtStamp(m.completedAt),owner:(USER[m.finalStepOwner||m.nextOwner]||{}).name||m.finalStepOwner||m.nextOwner}))}</div>${LCBMatterCompletion.canDeleteCompleted(u,m)?`<button class="btn btn-danger" type="button" data-action="delete-completed-matter" data-id="${m.id}">${esc(t('detail.deleteCompleted'))}</button>`:''}</div>` : `${handoff ? `<div class="handoff-banner"><div><b>${esc(ft('handoffPending', { name:(USER[handoff.to] || {}).name || handoff.to }))}</b><span>${esc((USER[handoff.from] || {}).name || handoff.from)} → ${esc((USER[handoff.to] || {}).name || handoff.to)}</span></div>${u.id === handoff.to ? `<button class="btn btn-sm btn-primary" data-action="accept-handoff" data-id="${m.id}">${esc(ft('handoffAccept'))}</button>` : ''}</div>` : ''}
           <div class="section-title">${esc(t('detail.step.title'))}
             <span class="tag" style="margin-left:auto">${esc((USER[m.nextOwner] || {}).name || m.nextOwner)}</span>
           </div>
@@ -3027,6 +3068,7 @@ function viewMatter(id,mode) {
             <span>${esc(t('detail.step.waiting', { w: waitLabel(m.waiting) }))}</span>
           </div>
           <button class="btn btn-primary btn-block" type="button" data-action="complete-step" data-id="${m.id}">${esc(t('detail.step.button'))}</button>
+          <button class="btn btn-block" style="margin-top:8px" type="button" data-action="complete-matter" data-id="${m.id}">${esc(t('detail.matterComplete'))}</button>
           ${last
             ? `<button class="btn btn-block btn-wrap" style="margin-top:8px" type="button" data-action="undo-step" data-id="${m.id}">${esc(t('detail.undo.button', { text: L(last.text) }))}</button>
                <div class="hint" style="margin-top:6px">${u.admin || last.by === u.id ? esc(t('detail.undo.hint')) : esc(t('detail.undo.hintDenied'))}</div>`
@@ -3036,6 +3078,7 @@ function viewMatter(id,mode) {
             : (u.admin
               ? esc(t('detail.step.hintAdmin', { name: (USER[m.nextOwner] || {}).name || m.nextOwner }))
               : esc(t('detail.step.hintOther', { name: (USER[m.nextOwner] || {}).name || m.nextOwner })))}</div>
+          `}
         </div>
         <div class="card card-pad" style="margin-bottom:16px">
           <div class="section-title">${esc(t('detail.files.title'))}
@@ -4690,13 +4733,13 @@ document.addEventListener('click', async ev => {
     case 'toggle-bulk-matter': {
       const id = String(el.getAttribute('data-id'));
       const m = matterById(id);
-      if (!m || (currentUser().id !== m.owner && !isAdmin())) break;
+      if (!m || !canDeleteMatter(currentUser(),m)) break;
       if (el.checked) state.bulkSelected.add(id); else state.bulkSelected.delete(id);
       render();
       break;
     }
     case 'toggle-all-bulk-matters': {
-      const selectable = sorted(filterMatters()).filter(m => currentUser().id === m.owner || isAdmin());
+      const selectable = sorted(filterMatters()).filter(m => canDeleteMatter(currentUser(),m));
       const selectAll = selectable.length > 0 && !selectable.every(m => state.bulkSelected.has(String(m.id)));
       selectable.forEach(m => selectAll ? state.bulkSelected.add(String(m.id)) : state.bulkSelected.delete(String(m.id)));
       render();
@@ -4705,7 +4748,7 @@ document.addEventListener('click', async ev => {
     case 'bulk-delete-matters': {
       const ids = [...state.bulkSelected].filter(id => {
         const m = matterById(id);
-        return m && !m.deletedAt && canSee(currentUser(), m) && (currentUser().id === m.owner || isAdmin());
+        return m && !m.deletedAt && canSee(currentUser(), m) && canDeleteMatter(currentUser(),m);
       });
       if (!ids.length) break;
       state.modal = {
@@ -4718,7 +4761,7 @@ document.addEventListener('click', async ev => {
     case 'confirm-bulk-delete-matters': {
       const ids = (state.modal && state.modal.ids || []).filter(id => {
         const m = matterById(id);
-        return m && !m.deletedAt && canSee(currentUser(), m) && (currentUser().id === m.owner || isAdmin());
+        return m && !m.deletedAt && canSee(currentUser(), m) && canDeleteMatter(currentUser(),m);
       });
       ids.forEach(id => {
         const m = matterById(id);
@@ -4739,6 +4782,11 @@ document.addEventListener('click', async ev => {
       const m = matterById(id);
       if (!m) break;
       if (!canSee(currentUser(), m)) break;
+      if (LCBMatterCompletion.isCompleted(m)) {
+        if (!LCBMatterCompletion.canDeleteCompleted(currentUser(), m)) toast(t('toast.onlyMatterOwnerDeleteCompleted', { name:(USER[m.owner]||{}).name||m.owner }));
+        else state.modal={type:'confirm',titleKey:'modal.deleteCompleted.title',body:t('modal.deleteCompleted.body',{title:L(m.title)}),confirmKey:'modal.deleteCompleted.confirm',danger:true,action:'confirm-delete-completed-matter',id:m.id};
+        render(); break;
+      }
       if (currentUser().id !== m.owner && !isAdmin()) {
         state.modal = {
           type: 'notice',
@@ -4766,6 +4814,7 @@ document.addEventListener('click', async ev => {
       const id = el.getAttribute('data-id');
       const m = matterById(id);
       if (!m) break;
+      if (LCBMatterCompletion.isCompleted(m)) { toast(t('toast.onlyMatterOwnerDeleteCompleted',{name:(USER[m.owner]||{}).name||m.owner})); break; }
       if (currentUser().id !== m.owner && !isAdmin()) { toast(t('toast.onlyOwnerDelete', { name: (USER[m.owner] || {}).name || m.owner })); break; }
       m.deletedAt = Date.now();
       addLogKey(id, currentUser().id, 'detail.entry.deleted', {}, {
@@ -4776,6 +4825,47 @@ document.addEventListener('click', async ev => {
       go('#/matters');
       render();
       toast(t('toast.deleted', { no: m.no }));
+      break;
+    }
+    case 'toggle-completed-matter': {
+      const id=String(el.getAttribute('data-id'));
+      if(state.expandedCompleted.has(id)) state.expandedCompleted.delete(id); else state.expandedCompleted.add(id);
+      render();
+      break;
+    }
+    case 'complete-matter': {
+      const m=matterById(el.getAttribute('data-id')),u=currentUser();
+      if(!m||!canSee(u,m)||LCBMatterCompletion.isCompleted(m)) break;
+      if(!LCBMatterCompletion.canComplete(u,m)){toast(t('toast.onlyStepOwner',{name:(USER[m.nextOwner]||{}).name||m.nextOwner}));break;}
+      state.modal={type:'confirm',titleKey:'modal.completeMatter.title',body:t('modal.completeMatter.body',{title:L(m.title)}),confirmKey:'modal.completeMatter.confirm',action:'confirm-complete-matter',id:m.id};
+      render();
+      break;
+    }
+    case 'confirm-complete-matter': {
+      const id=el.getAttribute('data-id'),m=matterById(id),u=currentUser();
+      if(!m||!u||!canSee(u,m)||!LCBMatterCompletion.canComplete(u,m)) break;
+      if(!await ensureMatterCurrent(id)) break;
+      const finalOwner=(USER[m.nextOwner]||{}).name||m.nextOwner;
+      if(!LCBMatterCompletion.completeMatter(m,u,Date.now())) break;
+      addLogKey(id,u.id,'detail.entry.matterCompleted',{owner:finalOwner},{key:'inbox.matterCompleted',vars:{title:m.title,owner:finalOwner}});
+      commit();deliverOperationNotification();state.modal=null;state.expandedCompleted.delete(String(id));go('#/matters');render();toast(t('toast.matterCompleted'));
+      break;
+    }
+    case 'delete-completed-matter': {
+      const m=matterById(el.getAttribute('data-id')),u=currentUser();
+      if(!m||!canSee(u,m)||!LCBMatterCompletion.isCompleted(m)) break;
+      if(!LCBMatterCompletion.canDeleteCompleted(u,m)){toast(t('toast.onlyMatterOwnerDeleteCompleted',{name:(USER[m.owner]||{}).name||m.owner}));break;}
+      state.modal={type:'confirm',titleKey:'modal.deleteCompleted.title',body:t('modal.deleteCompleted.body',{title:L(m.title)}),confirmKey:'modal.deleteCompleted.confirm',danger:true,action:'confirm-delete-completed-matter',id:m.id};
+      render();
+      break;
+    }
+    case 'confirm-delete-completed-matter': {
+      const id=el.getAttribute('data-id'),m=matterById(id),u=currentUser();
+      if(!m||!LCBMatterCompletion.canDeleteCompleted(u,m)){if(m)toast(t('toast.onlyMatterOwnerDeleteCompleted',{name:(USER[m.owner]||{}).name||m.owner}));break;}
+      if(!await ensureMatterCurrent(id)) break;
+      m.deletedAt=Date.now();
+      addLogKey(id,u.id,'detail.entry.deleted',{}, {key:'inbox.deleted',vars:noticeVars(m,u.id)});
+      commit();state.modal=null;state.expandedCompleted.delete(String(id));go('#/matters');render();toast(t('toast.deleted',{no:m.no}));
       break;
     }
     case 'complete-step': {
