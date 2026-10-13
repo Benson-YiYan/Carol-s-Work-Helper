@@ -23,6 +23,9 @@ begin
     if new_recalled_at < (old.data->>'at')::bigint or new_recalled_at > (old.data->>'at')::bigint + 300000 then
       raise exception 'message recall window expired';
     end if;
+    if extract(epoch from clock_timestamp()) * 1000 > (old.data->>'at')::bigint + 300000 then
+      raise exception 'message recall window expired';
+    end if;
   end if;
   return new;
 end;
