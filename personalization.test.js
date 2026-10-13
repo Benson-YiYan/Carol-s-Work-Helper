@@ -1,0 +1,17 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const context={};
+vm.runInNewContext(fs.readFileSync('settings-page.js','utf8'),context);
+assert.ok(context.LCBPersonalization,'personalization API exists');
+const p=context.LCBPersonalization;
+assert.equal(p.normalize({theme:{r:999,g:-2,b:'bad',s:150}}).theme.r,255);
+assert.equal(p.normalize({theme:{r:999,g:-2,b:'bad',s:150}}).theme.g,0);
+assert.equal(p.normalize({theme:{r:999,g:-2,b:'bad',s:150}}).theme.s,100);
+assert.equal(p.theme(null,true).gradient.includes('linear-gradient'),true);
+assert.equal(p.theme({r:255,g:0,b:0,s:0},false).color,'rgb(85, 85, 85)');
+const groups=p.partition([['#/matters'],['#/settings'],['#/chat']],['#/matters','#/settings','#/chat']);
+assert.equal(groups.main.length,1);
+assert.equal(groups.main[0][0],'#/settings');
+assert.equal(groups.more.length,2);
+console.log('personalization tests passed');
