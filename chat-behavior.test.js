@@ -20,6 +20,12 @@ assert.deepEqual(ChatCore.visibleMessages([message], 'benson'), [message]);
 const deletedForBenson = { ...message, deletedBy: ['benson'] };
 assert.equal(ChatCore.canViewMessage(deletedForBenson, 'benson'), false, 'deleter no longer sees the message');
 assert.equal(ChatCore.canViewMessage(deletedForBenson, 'carol'), true, 'other members still see a privately deleted message');
+const recalled = { ...message, recalledAt: 300, recalledBy: 'carol' };
+assert.equal(ChatCore.canViewMessage(recalled, 'carol'), false, 'sender cannot see a recalled message');
+assert.equal(ChatCore.canViewMessage(recalled, 'benson'), false, 'other members cannot see a recalled message');
+assert.equal(ChatCore.canRecallMessage(message, 'carol', 200 + 5 * 60 * 1000), true, 'sender can recall own message through five minutes');
+assert.equal(ChatCore.canRecallMessage(message, 'carol', 200 + 5 * 60 * 1000 + 1), false, 'message cannot be recalled after five minutes');
+assert.equal(ChatCore.canRecallMessage(message, 'benson', 300), false, 'another member cannot recall the message');
 
 assert.deepEqual(
   ChatCore.messageRecipients(users, 'carol', ['guest']),
@@ -47,6 +53,9 @@ assert.equal(ChatCore.latestVisibleMessageAt([message], 'guest'), 0);
 assert.equal(ChatCore.hasNewVisibleMessage([], [message], 'benson'), true);
 assert.equal(ChatCore.hasNewVisibleMessage([message], [message], 'benson'), false);
 assert.equal(ChatCore.scrollTopFromBottomDistance(1000, 300, 50), 650, 'sync restores distance from chat bottom');
+assert.equal(ChatCore.shouldSendOnEnter({ key:'Enter', shiftKey:false, isComposing:false }), true, 'Enter sends chat');
+assert.equal(ChatCore.shouldSendOnEnter({ key:'Enter', shiftKey:true, isComposing:false }), false, 'Shift+Enter inserts a line break');
+assert.equal(ChatCore.shouldSendOnEnter({ key:'Enter', shiftKey:false, isComposing:true }), false, 'IME confirmation never sends chat');
 
 const app = fs.readFileSync('app.js', 'utf8');
 assert.match(app, /active\.closest\('\.chat-composer'\)/, 'sync must preserve the active chat composer');
@@ -59,5 +68,13 @@ assert.match(app, /document\.addEventListener\('contextmenu'/, 'right-click must
 assert.match(app, /data-action="delete-chat-message"/, 'chat context menu must expose private delete');
 assert.match(app, /deletedBy=\[\.\.\.new Set/, 'private delete must use the per-user deletion list');
 assert.match(app, /scrollHeight-history\.clientHeight-history\.scrollTop/, 'render must preserve distance from chat bottom');
+assert.match(app, /requestSubmit\(\)/, 'Enter must submit the chat form');
+assert.match(app, /data-action="bulk-delete-chat"/, 'chat context menu must start bulk delete');
+assert.match(app, /action:'confirm-bulk-delete-chat'/, 'bulk delete must require confirmation');
+assert.match(app, /action:'confirm-recall-chat-message'/, 'recall must require confirmation');
+
+const styles = fs.readFileSync('styles.css', 'utf8');
+assert.doesNotMatch(styles, /\.chat-message\.mine \.chat-message-body\{[^}]*#e8f0ff/, 'own chat bubbles must not use the old blue theme');
+assert.doesNotMatch(styles, /\.chat-reference-card\{[^}]*#b9ccf5/, 'chat reference cards must not use the old blue theme');
 
 console.log('chat behavior tests passed');

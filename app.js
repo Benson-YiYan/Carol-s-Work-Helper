@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610131554';
+const APP_VERSION = '202610131819';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return false; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {} return false; }
@@ -465,6 +465,16 @@ const STR = {
   'inbox.bulkDelete': ['批量删除', 'Delete selected', 'Eliminar seleccionadas'],
   'inbox.delete': ['删除消息', 'Delete message', 'Eliminar mensaje'],
   'chat.delete': ['删除', 'Delete', 'Eliminar'],
+  'chat.bulkDelete': ['批量删除', 'Delete multiple', 'Eliminar varios'],
+  'chat.deleteSelected': ['删除选中的消息', 'Delete selected messages', 'Eliminar mensajes seleccionados'],
+  'chat.cancelBulk': ['取消批量删除', 'Cancel bulk delete', 'Cancelar eliminación múltiple'],
+  'chat.recall': ['撤回', 'Recall', 'Retirar'],
+  'chat.deleteConfirmTitle': ['确认删除消息', 'Delete message?', '¿Eliminar mensaje?'],
+  'chat.deleteConfirmBody': ['删除后仅你自己看不到这条消息。', 'After deletion, only you will no longer see this message.', 'Después de eliminarlo, solo tú dejarás de ver este mensaje.'],
+  'chat.bulkConfirmTitle': ['确认批量删除', 'Delete selected messages?', '¿Eliminar los mensajes seleccionados?'],
+  'chat.bulkConfirmBody': ['确定删除选中的 {n} 条消息吗？删除后仅你自己看不到。', 'Delete the selected {n} messages? Only you will no longer see them.', '¿Eliminar los {n} mensajes seleccionados? Solo tú dejarás de verlos.'],
+  'chat.recallConfirmTitle': ['确认撤回消息', 'Recall message?', '¿Retirar mensaje?'],
+  'chat.recallConfirmBody': ['撤回后所有人都看不到这条消息。', 'After recall, nobody will be able to see this message.', 'Después de retirarlo, nadie podrá ver este mensaje.'],
   'inbox.read': ['已读', 'Read', 'Leído'],
   'inbox.unread': ['未读', 'Unread', 'No leído'],
   'inbox.new': ['{actor} 新建了事项“{title}”。当前步骤：“{next}”，由 {owner} 负责。当前事项状态：{status}。',
@@ -1389,6 +1399,8 @@ const state = {
   chatScrollToBottom: false,
   chatOpened: false,
   chatContextMenu: null,
+  chatBulkDelete: false,
+  chatSelected: new Set(),
   loginError: '',
   calendarOffset: 0,
   mobileNavOpen: false,
@@ -2919,7 +2931,8 @@ function viewChat() {
   const rows = messages.length ? messages.map(l => {
     const mentions=(l.vars&&l.vars.mentions||[]).map(id=>(USER[id]||{}).name||id);
     const attachments=(l.vars&&l.vars.attachments||[]).map(chatReferenceCard).join('');
-    return `<div class="chat-message ${l.by===u.id?'mine':''}" data-message-id="${esc(l.id)}"><div class="chat-message-meta"><b>${esc((USER[l.by]||{}).name||l.by)}</b><span>${esc(fmtStamp(l.at))}</span>${mentions.length?`<span>@ ${esc(mentions.join('、'))}</span>`:''}</div>${l.vars&&l.vars.message?`<div class="chat-message-body">${esc(L(l.vars.message))}</div>`:''}${chatReferenceCard(l.vars&&l.vars.reference)}${attachments}</div>`;
+    const selected=state.chatSelected.has(String(l.id));
+    return `<div class="chat-message ${l.by===u.id?'mine':''} ${state.chatBulkDelete?'is-selecting':''}" data-message-id="${esc(l.id)}">${state.chatBulkDelete?`<label class="chat-message-select"><input type="checkbox" data-action="toggle-chat-message" data-id="${esc(l.id)}" ${selected?'checked':''}><span>${esc(L({zh:'选择消息',en:'Select message',es:'Seleccionar mensaje'}))}</span></label>`:''}<div class="chat-message-meta"><b>${esc((USER[l.by]||{}).name||l.by)}</b><span>${esc(fmtStamp(l.at))}</span>${mentions.length?`<span>@ ${esc(mentions.join('、'))}</span>`:''}</div>${l.vars&&l.vars.message?`<div class="chat-message-body">${esc(L(l.vars.message))}</div>`:''}${chatReferenceCard(l.vars&&l.vars.reference)}${attachments}</div>`;
   }).join('') : `<div class="chat-empty">${esc(t('modal.chat.empty'))}</div>`;
   if(state.chatDraft.blocked===null)state.chatDraft.blocked=chatBlocks(u.id);
   const draft=state.chatDraft,options=chatReferenceOptions();
@@ -2927,7 +2940,11 @@ function viewChat() {
   const checked=(list,id)=>list.includes(id)?'checked':'';
   const fileNames=(draft.files||[]).map(file=>file.name).join('、');
   const closeTool=`<button class="chat-tool-close" type="button" data-action="close-chat-tool" aria-label="${esc(L({zh:'关闭弹窗',en:'Close popup',es:'Cerrar ventana'}))}">×</button>`;
-  return `<div class="page-head"><div><h1>${esc(t('nav.chat'))}</h1><div class="desc">${esc(t('chat.desc'))}</div></div></div>
+  const selectedCount=state.chatSelected.size;
+  const bulkActions=state.chatBulkDelete?`<div class="right"><button class="btn" type="button" data-action="cancel-bulk-delete-chat">${esc(t('chat.cancelBulk'))}</button><button class="btn btn-danger" type="button" data-action="bulk-delete-selected-chat" ${selectedCount?'':'disabled'}>${esc(t('chat.deleteSelected'))}${selectedCount?` (${selectedCount})`:''}</button></div>`:'';
+  const menuMessage=state.chatContextMenu&&messages.find(message=>String(message.id)===String(state.chatContextMenu.id));
+  const contextMenu=state.chatContextMenu&&menuMessage?`<div class="chat-context-menu" style="left:${Number(state.chatContextMenu.x)||0}px;top:${Number(state.chatContextMenu.y)||0}px"><button type="button" data-action="delete-chat-message" data-id="${esc(menuMessage.id)}">${esc(t('chat.delete'))}</button><button type="button" data-action="bulk-delete-chat" data-id="${esc(menuMessage.id)}">${esc(t('chat.bulkDelete'))}</button>${LCBChatCore.canRecallMessage(menuMessage,u.id)?`<button type="button" data-action="recall-chat-message" data-id="${esc(menuMessage.id)}">${esc(t('chat.recall'))}</button>`:''}</div>`:'';
+  return `<div class="page-head"><div><h1>${esc(t('nav.chat'))}</h1><div class="desc">${esc(t('chat.desc'))}</div></div>${bulkActions}</div>
     <div class="card card-pad chat-workspace">
       <div class="chat-history chat-global-history" aria-live="polite">${rows}</div>
       <form data-action="send-global-chat" class="chat-composer">
@@ -2941,7 +2958,7 @@ function viewChat() {
           <div class="chat-input-area"><textarea name="message" rows="1" placeholder="${esc(t('chat.messagePlaceholder'))}">${esc(draft.message)}</textarea><button class="btn btn-primary" type="submit">${esc(t('chat.send'))}</button></div>
         </div>
       </form>
-    </div>${state.chatContextMenu?`<div class="chat-context-menu" style="left:${Number(state.chatContextMenu.x)||0}px;top:${Number(state.chatContextMenu.y)||0}px"><button type="button" data-action="delete-chat-message" data-id="${esc(state.chatContextMenu.id)}">${esc(t('chat.delete'))}</button></div>`:''}`;
+    </div>${contextMenu}`;
 }
 
 /* ------------------------------ 视图：事项详情 ------------------------------ */
@@ -4261,15 +4278,56 @@ document.addEventListener('click', async ev => {
 
   switch (action) {
     case 'delete-chat-message': {
+      const id=String(el.getAttribute('data-id')||'');
+      state.chatContextMenu=null;
+      state.modal={type:'confirm',titleKey:'chat.deleteConfirmTitle',body:t('chat.deleteConfirmBody'),confirmKey:'chat.delete',action:'confirm-delete-chat-message',id,danger:true};
+      render();
+      break;
+    }
+    case 'confirm-delete-chat-message': {
       const u=currentUser(),id=String(el.getAttribute('data-id')||'');
       const item=chatMessages(u).find(message=>String(message.id)===id);
-      if(item){
-        item.deletedBy=[...new Set([...(item.deletedBy||[]),u.id])];
-        commit();
-        toast(t('toast.notificationDeleted'));
-      }
-      state.chatContextMenu=null;
+      if(item){item.deletedBy=[...new Set([...(item.deletedBy||[]),u.id])];commit();}
+      state.modal=null;render();
+      break;
+    }
+    case 'bulk-delete-chat': {
+      const id=String(el.getAttribute('data-id')||'');
+      state.chatBulkDelete=true;state.chatSelected=new Set(id?[id]:[]);state.chatContextMenu=null;render();
+      break;
+    }
+    case 'toggle-chat-message': {
+      const id=String(el.getAttribute('data-id')||'');
+      if(el.checked)state.chatSelected.add(id);else state.chatSelected.delete(id);
       render();
+      break;
+    }
+    case 'cancel-bulk-delete-chat':
+      state.chatBulkDelete=false;state.chatSelected.clear();render();break;
+    case 'bulk-delete-selected-chat': {
+      const ids=[...state.chatSelected];
+      if(!ids.length)break;
+      state.modal={type:'confirm',titleKey:'chat.bulkConfirmTitle',body:t('chat.bulkConfirmBody',{n:ids.length}),confirmText:t('chat.deleteSelected'),action:'confirm-bulk-delete-chat',danger:true};render();
+      break;
+    }
+    case 'confirm-bulk-delete-chat': {
+      const u=currentUser(),ids=new Set(state.chatSelected);
+      chatMessages(u).filter(item=>ids.has(String(item.id))).forEach(item=>{item.deletedBy=[...new Set([...(item.deletedBy||[]),u.id])];});
+      if(ids.size)commit();
+      state.modal=null;state.chatBulkDelete=false;state.chatSelected.clear();render();
+      break;
+    }
+    case 'recall-chat-message': {
+      const id=String(el.getAttribute('data-id')||''),item=chatMessages(currentUser()).find(message=>String(message.id)===id);
+      state.chatContextMenu=null;
+      if(item&&LCBChatCore.canRecallMessage(item,currentUser().id))state.modal={type:'confirm',titleKey:'chat.recallConfirmTitle',body:t('chat.recallConfirmBody'),confirmKey:'chat.recall',action:'confirm-recall-chat-message',id,danger:true};
+      render();
+      break;
+    }
+    case 'confirm-recall-chat-message': {
+      const id=String(el.getAttribute('data-id')||''),item=logs.find(message=>String(message.id)===id);
+      if(item&&LCBChatCore.canRecallMessage(item,currentUser().id)){item.recalledAt=Date.now();item.recalledBy=currentUser().id;commit();}
+      state.modal=null;render();
       break;
     }
     case 'close-chat-tool': {
@@ -5334,6 +5392,12 @@ window.addEventListener('unhandledrejection', event => {
 
 // 按 Esc 关掉弹窗
 document.addEventListener('keydown', ev => {
+  const chatInput=ev.target.closest&&ev.target.closest('.chat-composer textarea[name="message"]');
+  if(chatInput&&LCBChatCore.shouldSendOnEnter(ev)){
+    ev.preventDefault();
+    chatInput.closest('form').requestSubmit();
+    return;
+  }
   if (ev.key === 'Escape' && state.modal) { state.modal = null; render(); }
 });
 

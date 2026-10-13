@@ -5,7 +5,7 @@
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
   function stateFingerprint(log){
     const normalized=value=>[...new Set((value||[]).map(String))].sort();
-    return JSON.stringify({readBy:normalized(log&&log.readBy),deletedBy:normalized(log&&(log.deletedBy||log.deletedFor))});
+    return JSON.stringify({readBy:normalized(log&&log.readBy),deletedBy:normalized(log&&(log.deletedBy||log.deletedFor)),recalledAt:Number(log&&log.recalledAt)||0,recalledBy:String(log&&log.recalledBy||'')});
   }
   function partition(logs,syncedIds,baseline){
     const newLogs=[],stateUpdates=[];

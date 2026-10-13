@@ -11,10 +11,16 @@
 
   function canViewMessage(message, userId) {
     if (!message || message.key !== CHAT_KEY || !userId) return false;
+    if (message.recalledAt) return false;
     const id = String(userId);
     if ((message.deletedBy || message.deletedFor || []).map(String).includes(id)) return false;
     if (String(message.by) === id) return true;
     return (message.notifyTo || []).map(String).includes(id) && !blockedIds(message).includes(id);
+  }
+
+  function canRecallMessage(message, userId, now) {
+    const elapsed=Number(now == null ? Date.now() : now)-Number(message && message.at || 0);
+    return !!message && message.key === CHAT_KEY && !message.recalledAt && String(message.by) === String(userId) && elapsed >= 0 && elapsed <= 5 * 60 * 1000;
   }
 
   function visibleMessages(messages, userId) {
@@ -62,5 +68,9 @@
     return Math.max(0, Number(scrollHeight || 0) - Number(clientHeight || 0) - Math.max(0, Number(distanceFromBottom || 0)));
   }
 
-  return { CHAT_KEY, canViewMessage, visibleMessages, latestVisibleMessageAt, hasNewVisibleMessage, messageRecipients, unreadCount, blockedLabel, normalizeReference, pickReferenceValue, scrollTopFromBottomDistance };
+  function shouldSendOnEnter(event) {
+    return !!event && event.key === 'Enter' && !event.shiftKey && !event.isComposing;
+  }
+
+  return { CHAT_KEY, canViewMessage, canRecallMessage, visibleMessages, latestVisibleMessageAt, hasNewVisibleMessage, messageRecipients, unreadCount, blockedLabel, normalizeReference, pickReferenceValue, scrollTopFromBottomDistance, shouldSendOnEnter };
 });
