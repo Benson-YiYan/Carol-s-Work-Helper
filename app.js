@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610132034';
+const APP_VERSION = '202610132107';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -3507,7 +3507,7 @@ async function uploadEncryptedAttachment(id,file,options) {
     if(!await ensureMatterCurrent(id)) return false;
     const sealed=await LCBCrypto.encryptFile(id,await file.arrayBuffer(),sbFetch);
     const storagePath=encodeURIComponent(String(id))+'/'+crypto.randomUUID()+'.lcb';
-    const uploaded=await storageFetch('/object/lcb-encrypted-files/'+storagePath,{
+    const uploaded=await storageFetch('/object/'+ENCRYPTED_BUCKET+'/'+storagePath,{
       method:'POST',headers:{'Content-Type':'application/json','x-upsert':'false'},body:JSON.stringify(sealed),
     });
     if(!uploaded.ok) throw new Error('upload-http-'+uploaded.status);
@@ -3552,7 +3552,7 @@ async function downloadEncryptedAttachment(id,index) {
   const m=matterById(id),f=m&&(m.files||[])[Number(index)];
   if(!m||!f||!f.storagePath||!canSee(currentUser(),m)) return;
   try {
-    const res=await storageFetch('/object/authenticated/lcb-encrypted-files/'+f.storagePath);
+    const res=await storageFetch('/object/authenticated/'+ENCRYPTED_BUCKET+'/'+f.storagePath);
     if(!res.ok) throw new Error('download-http-'+res.status);
     const sealed=JSON.parse(await res.text());
     const clear=await LCBCrypto.decryptFile(m.id,sealed,sbFetch);
@@ -3569,7 +3569,7 @@ async function removeEncryptedAttachment(id,index) {
   if(!m||!f||!u||(!u.admin&&(f.uploadedBy?f.uploadedBy!==u.id:m.owner!==u.id))) return;
   if(!await ensureMatterCurrent(id)) return;
   if(f.storagePath){
-    const removed=await storageFetch('/object/lcb-encrypted-files/'+f.storagePath,{method:'DELETE'});
+    const removed=await storageFetch('/object/'+ENCRYPTED_BUCKET+'/'+f.storagePath,{method:'DELETE'});
     if(!removed.ok){showSystemError(new Error('file-delete-http-'+removed.status));return;}
   }
   m.files.splice(i,1);

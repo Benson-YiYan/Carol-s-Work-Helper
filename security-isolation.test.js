@@ -6,6 +6,7 @@ for (const file of files) assert.equal(fs.existsSync(file), true, `missing secur
 const source = files.map(file => fs.readFileSync(file, 'utf8')).join('\n');
 
 assert.equal(source.includes('tvavifjfbdwgkehtbxum'), false);
+assert.equal(source.includes('lcb-encrypted-files'), false, 'mother-son code must not reference the team storage bucket');
 assert.equal(source.includes("bucket_id='lcb-encrypted-files'"), false);
 for (const required of ['lcb_app_user_id', 'lcb_matter_visible', 'lcb-login', 'carol-encrypted-files']) {
   assert.equal(source.includes(required), true, `missing isolation control: ${required}`);
