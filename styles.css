@@ -453,3 +453,4 @@ table.grid td.nw{white-space:nowrap}
 .multiline-cell{white-space:pre-line;min-width:130px}
 :root .topbar-right>.version-update-button{display:inline-flex}
 .login-version-update{position:fixed;top:16px;right:16px;z-index:50}
+.settings-pages{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;width:100%}.settings-pages>.card{width:100%;margin:0!important;overflow-x:auto}.settings-entry{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;color:var(--ink);font-weight:600;transition:background .15s,transform .15s}.settings-entry:hover{background:var(--brand-soft);transform:translateX(2px)}.settings-entry>span:last-child{font-size:24px;color:var(--ink-3)}.settings-back{display:inline-block;margin-bottom:10px}.settings-check-time{display:block;font-size:11px;color:var(--ink-3);margin-top:12px}.settings-pages .matrix{width:100%}

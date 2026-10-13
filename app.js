@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610131926';
+const APP_VERSION = '202610132016';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -159,7 +159,7 @@ const BEGINNER_TUTORIAL = {
       ['客户跟进', '这里汇总久未联系、等待客户或需要继续推进的客户。点击“更新为刚刚已联系”会记录当前时间，并同步更新客户档案和通知。右上角数字表示待跟进数量。'],
       ['团队负荷', '团队负荷按成员统计正在进行、紧急、逾期和等待本人推进的事项，帮助负责人了解分工是否均衡，以及谁需要优先支援。'],
       ['通知', '事项修改、聊天、文件、客户操作和日程提醒会进入通知页。可标记已读或删除；允许系统通知后，电脑也会弹出提醒。侧边栏红色数字表示未读数量。'],
-      ['信息', '信息页展示成员和可见范围，并可查看登录设备的名称、位置、IP 和最后活动时间。可以退出单台或全部设备、查看安全记录，以及导出或恢复加密备份。'],
+      ['设置', '设置页展示成员和可见范围，并可查看登录设备的名称、位置、IP 和最后活动时间。可以退出单台或全部设备、查看安全记录，以及导出或恢复加密备份。'],
       ['回收站', '删除的事项和客户档案会先进入回收站。拥有权限的人可以恢复、单独永久删除或批量永久删除；永久删除后无法恢复，请确认后再操作。'],
     ],
   },
@@ -173,7 +173,7 @@ const BEGINNER_TUTORIAL = {
       ['Client follow-up', 'This page gathers clients who have not been contacted recently, are being waited on, or need further action. “Mark as contacted now” records the current time and updates both the client record and notifications. The badge shows the number due for follow-up.'],
       ['Team workload', 'Team workload shows each member’s open, urgent, overdue, and waiting matters. It helps the team lead see whether work is balanced and who may need support first.'],
       ['Notifications', 'Matter edits, chats, file activity, client actions, and reminders appear here. Notifications can be marked as read or deleted. When system notifications are enabled, alerts can also appear on the computer. The red badge shows the unread count.'],
-      ['Information', 'Information shows members and visibility rules, plus each signed-in device’s name, location, IP address, and last active time. You can sign out one or all devices, review security events, and export or restore an encrypted backup.'],
+      ['Settings', 'Settings shows members and visibility rules, plus each signed-in device’s name, location, IP address, and last active time. You can sign out one or all devices, review security events, and export or restore an encrypted backup.'],
       ['Recycle bin', 'Deleted matters and client records are moved here first. Authorized users can restore them, permanently remove one item, or permanently remove selected items in bulk. Permanent deletion cannot be undone.'],
     ],
   },
@@ -187,7 +187,7 @@ const BEGINNER_TUTORIAL = {
       ['Seguimiento de clientes', 'Reúne clientes sin contacto reciente, pendientes de respuesta o que requieren otra acción. “Marcar como contactado ahora” registra la hora actual y actualiza el expediente y las notificaciones. El indicador muestra cuántos requieren seguimiento.'],
       ['Carga del equipo', 'Muestra por miembro los asuntos abiertos, urgentes, vencidos y pendientes de su intervención. Ayuda a comprobar si el reparto es equilibrado y quién necesita apoyo primero.'],
       ['Notificaciones', 'Aquí aparecen cambios de asuntos, chats, archivos, acciones sobre clientes y recordatorios. Se pueden marcar como leídas o eliminar. Si activas las notificaciones del sistema, los avisos también aparecen en el ordenador.'],
-      ['Información', 'Muestra miembros y reglas de visibilidad, además del nombre, ubicación, IP y última actividad de cada dispositivo conectado. Permite cerrar una sesión o todas, revisar eventos de seguridad y exportar o restaurar una copia cifrada.'],
+      ['Configuración', 'Muestra miembros y reglas de visibilidad, además del nombre, ubicación, IP y última actividad de cada dispositivo conectado. Permite cerrar una sesión o todas, revisar eventos de seguridad y exportar o restaurar una copia cifrada.'],
       ['Papelera', 'Los asuntos y expedientes eliminados se trasladan primero aquí. Los usuarios autorizados pueden restaurarlos, borrar uno definitivamente o borrar varios en lote. La eliminación definitiva no se puede deshacer.'],
     ],
   },
@@ -361,7 +361,7 @@ const STR = {
   'chat.uploadFiles': ['上传文件并发送', 'Upload files and send', 'Subir archivos y enviar'],
   'chat.selectedFiles': ['已选择：{names}', 'Selected: {names}', 'Seleccionados: {names}'],
   'nav.clients': ['客户档案', 'Clients', 'Clientes'],
-  'nav.settings': ['信息', 'Info', 'Información'],
+  'nav.settings': ['设置', 'Settings', 'Configuración'],
   'nav.trash': ['回收站', 'Recycle bin', 'Papelera'],
   'topbar.signout': ['退出登录', 'Sign out', 'Cerrar sesión'],
   'banner.noStorage': ['⚠️ 这个浏览器不允许网页在本机保存数据，所以你现在改的东西刷新后会丢。换成 GitHub Pages 网址打开，或者用 Chrome 打开这个文件就正常了。',
@@ -668,7 +668,7 @@ const STR = {
   'detail.entry.chat': ['发送消息：{message}', 'Message sent: {message}', 'Mensaje enviado: {message}'],
   'detail.entry.readReceipt': ['{reader} 已读通知', '{reader} read the notification', '{reader} leyó la notificación'],
 
-  'settings.title': ['信息', 'Info', 'Información'],
+  'settings.title': ['设置', 'Settings', 'Configuración'],
   'settings.desc': ['成员、可见范围和安全性。',
     'Members, visibility, and security.',
     'Miembros, visibilidad y seguridad.'],
@@ -3147,7 +3147,32 @@ function viewMatter(id,mode) {
 
 /* ------------------------------ 视图：设置 ------------------------------ */
 
+let settingsRecords='';
+let settingsRecordsBusy=false;
+let settingsDefaultsLoaded=false;
 function viewSettings() {
+  const team=false;
+  if(team&&!settingsDefaultsLoaded&&REMOTE_ENABLED){
+    settingsDefaultsLoaded=true;
+    sbFetch('/rpc/lcb_get_default_teams',{method:'POST',body:'{}'}).then(async r=>{if(r.ok){save(KEY.lang+':defaultTeams',await r.json());if(location.hash.startsWith('#/settings'))render();}}).catch(()=>{settingsDefaultsLoaded=false;});
+  }
+  if(location.hash==='#/settings/records'&&!settingsRecords&&!settingsRecordsBusy)loadSettingsRecords();
+  const defaults=team?'<div class="card card-pad"><div class="section-title">'+esc(t('settings.defaultTeam'))+'</div><table class="matrix"><thead><tr><th>'+esc(t('th.area'))+'</th>'+USERS.map(u=>'<th>'+esc(u.name)+'</th>').join('')+'</tr></thead><tbody>'+PRACTICE_AREAS.map(a=>'<tr><td>'+esc(areaName(a.id))+'</td>'+USERS.map(u=>'<td><input type="checkbox" data-action="set-default-team" data-area="'+a.id+'" data-user="'+u.id+'" '+(defaultTeam(a.id).includes(u.id)?'checked':'')+' '+(currentUser().id==='carol'?'':'disabled')+' aria-label="'+esc(areaName(a.id)+' '+u.name)+'"></td>').join('')+'</tr>').join('')+'</tbody></table><div class="hint">'+t('settings.defaultTeamHint')+'</div></div>':'';
+  return LCBSettingsPage({L,esc,t,team,admin:isAdmin(),legacy:legacySettings(),defaults,records:settingsRecords||esc(L({zh:'正在加载…',en:'Loading…',es:'Cargando…'})),integrity:integrityPanel(),version:APP_VERSION,latest:load(KEY.lang+':latestVersion',''),lastCheck:load(KEY.lang+':lastVersionCheck',0)});
+}
+async function loadSettingsRecords(){
+  if(!isAdmin()||settingsRecordsBusy)return;
+  settingsRecordsBusy=true;
+  try{
+    const r=await sbFetch('/security_events?select=user_id,event_type,happened_at&order=happened_at.desc&limit=20');
+    if(!r.ok)throw new Error('security-events-http-'+r.status);
+    const rows=await r.json();
+    settingsRecords=rows.length?rows.map(x=>'<div class="file-item"><div><b>'+esc(x.event_type)+'</b><br><small>'+esc((USER[x.user_id]||{}).name||x.user_id)+' · '+esc(fmtStamp(x.happened_at))+'</small></div></div>').join(''):esc(t('modal.securityEvents.empty'));
+  }catch(e){settingsRecords=esc(L({zh:'加载失败，请重试',en:'Could not load. Try again.',es:'No se pudo cargar. Inténtalo de nuevo.'}));}
+  finally{settingsRecordsBusy=false;if(location.hash==='#/settings/records')render();}
+}
+
+function legacySettings() {
   const rows = PRACTICE_AREAS.map(a => {
     const ids = defaultTeam(a.id);
     const cells = USERS.map(u => {
@@ -4281,12 +4306,16 @@ document.addEventListener('click', async ev => {
     el.textContent=L({zh:'正在检查…',en:'Checking…',es:'Buscando…'});
     versionNoticeClosed=false;
     const available=await checkForNewVersion();
+    save(KEY.lang+':lastVersionCheck',Date.now());
+    if(available!==null)save(KEY.lang+':latestVersion',newerVersion||APP_VERSION);
     if(available===false) toast(L({zh:'当前已是最新版本',en:'You are up to date',es:'Tienes la última versión'}));
     if(available===null) toast(L({zh:'检查更新失败，请检查网络后重试',en:'Update check failed. Check your connection and try again.',es:'No se pudo buscar actualizaciones. Revisa tu conexión e inténtalo de nuevo.'}));
     el.disabled=false;
     el.textContent=L({zh:'检查更新',en:'Check for updates',es:'Buscar actualizaciones'});
+    if(location.hash.startsWith('#/settings'))render();
     return;
   }
+  if(action==='settings-load-records'){await loadSettingsRecords();return;}
 
   switch (action) {
     case 'delete-chat-message': {
