@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610141951';
+const APP_VERSION = '202610142114';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -683,7 +683,11 @@ const STR = {
   'settings.loginHint': ['使用团队分配的邮箱和密码登录。',
     'Sign in with the email address and password assigned to your team account.',
     'Inicia sesión con el correo y la contraseña asignados a tu cuenta del equipo.'],
-  'settings.defaultTeam': ['新事项默认勾选谁', 'Default members for new matters', 'Miembros predeterminados para asuntos nuevos para asuntos nuevos'],
+  'settings.defaultTeam': ['业务类型', 'Practice areas', 'Áreas de práctica'],
+  'areas.add': ['新建业务类型','Add practice area','Añadir área de práctica'],
+  'areas.delete': ['删除业务类型','Delete practice area','Eliminar área de práctica'],
+  'areas.deleteConfirm': ['确定删除“{name}”？已有事项不会被修改。','Delete “{name}”? Existing matters will not be changed.','¿Eliminar «{name}»? Los asuntos existentes no se modificarán.'],
+  'areas.inUse': ['【{name}】正在使用这个业务类型，请修改后重试','“{name}” uses this practice area. Change it and try again.','«{name}» usa esta área de práctica. Cámbiala y vuelve a intentarlo.'],
   'settings.defaultTeamHint': ['真正的门禁是事项里的「项目成员」：只有被勾选的人能打开它，别人连列表里都看不到。这张表只是新建时的默认值，每一条事项都可以单独调整。<br>Carol 始终能看到全部事项。',
     'Access is controlled by the “Matter members” list: only selected people can open a matter, and everyone else will not even see it. This table only sets the default members for new matters; each matter can be adjusted separately.<br>Carol can always see all matters.',
     'El control real son los «Miembros del asunto»: solo quienes estén marcados pueden abrirlo y los demás ni lo ven en la lista. Esta tabla es solo el valor predeterminado y cada asunto puede ajustarse.<br>Carol siempre puede verlos todos.'],
@@ -1045,7 +1049,7 @@ function practiceAreaOptions() { return PRACTICE_AREAS.map(a => ({ v: a.id, t: a
 function statusName(k) { return t('status.' + k); }
 function statusShort(k) { return t('status.' + k + '.short'); }
 
-const PRACTICE_AREAS = [
+const BUILTIN_PRACTICE_AREAS = [
   { id: 'mx_invest', name: { zh: '墨西哥公司／投资', en: 'Corporate matters / Investment in Mexico', es: 'Derecho corporativo / Inversión en México' }, restricted: false },
   { id: 'mx_reg', name: { zh: '墨西哥监管', en: 'Regulatory matters in Mexico', es: 'Regulación en México' }, restricted: false },
   { id: 'sanctions', name: { zh: '制裁／涉美', en: 'Sanctions / U.S.-related', es: 'Sanciones / Asuntos relacionados con EE. UU.' }, restricted: true, members: ['carol', 'benson'] },
@@ -1054,7 +1058,73 @@ const PRACTICE_AREAS = [
   { id: 'internal', name: { zh: '内部项目', en: 'Internal Project', es: 'Proyecto interno' }, restricted: false },
   { id: 'other', name: { zh: '其他', en: 'Other', es: 'Otro' }, restricted: false },
 ];
-const AREA = Object.fromEntries(PRACTICE_AREAS.map(a => [a.id, a]));
+let PRACTICE_AREAS=BUILTIN_PRACTICE_AREAS.slice();
+let AREA=Object.fromEntries(PRACTICE_AREAS.map(a=>[a.id,a]));
+function applyPracticeAreas(rows){
+  if(!Array.isArray(rows))throw new Error('invalid practice area registry');
+  const model=LCBPracticeAreas.merge(BUILTIN_PRACTICE_AREAS,rows);
+  PRACTICE_AREAS=model.active;AREA=model.all;
+  save(KEY.lang+':practiceAreas',rows);
+}
+const cachedPracticeAreas=load(KEY.lang+':practiceAreas',null);
+if(Array.isArray(cachedPracticeAreas))applyPracticeAreas(cachedPracticeAreas);
+async function refreshPracticeAreas(){
+  if(!REMOTE_ENABLED)return;
+  const r=await sbFetch('/rpc/carol_get_practice_areas',{method:'POST',body:'{}'});
+  if(!r.ok)throw new Error('practice-areas-http-'+r.status);
+  applyPracticeAreas(await r.json());
+}
+async function mutatePracticeArea(payload){
+  let result;
+  if(REMOTE_ENABLED){
+    const r=await sbFetch('/rpc/carol_mutate_practice_area',{method:'POST',body:JSON.stringify({payload})});
+    if(!r.ok){
+      const error=await r.json().catch(()=>({}));
+      const message=error.message||'practice-areas-http-'+r.status;
+      const labels={
+        'duplicate practice area':L({zh:'业务类型名称已存在',en:'A practice area with this name already exists.',es:'Ya existe un área de práctica con este nombre.'}),
+        'stale matter snapshot':L({zh:'事项刚刚发生变化，请重试删除',en:'Matters have changed. Please try deleting again.',es:'Los asuntos han cambiado. Vuelve a intentar eliminar el área.'}),
+        'practice area unavailable':L({zh:'这个业务类型已被删除，请重新打开页面',en:'This practice area was deleted. Reopen this page.',es:'Esta área de práctica se eliminó. Vuelve a abrir esta página.'})
+      };
+      throw new Error(labels[message]||message);
+    }
+    result=await r.json();
+  }else{
+    const rows=Object.values(AREA).map(a=>({...a,members:defaultTeam(a.id)}));
+    const a=rows.find(a=>a.id===payload.id);
+    if(payload.action==='create')rows.push({id:payload.id,name:payload.name,members:payload.members,deleted:false});
+    if(payload.action==='member'&&a)a.members=payload.enabled?[...new Set([...a.members,payload.user])]:a.members.filter(x=>x!==payload.user);
+    if(payload.action==='delete'&&a)a.deleted=true;
+    result={areas:rows};
+  }
+  if(result.areas)applyPracticeAreas(result.areas);
+  return result;
+}
+function practiceAreaUsageNotice(rows){
+  state.modal={type:'notice',titleKey:'settings.defaultTeam',body:rows.map(m=>'<p>'+esc(t('areas.inUse',{name:L(m.title)||m.no||m.id}))+'</p>').join('')};
+  render();
+}
+async function deletePracticeArea(id){
+  if(!isAdmin())return;
+  if(sync.dirty||sync.busy)throw new Error(L({zh:'请等待事项同步完成后重试',en:'Wait for matters to finish syncing, then try again.',es:'Espera a que termine la sincronización de los asuntos y vuelve a intentarlo.'}));
+  let rows=matters,snapshot=[];
+  if(REMOTE_ENABLED){
+    const r=await sbFetch('/matters?select=id,data,updated_at');
+    if(!r.ok)throw new Error('matter-check-http-'+r.status);
+    const raw=await r.json();
+    rows=await Promise.all(raw.map(async x=>{
+      const m=globalThis.LCBCrypto?await LCBCrypto.openMatter(x.data,sbFetch):x.data;
+      if(m.encrypted)throw new Error('missing-matter-key');
+      snapshot.push({id:x.id,updated_at:x.updated_at,area:m.area||'',kind:m.kind||''});
+      return m;
+    }));
+  }
+  const blocked=LCBPracticeAreas.blockers(rows,id);
+  if(blocked.length){practiceAreaUsageNotice(blocked);return;}
+  const result=await mutatePracticeArea({action:'delete',id,snapshot});
+  if(result.blocked?.length){practiceAreaUsageNotice(rows.filter(m=>result.blocked.includes(String(m.id))));return;}
+  state.modal=null;render();
+}
 function areaName(id) { return AREA[id] ? L(AREA[id].name) : (id || ''); }
 
 const USERS = SITE_CONFIG.users;
@@ -1683,16 +1753,20 @@ async function pullRemote(opts) {
   sync.busy = true;
   try {
     if(!await ensureActiveServerSession()){sync.busy=false;return;}
-    const [mRes, lRes, metaRes] = await Promise.all([
+    const [mRes, lRes, metaRes, areasRes] = await Promise.all([
       sbFetch('/matters?select=id,data,updated_at&id=not.like.solo_*'),
       sbFetch('/logs?select=id,data&id=not.like.solo_*'),
       sbFetch('/meta?select=key,value&key=eq.seq'),
+      sbFetch('/rpc/carol_get_practice_areas',{method:'POST',body:'{}'}),
     ]);
     if (mRes.status === 404) throw new Error('tables-missing');
     if (!mRes.ok) throw new Error('HTTP ' + mRes.status);
     const mRows = await mRes.json();
     const lRows = lRes.ok ? await lRes.json() : [];
     const metaRows = metaRes.ok ? await metaRes.json() : [];
+    const areasBefore=JSON.stringify(load(KEY.lang+':practiceAreas',null));
+    if(areasRes.ok)applyPracticeAreas(await areasRes.json());
+    const areasChanged=areasBefore!==JSON.stringify(load(KEY.lang+':practiceAreas',null));
 
     const nextMatters = globalThis.LCBCrypto && LCBCrypto.state.ready
       ? await Promise.all(mRows.map(r => LCBCrypto.openMatter(r.data, sbFetch)))
@@ -1705,7 +1779,7 @@ async function pullRemote(opts) {
       : lRows.map(r => r.data);
     const seqRow = metaRows.filter(r => r.key === 'seq')[0];
     const nextSeq = seqRow && typeof seqRow.value === 'number' ? seqRow.value : seq;
-    const changed = JSON.stringify(nextMatters) !== JSON.stringify(matters) ||
+    const changed = areasChanged || JSON.stringify(nextMatters) !== JSON.stringify(matters) ||
       JSON.stringify(nextLogs) !== JSON.stringify(logs) || nextSeq !== seq;
     // 请求飞行期间产生的本地改动优先，不能被较旧的拉取快照覆盖。
     if (LCBLogSync.hasPendingChanges(pullRevision, localRevision)) {
@@ -1886,9 +1960,9 @@ function currentUser() { return session ? USER[session.userId] : null; }
 // 门禁规则：只有被勾进「项目成员」的人能打开这条事项；Carol 始终可见。
 // 业务类型不决定可见范围，只决定新建时默认勾谁。
 function defaultTeam(areaId) {
-  const a = AREA[areaId];
-  if (a && a.members) return a.members.slice();
-  return USERS.map(u => u.id);
+  const a=AREA[areaId];
+  if(a&&Array.isArray(a.members))return a.members.filter(id=>USER[id]);
+  return USERS.map(u=>u.id);
 }
 function canSee(user, m) {
   if (!user) return false;
@@ -3206,12 +3280,12 @@ let settingsRecordsBusy=false;
 let settingsDefaultsLoaded=false;
 function viewSettings() {
   const team=false;
-  if(team&&!settingsDefaultsLoaded&&REMOTE_ENABLED){
+  if(!settingsDefaultsLoaded&&REMOTE_ENABLED){
     settingsDefaultsLoaded=true;
-    sbFetch('/rpc/lcb_get_default_teams',{method:'POST',body:'{}'}).then(async r=>{if(r.ok){save(KEY.lang+':defaultTeams',await r.json());if(location.hash.startsWith('#/settings'))render();}}).catch(()=>{settingsDefaultsLoaded=false;});
+    refreshPracticeAreas().then(()=>{if(location.hash.startsWith('#/settings'))render();}).catch(e=>{settingsDefaultsLoaded=false;showSystemError(e);});
   }
   if(location.hash==='#/settings/records'&&!settingsRecords&&!settingsRecordsBusy)loadSettingsRecords();
-  const defaults=team?'<div class="card card-pad"><div class="section-title">'+esc(t('settings.defaultTeam'))+'</div><table class="matrix"><thead><tr><th>'+esc(t('th.area'))+'</th>'+USERS.map(u=>'<th>'+esc(u.name)+'</th>').join('')+'</tr></thead><tbody>'+PRACTICE_AREAS.map(a=>'<tr><td>'+esc(areaName(a.id))+'</td>'+USERS.map(u=>'<td><input type="checkbox" data-action="set-default-team" data-area="'+a.id+'" data-user="'+u.id+'" '+(defaultTeam(a.id).includes(u.id)?'checked':'')+' '+(currentUser().id==='carol'?'':'disabled')+' aria-label="'+esc(areaName(a.id)+' '+u.name)+'"></td>').join('')+'</tr>').join('')+'</tbody></table><div class="hint">'+t('settings.defaultTeamHint')+'</div></div>':'';
+  const defaults=LCBPracticeAreas.panel({L,esc,users:USERS,areas:PRACTICE_AREAS,admin:isAdmin(),members:defaultTeam});
   return LCBSettingsPage({L,esc,t,team,navItems:navigationItems(),preferences:accountPreferences(),admin:isAdmin(),legacy:legacySettings(),defaults,records:settingsRecords||esc(L({zh:'正在加载…',en:'Loading…',es:'Cargando…'})),integrity:integrityPanel(),version:APP_VERSION,latest:load(KEY.lang+':latestVersion',''),lastCheck:load(KEY.lang+':lastVersionCheck',0)});
 }
 async function loadSettingsRecords(){
@@ -3393,7 +3467,12 @@ function modalTutorial(mo) {
 function guideDetails() {
   if (!state.guide) return [];
   const all = TUTORIAL_DETAILS[lang] || TUTORIAL_DETAILS.zh;
-  return all[state.guide.topic] || [];
+  const details=all[state.guide.topic]||[];
+  if(GUIDE_ROUTES[state.guide.topic]!=='#/settings')return details;
+  return details.concat([
+    L({zh:'进入“设置 → 信息与规则 → 业务类型”，点击“+”新建类型，并勾选使用该类型时默认加入事项的成员。默认成员只影响新建事项。',en:'Go to Settings → Information and rules → Practice areas. Click + to add an area and select its default members. These defaults apply only to new matters.',es:'Ve a Configuración → Información y reglas → Áreas de práctica. Pulsa + para añadir un área y elegir sus miembros predeterminados. Solo se aplican a asuntos nuevos.'}),
+    L({"zh":"Carol 和 Benson 都能管理业务类型。删除前要先修改所有使用该类型的事项，包括已完成和回收站中的事项。","en":"Carol and Benson can manage practice areas. Before deleting an area, change all matters that use it, including completed matters and those in the recycle bin.","es":"Carol y Benson pueden gestionar las áreas de práctica. Antes de eliminar una, cambia todos los asuntos que la usan, incluidos los completados y los de la papelera."})
+  ]);
 }
 
 function renderGuide() {
@@ -3583,6 +3662,7 @@ async function removeEncryptedAttachment(id,index) {
 function renderModal() {
   const mo = state.modal;
   if (!mo) return '';
+  if (mo.type === 'practice-area') return modalFrame(t('areas.add'),LCBPracticeAreas.form({L,esc,users:USERS}),'<button class="btn" data-action="close-modal">'+esc(t('modal.cancel'))+'</button><button class="btn btn-primary" type="submit" form="practice-area-form">'+esc(t('clients.save'))+'</button>');
   if (mo.type === 'new-matter') return modalNewMatter();
   if (mo.type === 'calendar-choice') return modalCalendarChoice(mo);
   if (mo.type === 'schedule-reminder') return modalScheduleReminder(mo);
@@ -3654,7 +3734,7 @@ function modalClientImport() {
 
 function modalNewMatter() {
   if (!state.modal || state.modal.type !== 'new-matter') return '';
-  const areaField = selectWithCustom('name="area" data-area-picker', PRACTICE_AREAS[0].id, practiceAreaOptions(), t('form.customAreaPh'));
+  const areaField = selectWithCustom('name="area" data-area-picker', PRACTICE_AREAS[0]?.id||'__custom__', practiceAreaOptions(), t('form.customAreaPh'));
   const ownerOpts = USERS.map(u => `<option value="${u.id}" ${u.id === currentUser().id ? 'selected' : ''}>${esc(u.name)}</option>`).join('');
   const nextOwnerOpts = ownerOpts;
   const stageField = selectWithCustom('name="stage"', STAGES[0], stageOptions(), t('form.customStagePh'));
@@ -3698,7 +3778,7 @@ function modalNewMatter() {
           <div class="field"><label>${esc(t('detail.members'))}</label>
             <div class="member-list">
               ${USERS.map(u => `<label class="member-item">
-                <input type="checkbox" name="team" value="${u.id}" ${defaultTeam('mx_invest').includes(u.id) ? 'checked' : ''}>
+                <input type="checkbox" name="team" value="${u.id}" ${defaultTeam(PRACTICE_AREAS[0]?.id).includes(u.id) ? 'checked' : ''}>
                 <span class="nm">${esc(u.name)}</span>
                 <span class="rl">${esc(t(u.roleKey))}</span>
               </label>`).join('')}
@@ -4381,6 +4461,21 @@ document.addEventListener('click', async ev => {
   }
   if(action==='settings-load-records'){await loadSettingsRecords();return;}
 
+  if(action==='new-practice-area'){state.modal={type:'practice-area'};render();return;}
+  if(action==='delete-practice-area'){
+    if(!isAdmin())return;
+    state.modal={type:'confirm',titleKey:'areas.delete',body:t('areas.deleteConfirm',{name:areaName(el.getAttribute('data-id'))}),confirmText:t('areas.delete'),action:'confirm-delete-practice-area',id:el.getAttribute('data-id'),danger:true};render();return;
+  }
+  if(action==='confirm-delete-practice-area'){
+    el.disabled=true;try{await deletePracticeArea(el.getAttribute('data-id'));}catch(e){showSystemError(e);el.disabled=false;}return;
+  }
+  if(action==='set-default-team'){
+    if(!isAdmin())return;
+    el.disabled=true;
+    try{await mutatePracticeArea({action:'member',id:el.getAttribute('data-area'),user:el.getAttribute('data-user'),enabled:el.checked});}
+    catch(e){showSystemError(e);}render();return;
+  }
+
   switch (action) {
     case 'delete-chat-message': {
       const id=String(el.getAttribute('data-id')||'');
@@ -4569,7 +4664,7 @@ document.addEventListener('click', async ev => {
       else { toast(t('sync.loading')); pullRemote(); }
       break;
     case 'new-matter':
-      state.modal = { type: 'new-matter' }; render(); break;
+      try{await refreshPracticeAreas();state.modal={type:'new-matter'};render();}catch(e){showSystemError(e);}break;
     case 'calendar-prev': state.calendarOffset -= 1; render(); break;
     case 'calendar-next': state.calendarOffset += 1; render(); break;
     case 'calendar-today': state.calendarOffset = 0; render(); break;
@@ -5296,6 +5391,16 @@ document.addEventListener('submit', async ev => {
   if (!form) return;
   ev.preventDefault();
   const action = form.getAttribute('data-action');
+  if(action==='create-practice-area'){
+    const data=new FormData(form),name=String(data.get('name')||'').trim();
+    if(!name)return;
+    const submit=document.querySelector('[form="practice-area-form"]');if(submit)submit.disabled=true;
+    try{
+      await mutatePracticeArea({action:'create',id:'custom_'+crypto.randomUUID(),name:{zh:name,en:String(data.get('en')||'').trim()||name,es:String(data.get('es')||'').trim()||name},members:data.getAll('members')});
+      state.modal=null;render();
+    }catch(e){showSystemError(e);if(submit)submit.disabled=false;}
+    return;
+  }
   if(action==='save-sidebar'){
     const visible=new Set(Array.from(form.querySelectorAll('[name="visible"]:checked'),x=>x.value));
     await saveAccountPreferences({hidden:navigationItems().filter(x=>x[0]!=='#/settings'&&!visible.has(x[0])).map(x=>x[0])});

@@ -53,14 +53,14 @@ return '<form class="card card-pad" data-action="save-theme"><div class="theme-p
     const pick=title=>{const card=cards.find(x=>x.querySelector('.section-title').textContent.trim()===title);return card?card.outerHTML:'';};
     let body='';
     if(route==='home')body=link('rules')+link('personal')+link('security')+(c.admin?link('repair'):'')+link('updates');
-    else if(route==='rules')body=link('members')+(c.team?link('defaults'):'');
+    else if(route==='rules')body=link('members')+link('defaults');
     else if(route==='personal')body=link('sidebar')+link('theme');
     else if(route==='sidebar'||route==='theme')body=root.LCBPersonalization.panel({L,esc,t,items:c.navItems,value:c.preferences},route);
     else if(route==='security')body=link('devices')+(c.admin?link('backup')+link('records'):'');
     else if(route==='repair'&&c.admin)body=link('integrity');
     else if(route==='members')body=pick(t('settings.members'));
     else if(route==='devices')body=pick(t('settings.sessions'));
-    else if(route==='defaults'&&c.team)body=c.defaults;
+    else if(route==='defaults')body=c.defaults;
     else if(route==='backup'&&c.admin) {
       const card=cards.find(x=>x.querySelector('[data-action="export-encrypted-backup"]'));
       if(card){const records=card.querySelector('[data-action="view-security-events"]');if(records)records.remove();card.querySelector('.section-title').textContent=labels.backup;body=card.outerHTML;}
