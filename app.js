@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610142114';
+const APP_VERSION = '202610142157';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -232,12 +232,12 @@ const TUTORIAL_DETAILS = {
 TUTORIAL_DETAILS.zh[1][5] = '新建和修改事项可填写背景、优先级、开始日期、费用、收款、余额、联系人、联系邮箱、备注及原有工作流和权限字段；保存会加密同步，删除会移入回收站。';
 TUTORIAL_DETAILS.en[1][3] = 'Editing includes background, priority, start date, fees, payments, balance, contacts, notes, and the existing workflow and permission fields. Save synchronizes your changes. Delete moves the item to the Recycle bin.';
 TUTORIAL_DETAILS.es[1][3] = 'La edición incluye antecedentes, prioridad, fecha inicial, honorarios, pagos, saldo, contactos, notas y los campos existentes de flujo y permisos. Guardar sincroniza los cambios. Eliminar mueve el elemento a la papelera.';
-TUTORIAL_DETAILS.zh[1][5] += ' 截止日期可留空，也可选择 ASAP；ASAP 事项每天提醒一次。';
-TUTORIAL_DETAILS.en[1][3] += ' The due date is optional and can be set to ASAP; ASAP matters generate one reminder each day.';
-TUTORIAL_DETAILS.es[1][3] += ' La fecha límite es opcional y puede marcarse como ASAP; los asuntos ASAP generan un aviso diario.';
-TUTORIAL_DETAILS.zh[1].push('最后一步负责人可点击“完成事项”；完成后事项变灰、沉底并默认折叠。展开后，仅事项总负责人本人可确认删除并移入回收站。');
-TUTORIAL_DETAILS.en[1].push('The person responsible for the final step can select Complete matter. Completed matters turn gray, move to the bottom, and collapse by default. After expanding, only the matter owner can confirm deletion to the Recycle Bin.');
-TUTORIAL_DETAILS.es[1].push('El responsable del último paso puede elegir Completar asunto. Los asuntos completados se vuelven grises, pasan al final y se muestran contraídos. Al expandirlos, solo el responsable general puede confirmar su envío a la papelera.');
+TUTORIAL_DETAILS.zh[1][5] += ' 截止日期可留空，也可选择 ASAP；ASAP 事项每天提醒一次，但不会写入事项动态记录。';
+TUTORIAL_DETAILS.en[1][3] += ' The due date is optional and can be set to ASAP; ASAP matters generate one reminder each day without adding it to the matter activity history.';
+TUTORIAL_DETAILS.es[1][3] += ' La fecha límite es opcional y puede marcarse como ASAP; los asuntos ASAP generan un aviso diario sin añadirlo al historial de actividad del asunto.';
+TUTORIAL_DETAILS.zh[1].push('最后一步负责人可点击“完成事项”；已完成事项变灰并沉底，整组默认折叠，展开后仍可“编辑事项”或“在事项中工作”。“批量删除”旁的“删除已完成事项”会在确认后将你是总负责人的全部已完成事项移入回收站，不受当前筛选条件限制，也不会删除其他人负责的事项。');
+TUTORIAL_DETAILS.en[1].push('The person responsible for the final step can select Complete matter. Completed matters turn gray and move to a collapsed group at the bottom. Expand the group to edit or work on any matter. Delete completed matters, next to Bulk delete, asks for confirmation before moving all completed matters you own to the recycle bin, regardless of filters. It never deletes matters owned by someone else.');
+TUTORIAL_DETAILS.es[1].push('El responsable del último paso puede elegir Completar asunto. Los asuntos completados se vuelven grises y pasan a un grupo contraído al final. Despliega el grupo para editar o trabajar en cualquier asunto. Eliminar asuntos completados, junto a Eliminar en lote, pide confirmación antes de mover a la papelera todos los asuntos completados de los que eres responsable general, sin importar los filtros. No elimina asuntos de otras personas.');
 
 BEGINNER_TUTORIAL.zh.steps.splice(1,0,['全文搜索','搜索事项、客户、聊天、动态和文件名；结果严格按当前账号权限显示。']);
 BEGINNER_TUTORIAL.en.steps.splice(1,0,['Search all records','Search matters, clients, chats, activity, and filenames; results follow the current account permissions.']);
@@ -685,6 +685,9 @@ const STR = {
     'Inicia sesión con el correo y la contraseña asignados a tu cuenta del equipo.'],
   'settings.defaultTeam': ['业务类型', 'Practice areas', 'Áreas de práctica'],
   'areas.add': ['新建业务类型','Add practice area','Añadir área de práctica'],
+  'list.completedGroup': ['已完成事项','Completed matters','Asuntos completados'],
+  'list.deleteAllCompleted': ['删除已完成事项','Delete completed matters','Eliminar asuntos completados'],
+  'list.deleteAllCompletedConfirm': ['确定将你是总负责人的全部 {n} 个已完成事项移入回收站？此操作不受当前筛选条件限制，其他人负责的事项不会被删除。','Move all {n} completed matters you own to the recycle bin? This includes matters outside the current filters. Matters owned by other people will not be deleted.','¿Mover a la papelera los {n} asuntos completados de los que eres responsable general? Se incluyen los que no aparecen con los filtros actuales. No se eliminarán asuntos de otras personas.'],
   'areas.delete': ['删除业务类型','Delete practice area','Eliminar área de práctica'],
   'areas.deleteConfirm': ['确定删除“{name}”？已有事项不会被修改。','Delete “{name}”? Existing matters will not be changed.','¿Eliminar «{name}»? Los asuntos existentes no se modificarán.'],
   'areas.inUse': ['【{name}】正在使用这个业务类型，请修改后重试','“{name}” uses this practice area. Change it and try again.','«{name}» usa esta área de práctica. Cámbiala y vuelve a intentarlo.'],
@@ -1463,7 +1466,7 @@ const state = {
   clientSelected: new Set(),
   trashSelected: new Set(),
   notificationSelected: new Set(),
-  expandedCompleted: new Set(),
+  completedExpanded: false,
   loginDraft: { email:'', password:'' },
   chatDraft: { message:'', mentions:[], blocked:null, referenceType:'matter', refMatter:'', refStep:'', refClient:'', refFile:'', files:[] },
   chatScrollToBottom: false,
@@ -2350,6 +2353,11 @@ function materializeRecurringMatters() {
   return changed;
 }
 
+function isActivityEntry(entry){
+  if(entry.notificationOnly)return false;
+  const date=entry.vars?.date??entry.notice?.vars?.date;
+  return !(entry.key==='inbox.deadlineReminder'&&(date==='ASAP'||date?.__date==='ASAP'));
+}
 function deliverDeadlineReminders() {
   const u = currentUser();
   if (!u) return;
@@ -2359,7 +2367,7 @@ function deliverDeadlineReminders() {
     const id=`deadline_${u.id}_${item.matter.id}_${day}`;
     if(logs.some(l=>l.id===id)) return;
     logs.push({
-      id,matterId:item.matter.id,at:Date.now(),by:u.id,
+      id,matterId:item.matter.id,at:Date.now(),by:u.id,notificationOnly:item.matter.due==='ASAP',
       key:'inbox.deadlineReminder',vars:{kind:item.kind,title:item.matter.title,date:{__date:item.matter.due}},
       notice:{key:'inbox.deadlineReminder',vars:{kind:item.kind,title:item.matter.title,date:{__date:item.matter.due}}},
       notifyTo:[u.id],readBy:[],matterTitle:item.matter.title,matterNo:item.matter.no||'',
@@ -2828,7 +2836,7 @@ function globalSearchMatches(rawQuery) {
   visibleMatters(currentUser()).forEach(m=>add(L({zh:'事项',en:'Matter',es:'Asunto'}),`${m.no||''} ${L(m.title)||''}`.trim(),[L(m.client),m.counterparties,m.relatedParties,L(m.next)].filter(Boolean).join(' · '),`#/matters/${m.id}`,[m.no,m.title,m.client,m.counterparties,m.relatedParties,m.next,m.notes,(m.files||[]).map(f=>f.name)]));
   clientProfiles().forEach(c=>add(L({zh:'客户',en:'Client',es:'Cliente'}),c.clientName,[c.contactPerson,c.phone,c.email].filter(Boolean).join(' · '),'#/clients',[c.clientName,c.contactPerson,c.phone,c.email,c.notes,c.contacts,c.relations]));
   const ids=new Set(visibleMatters(currentUser()).map(m=>String(m.id)));
-  logs.filter(l=>ids.has(String(l.matterId))).forEach(l=>{const m=matterById(l.matterId);add(L({zh:'聊天／动态',en:'Chat / activity',es:'Chat / actividad'}),m?L(m.title):String(l.matterId),inboxText(l),m?`#/matters/${m.id}`:'#/inbox',[inboxText(l),l.vars]);});
+  logs.filter(l=>isActivityEntry(l)&&ids.has(String(l.matterId))).forEach(l=>{const m=matterById(l.matterId);add(L({zh:'聊天／动态',en:'Chat / activity',es:'Chat / actividad'}),m?L(m.title):String(l.matterId),inboxText(l),m?`#/matters/${m.id}`:'#/inbox',[inboxText(l),l.vars]);});
   const seen=new Set();
   return rows.filter(row=>{const key=JSON.stringify(row);if(seen.has(key))return false;seen.add(key);return true;}).slice(0,80);
 }
@@ -2913,33 +2921,27 @@ function filterMatters() {
   });
 }
 
-function matterRowsHTML() {
-  const list = sorted(filterMatters());
-  if (!list.length) return '';
-  return list.map(m => {
-    if (LCBMatterCompletion.isCompleted(m)) {
-      const expanded = state.expandedCompleted.has(String(m.id));
-      const finalOwner = (USER[m.finalStepOwner || m.nextOwner] || {}).name || m.finalStepOwner || m.nextOwner;
-      return `<tr class="matter-completed-row ${expanded ? 'is-expanded' : ''}" data-action="toggle-completed-matter" data-id="${m.id}">
-        <td class="bulk-cell"></td><td class="nw">${esc(m.no)}</td><td>${esc(L(m.client))}</td>
-        <td colspan="5"><b>${esc(L(m.title))}</b><div class="small muted">✓ ${esc(t('detail.completedMeta',{when:fmtStamp(m.completedAt),owner:finalOwner}))}</div></td>
-        <td colspan="2" class="completed-row-actions"><button class="btn btn-sm" type="button" data-action="toggle-completed-matter" data-id="${m.id}">${esc(t(expanded?'detail.completedCollapse':'detail.completedExpand'))}</button></td>
-      </tr>${expanded ? `<tr class="matter-completed-detail"><td colspan="10"><div class="completed-detail-inner"><span>${esc(L(m.next))}</span><span class="completed-detail-actions"><button class="btn btn-sm" type="button" data-action="choose-matter-action" data-id="${m.id}">${esc(t('modal.matterAction.work'))}</button>${LCBMatterCompletion.canDeleteCompleted(currentUser(),m)?`<button class="btn btn-danger btn-sm" type="button" data-action="delete-completed-matter" data-id="${m.id}">${esc(t('detail.deleteCompleted'))}</button>`:''}</span></div></td></tr>` : ''}`;
-    }
+function matterRowsHTML(completed=false) {
+  const list = sorted(filterMatters()).filter(m=>LCBMatterCompletion.isCompleted(m)===completed);
+
+  const rows=list.map(m => {
     return `
-    <tr class="${m.importStatusError ? 'import-error' : ''}" data-action="choose-matter-action" data-id="${m.id}">
-      <td class="bulk-cell"><input class="bulk-check" type="checkbox" data-action="toggle-bulk-matter" data-id="${m.id}" ${state.bulkSelected.has(String(m.id)) ? 'checked' : ''} ${currentUser().id === m.owner || isAdmin() ? '' : 'disabled'} aria-label="${esc(t('list.bulkDelete'))}: ${esc(m.no)}"></td>
+    <tr class="${completed?'matter-completed-row ':''}${m.importStatusError ? 'import-error' : ''}" data-action="choose-matter-action" data-id="${m.id}">
+      <td class="bulk-cell"><input class="bulk-check" type="checkbox" data-action="toggle-bulk-matter" data-id="${m.id}" ${state.bulkSelected.has(String(m.id)) ? 'checked' : ''} ${canDeleteMatter(currentUser(),m) ? '' : 'disabled'} aria-label="${esc(t('list.bulkDelete'))}: ${esc(m.no)}"></td>
       <td class="nw">${m.importStatusError ? `<div class="import-error-label">${esc(t('list.importError'))}</div>` : ''}${esc(m.no)}</td>
       <td>${esc(L(m.client))}</td>
       <td><b>${esc(L(m.title))}</b>${m.notes ? `<div class="small muted">${esc(L(m.notes))}</div>` : ''}</td>
       <td>${areaTag(m.area)}</td>
       <td class="nw">${esc((USER[m.owner] || {}).name || m.owner)}</td>
-      <td class="nw">${statusChip(m.status)}</td>
+      <td class="nw">${completed?esc(t('detail.completed')):statusChip(m.status)}</td>
       <td>${esc(L(m.next))}</td>
       <td class="nw">${fmtDateShort(m.due)}<div class="small muted">${dueText(m.due)}</div></td>
       <td class="nw">${esc(waitLabel(m.waiting))}</td>
     </tr>`;
   }).join('');
+  if(completed)return rows;
+  const count=filterMatters().filter(LCBMatterCompletion.isCompleted).length;
+  return rows+(count?`<tr class="completed-section-heading"><td colspan="10"><button class="btn btn-ghost" type="button" data-action="toggle-completed-section" aria-expanded="${state.completedExpanded}">${state.completedExpanded?'▾':'▸'} ${esc(t('list.completedGroup'))} (${count}) · ${esc(t(state.completedExpanded?'detail.completedCollapse':'detail.completedExpand'))}</button></td></tr>${state.completedExpanded?matterRowsHTML(true):''}`:'');
 }
 
 function viewMatters() {
@@ -2962,7 +2964,7 @@ function viewMatters() {
     const m = matterById(id);
     return m && !m.deletedAt && canSee(currentUser(), m) && canDeleteMatter(currentUser(),m);
   }).length;
-  const selectable = sorted(filterMatters()).filter(m => canDeleteMatter(currentUser(),m));
+  const selectable = sorted(filterMatters()).filter(m => canDeleteMatter(currentUser(),m)&&(!LCBMatterCompletion.isCompleted(m)||state.completedExpanded));
   const allSelected = selectable.length > 0 && selectable.every(m => state.bulkSelected.has(String(m.id)));
 
   return `
@@ -2974,6 +2976,7 @@ function viewMatters() {
       <div class="right">
         <button class="btn" type="button" data-action="import-matters">${esc(t('list.import'))}</button>
         <button class="btn btn-danger" type="button" data-action="bulk-delete-matters" ${bulkCount ? '' : 'disabled'}>${esc(t('list.bulkDelete'))}${bulkCount ? ` (${bulkCount})` : ''}</button>
+        <button class="btn btn-danger" type="button" data-action="delete-all-completed-matters" ${LCBMatterCompletion.deletableCompleted(seen,currentUser()).length?'':'disabled'}>${esc(t('list.deleteAllCompleted'))}</button>
         <button class="btn" type="button" data-action="export-csv">${esc(t('list.export'))}</button>
         <button class="btn btn-primary" type="button" data-action="new-matter">${esc(t('dash.new'))}</button>
       </div>
@@ -3119,7 +3122,7 @@ function viewMatter(id,mode) {
       </div>`;
   }
 
-  const myLogs = logs.filter(l => String(l.matterId) === String(m.id)).sort((a, b) => b.at - a.at);
+  const myLogs = logs.filter(l => isActivityEntry(l) && String(l.matterId) === String(m.id)).sort((a, b) => b.at - a.at);
   const steps = stepsOf(m);
   const last = lastStep(m);
   const lastEdit = lastMatterEditLog(m);
@@ -3209,7 +3212,7 @@ function viewMatter(id,mode) {
       </div>
       <div class="matter-work-pane">
         <div class="card card-pad" style="margin-bottom:16px">
-          ${completed ? `<div class="matter-completed-summary"><div class="section-title">✓ ${esc(t('detail.completed'))}</div><div>${esc(t('detail.completedMeta',{when:fmtStamp(m.completedAt),owner:(USER[m.finalStepOwner||m.nextOwner]||{}).name||m.finalStepOwner||m.nextOwner}))}</div>${LCBMatterCompletion.canDeleteCompleted(u,m)?`<button class="btn btn-danger" type="button" data-action="delete-completed-matter" data-id="${m.id}">${esc(t('detail.deleteCompleted'))}</button>`:''}</div>` : `${handoff ? `<div class="handoff-banner"><div><b>${esc(ft('handoffPending', { name:(USER[handoff.to] || {}).name || handoff.to }))}</b><span>${esc((USER[handoff.from] || {}).name || handoff.from)} → ${esc((USER[handoff.to] || {}).name || handoff.to)}</span></div>${u.id === handoff.to ? `<button class="btn btn-sm btn-primary" data-action="accept-handoff" data-id="${m.id}">${esc(ft('handoffAccept'))}</button>` : ''}</div>` : ''}
+          ${completed ? `<div class="matter-completed-summary"><div class="section-title">✓ ${esc(t('detail.completed'))}</div><div>${esc(t('detail.completedMeta',{when:fmtStamp(m.completedAt),owner:(USER[m.finalStepOwner||m.nextOwner]||{}).name||m.finalStepOwner||m.nextOwner}))}</div></div>` : `${handoff ? `<div class="handoff-banner"><div><b>${esc(ft('handoffPending', { name:(USER[handoff.to] || {}).name || handoff.to }))}</b><span>${esc((USER[handoff.from] || {}).name || handoff.from)} → ${esc((USER[handoff.to] || {}).name || handoff.to)}</span></div>${u.id === handoff.to ? `<button class="btn btn-sm btn-primary" data-action="accept-handoff" data-id="${m.id}">${esc(ft('handoffAccept'))}</button>` : ''}</div>` : ''}
           <div class="section-title">${esc(t('detail.step.title'))}
             <span class="tag" style="margin-left:auto">${esc((USER[m.nextOwner] || {}).name || m.nextOwner)}</span>
           </div>
@@ -3470,7 +3473,7 @@ function guideDetails() {
   const details=all[state.guide.topic]||[];
   if(GUIDE_ROUTES[state.guide.topic]!=='#/settings')return details;
   return details.concat([
-    L({zh:'进入“设置 → 信息与规则 → 业务类型”，点击“+”新建类型，并勾选使用该类型时默认加入事项的成员。默认成员只影响新建事项。',en:'Go to Settings → Information and rules → Practice areas. Click + to add an area and select its default members. These defaults apply only to new matters.',es:'Ve a Configuración → Información y reglas → Áreas de práctica. Pulsa + para añadir un área y elegir sus miembros predeterminados. Solo se aplican a asuntos nuevos.'}),
+    L({zh:'进入“设置 → 信息与规则 → 业务类型”，点击“新建业务类型”添加类型，并勾选使用该类型时默认加入事项的成员。默认成员只影响新建事项。',en:'Go to Settings → Information and rules → Practice areas. Click Add practice area to create an area and select its default members. These defaults apply only to new matters.',es:'Ve a Configuración → Información y reglas → Áreas de práctica. Pulsa Añadir área de práctica para crear un área y elegir sus miembros predeterminados. Solo se aplican a asuntos nuevos.'}),
     L({"zh":"Carol 和 Benson 都能管理业务类型。删除前要先修改所有使用该类型的事项，包括已完成和回收站中的事项。","en":"Carol and Benson can manage practice areas. Before deleting an area, change all matters that use it, including completed matters and those in the recycle bin.","es":"Carol y Benson pueden gestionar las áreas de práctica. Antes de eliminar una, cambia todos los asuntos que la usan, incluidos los completados y los de la papelera."})
   ]);
 }
@@ -5005,7 +5008,7 @@ document.addEventListener('click', async ev => {
       break;
     }
     case 'toggle-all-bulk-matters': {
-      const selectable = sorted(filterMatters()).filter(m => canDeleteMatter(currentUser(),m));
+      const selectable = sorted(filterMatters()).filter(m => canDeleteMatter(currentUser(),m)&&(!LCBMatterCompletion.isCompleted(m)||state.completedExpanded));
       const selectAll = selectable.length > 0 && !selectable.every(m => state.bulkSelected.has(String(m.id)));
       selectable.forEach(m => selectAll ? state.bulkSelected.add(String(m.id)) : state.bulkSelected.delete(String(m.id)));
       render();
@@ -5093,10 +5096,25 @@ document.addEventListener('click', async ev => {
       toast(t('toast.deleted', { no: m.no }));
       break;
     }
-    case 'toggle-completed-matter': {
-      const id=String(el.getAttribute('data-id'));
-      if(state.expandedCompleted.has(id)) state.expandedCompleted.delete(id); else state.expandedCompleted.add(id);
-      render();
+    case 'toggle-completed-section':
+      state.completedExpanded=!state.completedExpanded;render();break;
+    case 'delete-all-completed-matters': {
+      const ids=LCBMatterCompletion.deletableCompleted(visibleMatters(currentUser()),currentUser()).map(m=>String(m.id));
+      if(!ids.length)break;
+      state.modal={type:'confirm',titleKey:'list.deleteAllCompleted',body:t('list.deleteAllCompletedConfirm',{n:ids.length}),confirmText:t('modal.bulkDelete.confirm',{n:ids.length}),action:'confirm-delete-all-completed-matters',ids,danger:true};
+      render();break;
+    }
+    case 'confirm-delete-all-completed-matters': {
+      const chosen=new Set(state.modal?.ids||[]);
+      const list=LCBMatterCompletion.deletableCompleted(visibleMatters(currentUser()),currentUser()).filter(m=>chosen.has(String(m.id)));
+      list.forEach(m=>{
+        m.deletedAt=Date.now();
+        addLogKey(m.id,currentUser().id,'detail.entry.deleted',{}, {key:'inbox.deleted',vars:noticeVars(m,currentUser().id)});
+        state.bulkSelected.delete(String(m.id));
+      });
+      if(list.length){commit();deliverOperationNotification();}
+      state.modal=null;render();
+      if(list.length)toast(t('toast.bulkDeleted',{n:list.length}));
       break;
     }
     case 'complete-matter': {
@@ -5114,7 +5132,7 @@ document.addEventListener('click', async ev => {
       const finalOwner=(USER[m.nextOwner]||{}).name||m.nextOwner;
       if(!LCBMatterCompletion.completeMatter(m,u,Date.now())) break;
       addLogKey(id,u.id,'detail.entry.matterCompleted',{owner:finalOwner},{key:'inbox.matterCompleted',vars:{title:m.title,owner:finalOwner}});
-      commit();deliverOperationNotification();state.modal=null;state.expandedCompleted.delete(String(id));go('#/matters');render();toast(t('toast.matterCompleted'));
+      commit();deliverOperationNotification();state.modal=null;go('#/matters');render();toast(t('toast.matterCompleted'));
       break;
     }
     case 'delete-completed-matter': {
@@ -5131,7 +5149,7 @@ document.addEventListener('click', async ev => {
       if(!await ensureMatterCurrent(id)) break;
       m.deletedAt=Date.now();
       addLogKey(id,u.id,'detail.entry.deleted',{}, {key:'inbox.deleted',vars:noticeVars(m,u.id)});
-      commit();state.modal=null;state.expandedCompleted.delete(String(id));go('#/matters');render();toast(t('toast.deleted',{no:m.no}));
+      commit();state.modal=null;go('#/matters');render();toast(t('toast.deleted',{no:m.no}));
       break;
     }
     case 'complete-step': {

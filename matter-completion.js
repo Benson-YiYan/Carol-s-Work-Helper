@@ -21,5 +21,8 @@
     matter.handoff = null;
     return true;
   }
-  return { isCompleted, completedLast, canComplete, canDeleteCompleted, completeMatter };
+  function deletableCompleted(list,user){
+    return (list||[]).filter(m=>!m.deletedAt&&!['schedule','client','chat-channel'].includes(m.kind)&&canDeleteCompleted(user,m));
+  }
+  return { isCompleted, completedLast, canComplete, canDeleteCompleted, completeMatter, deletableCompleted };
 });
