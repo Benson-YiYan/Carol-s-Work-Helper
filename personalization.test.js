@@ -5,6 +5,7 @@ const context={};
 vm.runInNewContext(fs.readFileSync('settings-page.js','utf8'),context);
 assert.ok(context.LCBPersonalization,'personalization API exists');
 const p=context.LCBPersonalization;
+assert.equal(p.normalize({future:{density:'compact'}}).future?.density,'compact','future settings survive normalization');
 assert.equal(p.normalize({theme:{r:999,g:-2,b:'bad',s:150}}).theme.r,255);
 assert.equal(p.normalize({theme:{r:999,g:-2,b:'bad',s:150}}).theme.g,0);
 assert.equal(p.normalize({theme:{r:999,g:-2,b:'bad',s:150}}).theme.s,100);

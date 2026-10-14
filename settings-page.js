@@ -1,9 +1,9 @@
 (function(root){
   root.LCBPersonalization={
     normalize(value){
-      const v=value&&typeof value==='object'?value:{};
+      const v=value&&typeof value==='object'&&!Array.isArray(value)?JSON.parse(JSON.stringify(value)):{};
       const number=(x,max,fallback)=>Number.isFinite(Number(x))?Math.max(0,Math.min(max,Math.round(Number(x)))):fallback;
-      return {hidden:Array.isArray(v.hidden)?v.hidden.filter(x=>typeof x==='string'&&x.startsWith('#/')&&x!=='#/settings'):[],
+      return {...v,hidden:Array.isArray(v.hidden)?v.hidden.filter(x=>typeof x==='string'&&x.startsWith('#/')&&x!=='#/settings'):[],
         theme:v.theme&&typeof v.theme==='object'?{r:number(v.theme.r,255,31),g:number(v.theme.g,255,94),b:number(v.theme.b,255,255),s:number(v.theme.s,100,100),preset:v.theme.preset==='gradient'?'gradient':'solid'}:null};
     },
     partition(items,hidden){
@@ -32,7 +32,7 @@ return '<form class="card card-pad" data-action="save-theme"><div class="theme-p
     if(c.latest&&c.latest<c.version)c.latest=c.version;
     const labels={
       home:L({zh:'设置',en:'Settings',es:'Configuración'}),
-      personal:L({zh:'个性化使用',en:'Personalization',es:'Personalización'}),
+      personal:L({zh:'个性化',en:'Personalization',es:'Personalización'}),
       rules:L({zh:'信息与规则',en:'Information and rules',es:'Información y reglas'}),
       sidebar:L({zh:'侧边栏',en:'Sidebar',es:'Barra lateral'}),
       theme:L({zh:'主题色',en:'Theme color',es:'Color del tema'}),
