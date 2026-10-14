@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610132337';
+const APP_VERSION = '202610140818';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -3251,8 +3251,8 @@ function legacySettings() {
               ${USERS.map(u => `<tr>
                 <td><b>${esc(u.name)}</b></td>
                 <td>${esc(u.email)}</td>
-                <td>${esc(u.id === 'carol' ? L({zh:'管理员',en:'Administrator',es:'Administrador'}) : t(u.roleKey))}</td>
-                <td>${u.admin ? `<span class="yes">${esc(t('settings.admin'))}</span>` : esc(t('settings.member'))}</td>
+                <td>${esc(t(u.roleKey))}</td>
+                <td>${u.admin ? `<span class="yes">${esc(L({zh:'管理员',en:'Administrator',es:'Administrador'}))}</span>` : esc(t('settings.member'))}</td>
               </tr>`).join('')}
             </tbody>
           </table>
