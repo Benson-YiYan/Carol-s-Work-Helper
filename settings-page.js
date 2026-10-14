@@ -3,7 +3,7 @@
     normalize(value){
       const v=value&&typeof value==='object'&&!Array.isArray(value)?JSON.parse(JSON.stringify(value)):{};
       const number=(x,max,fallback)=>Number.isFinite(Number(x))?Math.max(0,Math.min(max,Math.round(Number(x)))):fallback;
-      return {...v,hidden:Array.isArray(v.hidden)?v.hidden.filter(x=>typeof x==='string'&&x.startsWith('#/')&&x!=='#/settings'):[],
+      return {...v,colorMode:v.colorMode==='dark'?'dark':'light',hidden:Array.isArray(v.hidden)?v.hidden.filter(x=>typeof x==='string'&&x.startsWith('#/')&&x!=='#/settings'):[],
         theme:v.theme&&typeof v.theme==='object'?{r:number(v.theme.r,255,31),g:number(v.theme.g,255,94),b:number(v.theme.b,255,255),s:number(v.theme.s,100,100),preset:v.theme.preset==='gradient'?'gradient':'solid'}:null};
     },
     partition(items,hidden){
@@ -24,7 +24,7 @@
       const theme=v.theme||{r:31,g:94,b:255,s:100};
       const names=[['r',255,L({zh:'红',en:'Red',es:'Rojo'})],['g',255,L({zh:'绿',en:'Green',es:'Verde'})],['b',255,L({zh:'蓝',en:'Blue',es:'Azul'})],['s',100,L({zh:'饱和度',en:'Saturation',es:'Saturación'})]];
       const presets=[['red',L({zh:'红色',en:'Red',es:'Rojo'})],['green',L({zh:'绿色',en:'Green',es:'Verde'})],['blue',L({zh:'蓝色',en:'Blue',es:'Azul'})],['purple',L({zh:'紫色',en:'Purple',es:'Morado'})],['orange',L({zh:'橙色',en:'Orange',es:'Naranja'})],['gradient',L({zh:'红绿渐变',en:'Red-green gradient',es:'Degradado rojo-verde'})]];
-return '<form class="card card-pad" data-action="save-theme"><div class="theme-preview"></div>'+names.map(x=>'<label class="field">'+esc(x[2])+' <input type="number" name="'+x[0]+'" min="0" max="'+x[1]+'" value="'+theme[x[0]]+'" required></label>').join('')+'<div class="theme-presets">'+presets.map(x=>'<button class="btn" type="button" data-action="theme-preset" data-preset="'+x[0]+'">'+esc(x[1])+'</button>').join('')+'</div><button class="btn btn-primary" type="submit">'+esc(save)+'</button> <button class="btn" type="button" data-action="reset-theme">'+esc(reset)+'</button><div class="hint">'+esc(L({zh:'保存后同一账户的设备会同步主题色。',en:'Saved colors sync across devices on this account.',es:'Los colores guardados se sincronizan entre los dispositivos de esta cuenta.'}))+'</div></form>';
+return '<form class="card card-pad" data-action="save-theme"><fieldset class="appearance-mode"><legend>'+esc(L({zh:'显示模式',en:'Display mode',es:'Modo de visualización'}))+'</legend>'+['light','dark'].map(mode=>'<label><input type="radio" name="colorMode" value="'+mode+'" '+(v.colorMode===mode?'checked':'')+'>'+esc(mode==='light'?L({zh:'浅色',en:'Light',es:'Claro'}):L({zh:'深色',en:'Dark',es:'Oscuro'}))+'</label>').join('')+'</fieldset><input type="hidden" name="preset" value="'+(v.theme?.preset||'gradient')+'"><div class="theme-preview"></div>'+names.map(x=>'<label class="field">'+esc(x[2])+' <input type="number" name="'+x[0]+'" min="0" max="'+x[1]+'" value="'+theme[x[0]]+'" required></label>').join('')+'<div class="theme-presets">'+presets.map(x=>'<button class="btn" type="button" data-action="theme-preset" data-preset="'+x[0]+'">'+esc(x[1])+'</button>').join('')+'</div><button class="btn btn-primary" type="submit">'+esc(save)+'</button> <button class="btn" type="button" data-action="reset-theme">'+esc(reset)+'</button><div class="hint">'+esc(L({zh:'选择浅色或深色模式，调整主题色后保存；外观设置会随账户同步。',en:'Choose light or dark mode, adjust colors and save. Appearance syncs across devices on this account.',es:'Elige el modo claro u oscuro, ajusta los colores y guarda. La apariencia se sincroniza entre los dispositivos de esta cuenta.'}))+'</div></form>';
     }
   };
   root.LCBSettingsPage = function(c) {
@@ -35,7 +35,7 @@ return '<form class="card card-pad" data-action="save-theme"><div class="theme-p
       personal:L({zh:'个性化',en:'Personalization',es:'Personalización'}),
       rules:L({zh:'信息与规则',en:'Information and rules',es:'Información y reglas'}),
       sidebar:L({zh:'侧边栏',en:'Sidebar',es:'Barra lateral'}),
-      theme:L({zh:'主题色',en:'Theme color',es:'Color del tema'}),
+      theme:L({zh:'外观',en:'Appearance',es:'Apariencia'}),
       security:L({zh:'安全性',en:'Security',es:'Seguridad'}),
       repair:L({zh:'修复',en:'Repair',es:'Reparación'}),
       members:t('settings.members'), defaults:t('settings.defaultTeam'), devices:t('settings.sessions'),

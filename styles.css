@@ -455,3 +455,24 @@ table.grid td.nw{white-space:nowrap}
 :root .topbar-right>.version-update-button{display:inline-flex}
 .login-version-update{position:fixed;top:16px;right:16px;z-index:50}
 .settings-pages{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;width:100%}.settings-pages>.card{width:100%;margin:0!important;overflow-x:auto}.settings-entry{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;color:var(--ink);font-weight:600;transition:background .15s,transform .15s}.settings-entry:hover{background:var(--brand-soft);transform:translateX(2px)}.settings-entry>span:last-child{font-size:24px;color:var(--ink-3)}.settings-back{display:inline-block;margin-bottom:10px}.settings-check-time{display:block;font-size:11px;color:var(--ink-3);margin-top:12px}.settings-pages .matrix{width:100%}
+:root {color-scheme:light}
+/* Full-width completed group control: no dead area inside the card. */
+.completed-section-cell{padding:0!important}
+.completed-section-toggle{display:block;width:100%;min-height:56px;text-align:left;border-radius:0;padding:16px 18px!important}
+.appearance-mode{border:1px solid var(--line);border-radius:12px;margin-bottom:18px;padding:14px}
+.appearance-mode label{display:inline-flex;gap:8px;margin-right:24px;align-items:center}
+@media screen{
+.dark-mode{--ink:#e7edf5;--ink-2:#bcc8d7;--ink-3:#9baabd;--line:#3b485b;--line-2:#303d4f;--bg:#101722;--card:#18222f;--red:#ff8a80;--red-soft:#402526;--yellow:#ffd18a;--yellow-soft:#3b3021;--green:#70d9ab;--green-soft:#193b30}
+.dark-mode body,.dark-mode .login-wrap{background:var(--bg);color:var(--ink)}
+.dark-mode .topbar{background:rgba(24,34,47,.96)}
+.dark-mode :is(.field input,.field select,.field textarea,.btn,.nav-shell,.lang-switch,.nav-scroll-btn,.mobile-nav-toggle,.user-chip,.modal,.modal-foot,.web-notice-card,.guide-coach,.calendar-wrap,.workload-card,.tutorial-topic,.chat-message-body,.chat-context-menu,.chat-choice-list label,.chat-tool>summary,.chat-tool-pop,.chat-input-area textarea,.chat-upload-button span){background:var(--card);color:var(--ink);border-color:var(--line)}
+.dark-mode :is(th,.member-item,.file-item,.drawer-foot,.inbox-item,.step-box,.notice,.tag-area,.avatar,.inbox-avatar,.calendar-item,.chat-reference-card){background:#243144;color:var(--ink)}
+.dark-mode :is(.btn:hover,.tutorial-topic:hover,.chat-tool>summary:hover,.chat-choice-list label:hover,.chat-context-menu button:hover,tr:hover td){background:#303d4f;color:var(--ink)}
+.dark-mode :is(.btn-primary,.btn-primary:hover){background:var(--brand-gradient,var(--brand));color:var(--brand-text,#fff)}
+.dark-mode .matter-completed-row>td,.dark-mode .matter-completed-detail>td{background:#2a3039!important;color:#bdc5cf}
+.dark-mode .matter-completed-row:hover>td{background:#343c47!important}
+.dark-mode :is(.chat-reference-chip,.chat-reference-card em){background:#24392f;color:#cfede0}
+.dark-mode .inbox-item.is-read{background:var(--card)}
+.dark-mode .inbox-item.is-unread{background:#243144}
+.dark-mode input,.dark-mode textarea,.dark-mode select{color-scheme:dark}
+}

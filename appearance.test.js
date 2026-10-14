@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const c={};vm.runInNewContext(fs.readFileSync('settings-page.js','utf8'),c);
+assert.equal(c.LCBPersonalization.normalize({}).colorMode,'light');
+assert.equal(c.LCBPersonalization.normalize({colorMode:'dark',future:42}).colorMode,'dark');
+assert.equal(c.LCBPersonalization.normalize({colorMode:'bad'}).colorMode,'light');
+const html=c.LCBPersonalization.panel({L:x=>x.en,esc:x=>x,value:{colorMode:'dark'},items:[]},'theme');
+assert.match(html,/name="colorMode" value="dark" checked/);
+assert.match(html,/Light/);assert.match(html,/Dark/);
