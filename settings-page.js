@@ -40,7 +40,7 @@ return '<form class="card card-pad" data-action="save-theme"><div class="theme-p
       repair:L({zh:'修复',en:'Repair',es:'Reparación'}),
       members:t('settings.members'), defaults:t('settings.defaultTeam'), devices:t('settings.sessions'),
       backup:L({zh:'安全备份',en:'Secure backup',es:'Copia de seguridad'}),
-      records:L({zh:'安全记录',en:'Security records',es:'Registros de seguridad'}),
+      records:L({zh:'安全记录',en:'Security log',es:'Registro de seguridad'}),
       integrity:L({zh:'数据完整性巡检',en:'Data integrity check',es:'Revisión de integridad'}),
       updates:L({zh:'检查更新',en:'Check for updates',es:'Buscar actualizaciones'})
     };
@@ -64,7 +64,7 @@ return '<form class="card card-pad" data-action="save-theme"><div class="theme-p
     else if(route==='backup'&&c.admin) {
       const card=cards.find(x=>x.querySelector('[data-action="export-encrypted-backup"]'));
       if(card){const records=card.querySelector('[data-action="view-security-events"]');if(records)records.remove();card.querySelector('.section-title').textContent=labels.backup;body=card.outerHTML;}
-    } else if(route==='records'&&c.admin)body='<div class="card card-pad"><div class="section-title">'+esc(L({zh:'最近安全记录',en:'Recent security records',es:'Registros recientes de seguridad'}))+'</div>'+c.records+'<button class="btn" data-action="settings-load-records">'+esc(L({zh:'刷新',en:'Refresh',es:'Actualizar'}))+'</button></div>';
+    } else if(route==='records'&&c.admin)body='<div class="card card-pad"><div class="section-title">'+esc(L({zh:'最近安全记录',en:'Recent security activity',es:'Actividad de seguridad reciente'}))+'</div>'+c.records+'<button class="btn" data-action="settings-load-records">'+esc(L({zh:'刷新',en:'Refresh',es:'Actualizar'}))+'</button></div>';
     else if(route==='integrity'&&c.admin)body=c.integrity;
     else if(route==='updates'){
       const stamp=c.lastCheck?new Date(c.lastCheck):null;

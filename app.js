@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610141935';
+const APP_VERSION = '202610141951';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -102,15 +102,15 @@ const SECURITY_NOTICE = {
       ]],
       ['3. Access is limited to approved people', [
         'Strangers cannot create their own accounts or enter anonymously. Without a valid sign-in, the server does not provide the data.',
-        'Ordinary members can only view matters they own or participate in. Carol can view all matters.',
-        'Ordinary members cannot impersonate the owner or bypass access rules to change the member list.',
+        'Other members can only view matters they own or participate in. Carol can view all matters.',
+        'Other members cannot impersonate the owner or bypass access rules to change the member list.',
       ]],
       ['4. Devices and activity are controlled', [
         'You can review devices that have signed in and remove one device or every device. A removed device loses access.',
         'Sessions end after 24 hours of inactivity, and important security actions are recorded.',
       ]],
       ['5. The website and server are continuously protected', [
-        'The server checks each person’s permissions again, and files are not stored publicly. This helps stop anyone from bypassing the website to read or change data.',
+        'The server also checks each person’s permissions, and files are stored privately. This helps prevent unauthorized access or changes, even outside the website.',
         'The website runs only code bundled with the site, and automated checks verify that access without signing in remains blocked.',
         'No website can promise to be completely unbreakable. Use a strong, unique password, never share it, and keep your device locked.',
       ]],
@@ -132,15 +132,15 @@ const SECURITY_NOTICE = {
       ]],
       ['3. El acceso se limita a personas autorizadas', [
         'Los desconocidos no pueden crear sus propias cuentas ni entrar de forma anónima. Sin un inicio de sesión válido, el servidor no entrega los datos.',
-        'Los miembros normales solo pueden ver los asuntos que dirigen o en los que participan. Carol puede verlos todos.',
-        'Los miembros normales no pueden hacerse pasar por el responsable ni saltarse las reglas para cambiar la lista de miembros.',
+        'Los demás miembros solo pueden ver los asuntos que dirigen o en los que participan. Carol puede verlos todos.',
+        'Los demás miembros no pueden hacerse pasar por el responsable ni saltarse las reglas para cambiar la lista de miembros.',
       ]],
       ['4. Se controlan los dispositivos y la actividad', [
         'Puedes revisar los dispositivos que han iniciado sesión y cerrar la sesión de uno o de todos. Un dispositivo desconectado pierde el acceso.',
         'La sesión termina tras 24 horas de inactividad y las acciones de seguridad importantes quedan registradas.',
       ]],
       ['5. El sitio y el servidor mantienen protección continua', [
-        'El servidor vuelve a comprobar los permisos de cada persona y los archivos no se guardan públicamente. Esto ayuda a impedir que alguien evite la página para leer o cambiar datos.',
+        'El servidor vuelve a comprobar los permisos de cada persona y los archivos no se guardan públicamente. Esto ayuda a impedir el acceso o los cambios sin autorización, incluso fuera de la página web.',
         'El sitio solo ejecuta código incluido en el propio sitio, y las comprobaciones automáticas confirman que el acceso sin iniciar sesión siga bloqueado.',
         'Ningún sitio puede prometer ser completamente invulnerable. Utiliza una contraseña fuerte y exclusiva, no la compartas y mantén bloqueado tu dispositivo.',
       ]],
@@ -166,11 +166,11 @@ const BEGINNER_TUTORIAL = {
   en: {
     title: 'Quick tour', choose: 'Choose a feature to learn about…', catalog: 'Back to topics', finish: 'Done', skip: 'Close',
     steps: [
-      ['Home', 'Home summarizes urgent matters, items due this week, matters waiting for you, all visible matters, and automatic reminders. Select a matter to edit it or work on it, or use the “+” button for quick creation.'],
-      ['Matters', 'Create, search, and filter matters; bulk-delete them; import Excel/CSV files; export CSV data; or open a chat. Editing covers the client, owner, members, status, stage, next action, due date, waiting party, and recurrence. The work view handles completed steps, encrypted files, and activity.'],
-      ['Calendar', 'The calendar places matters on their due dates. Select a date to create a matter with the date already filled in or schedule a custom reminder for a specific time. Reminders are also saved under Notifications.'],
+      ['Home', 'Home shows urgent matters, matters due this week, those awaiting your action, all matters you can view, and automatic reminders. Select a matter to edit it or work on it.'],
+      ['Matters', 'Create, search, and filter matters; bulk-delete them; import Excel/CSV files; export CSV data; or open a chat. Editing covers the client, owner, members, status, stage, next action, due date, who you are waiting for, and recurrence. Use the work page to complete steps, upload encrypted files, and review activity.'],
+      ['Calendar', 'The calendar shows matters on their due dates. Select a date to create a matter with the date already filled in or schedule a custom reminder for a specific time. Reminders are also saved under Notifications.'],
       ['Client records', 'Store the client name, contact person, phone, email, communication progress, latest contact time, and notes. You can create, edit, bulk-delete, or import multiple Excel/CSV files. Saved clients appear in the New matter client list.'],
-      ['Client follow-up', 'This page gathers clients who have not been contacted recently, are being waited on, or need further action. “Mark as contacted now” records the current time and updates both the client record and notifications. The badge shows the number due for follow-up.'],
+      ['Client follow-up', 'This page lists clients who have not been contacted recently, whose reply you are waiting for, or who need further follow-up. “Mark as contacted now” records the current time and updates both the client record and notifications. The badge shows the number due for follow-up.'],
       ['Team workload', 'Team workload shows each member’s open, urgent, overdue, and waiting matters. It helps the team lead see whether work is balanced and who may need support first.'],
       ['Notifications', 'Matter edits, chats, file activity, client actions, and reminders appear here. Notifications can be marked as read or deleted. When system notifications are enabled, alerts can also appear on the computer. The red badge shows the unread count.'],
       ['Settings', 'Settings shows members and visibility rules, plus each signed-in device’s name, location, IP address, and last active time. You can sign out one or all devices, review security events, and export or restore an encrypted backup.'],
@@ -180,14 +180,14 @@ const BEGINNER_TUTORIAL = {
   es: {
     title: 'Guía rápida', choose: 'Elige una función para aprender a usarla…', catalog: 'Volver al índice', finish: 'Terminar', skip: 'Cerrar',
     steps: [
-      ['Inicio', 'Inicio resume los asuntos urgentes, los que vencen esta semana, los que esperan tu intervención, todos los asuntos visibles y los recordatorios automáticos. Pulsa un asunto para editarlo o trabajar en él, o usa “+” para crearlo rápidamente.'],
-      ['Asuntos', 'Crea, busca y filtra asuntos; elimínalos en lote; importa archivos Excel/CSV; exporta datos CSV o abre un chat. La edición incluye cliente, responsable, miembros, estado, etapa, próxima acción, fecha límite, parte pendiente y repetición. La vista de trabajo gestiona pasos, archivos cifrados y actividad.'],
+      ['Inicio', 'Inicio muestra los asuntos urgentes, los que vencen esta semana, los que requieren tu intervención, todos los que puedes consultar y los recordatorios automáticos. Selecciona un asunto para editarlo o trabajar en él.'],
+      ['Asuntos', 'Crea, busca y filtra asuntos; elimínalos en lote; importa archivos Excel/CSV; exporta datos CSV o abre un chat. La edición incluye cliente, responsable, miembros, estado, etapa, próxima acción, fecha límite, persona o entidad de la que esperas respuesta y repetición. En la página de trabajo puedes completar pasos, subir archivos cifrados y consultar la actividad.'],
       ['Calendario', 'El calendario muestra los asuntos en su fecha límite. Pulsa una fecha para crear un asunto con esa fecha ya rellenada o programar un recordatorio personalizado a una hora concreta. También se guarda en Notificaciones.'],
-      ['Expedientes de clientes', 'Guarda nombre, persona de contacto, teléfono, correo, avance de la comunicación, último contacto y notas. Permite crear, editar, eliminar en lote e importar varios Excel/CSV. Los clientes guardados aparecen al crear un asunto.'],
+      ['Expedientes de clientes', 'Guarda el nombre del cliente, sus contactos, teléfono, correo, estado de la comunicación, último contacto y notas. Permite crear, editar, eliminar en lote e importar varios Excel/CSV. Los clientes guardados aparecen al crear un asunto.'],
       ['Seguimiento de clientes', 'Reúne clientes sin contacto reciente, pendientes de respuesta o que requieren otra acción. “Marcar como contactado ahora” registra la hora actual y actualiza el expediente y las notificaciones. El indicador muestra cuántos requieren seguimiento.'],
       ['Carga del equipo', 'Muestra por miembro los asuntos abiertos, urgentes, vencidos y pendientes de su intervención. Ayuda a comprobar si el reparto es equilibrado y quién necesita apoyo primero.'],
       ['Notificaciones', 'Aquí aparecen cambios de asuntos, chats, archivos, acciones sobre clientes y recordatorios. Se pueden marcar como leídas o eliminar. Si activas las notificaciones del sistema, los avisos también aparecen en el ordenador.'],
-      ['Configuración', 'Muestra miembros y reglas de visibilidad, además del nombre, ubicación, IP y última actividad de cada dispositivo conectado. Permite cerrar una sesión o todas, revisar eventos de seguridad y exportar o restaurar una copia cifrada.'],
+      ['Configuración', 'Muestra miembros y reglas de visibilidad, además del nombre, ubicación, IP y última actividad de cada dispositivo conectado. Permite cerrar una sesión o todas, revisar eventos de seguridad y exportar o restaurar una copia de seguridad cifrada.'],
       ['Papelera', 'Los asuntos y expedientes eliminados se trasladan primero aquí. Los usuarios autorizados pueden restaurarlos, borrar uno definitivamente o borrar varios en lote. La eliminación definitiva no se puede deshacer.'],
     ],
   },
@@ -206,57 +206,57 @@ const TUTORIAL_DETAILS = {
     ['回收站显示已删除事项和客户档案；普通成员只能处理自己拥有/创建的内容。','“恢复”把内容放回原页面并同步。','“永久删除”会二次确认并删除相关记录及文件；不可恢复。','行复选框和表头全选用于选择；“批量永久删除”显示数量并再次确认；“取消”不会删除。'],
   ],
   en: [
-    ['Login uses email and password; the eye shows/hides the password; Sign in becomes disabled “Signing in” while processing; 中 / EN / ES changes language; repeated failures cause a cooldown.','The top-left menu opens the sidebar and its red badge is the unread count. Sidebar buttons open each page; Quick tour reopens this guide.','The cloud button shows sync status and refreshes data/devices when selected. Sign out at the bottom-right of the sidebar asks for confirmation; 24 hours of inactivity also signs out.','New matter opens the full matter form. Dashboard matter rows open the Edit / Work chooser.'],
-    ['Search by matter number, client, title, or current step; practice area, owner, status, and waiting party combine as filters; Clear filters resets them. Checkboxes plus Bulk delete move authorized items to the recycle bin.','Import Excel/CSV accepts multiple files and validates fields; a sample is available after invalid input. Export CSV exports current results. New matter opens the form.','Client, opposing parties, and related parties are checked against visible existing records before creation; Check conflicts runs the check again at any time.','Selecting a row offers Edit matter or Work on matter. Editing covers client, title, area, owner, members, status, stage, next action/owner, due date, waiting party, contact, notes, and recurrence. Save syncs; Delete moves to trash.','Custom client/area/stage/waiting values are supported; a missing custom client creates a name-only client record. Changing next owner creates a handoff; Accept handoff completes it; Undo last edit restores an eligible edit.','Work on matter: Complete step records the result and all next-step fields; Cancel discards.','Undo completed step reverses the latest completion; Completed steps and Activity show history; Export CSV exports this matter.','Add files accepts multiple files; files over 20 MB require confirmation. Uploading the same filename creates v2/v3 while preserving older downloadable versions.','Files are encrypted before upload. Selecting a filename confirms and decrypts download; Remove confirms and is limited to authorized users.','Before saving, the website checks the server version and stops if another person has already changed the matter.','Member permissions isolate matters and files; unauthorized content cannot be opened by direct URL.'],
-    ['Previous/Next month changes months; Today returns to the current month. Colored matters open Edit / Work.','Select a date background for New matter (date prefilled), Same-day reminder, or Cancel.','Save stores reminder date/time/text in Calendar and Notifications; Cancel discards. Select a blue reminder for details; Delete confirms; OK closes. Enabled system notifications also alert at the due time.'],
-    ['New client includes name, contact, phone, email, last contact, progress, and notes; Save creates and Cancel discards.','Edit changes; Delete confirms and moves to trash. Row/header checkboxes plus Bulk delete process several records.','Import Excel/CSV accepts multiple files and reports errors. Saved/custom clients feed New matter. Client operations create in-app and enabled system notifications.'],
-    ['Shows clients with stale contact, waiting status, or your next action; the badge is the count and hides at zero.','Select the client to open its matter. Mark as contacted now records the exact time, updates the client record, shows confirmation, and creates notifications.'],
-    ['Each member card shows total, open, urgent, overdue, and waiting workload. It is read-only and syncs automatically.','Carol can view all matters; other users do not gain access to hidden matter content.'],
-    ['We recommend enabling system notifications so matter, file, client, and schedule alerts can reach you outside this page; the browser asks permission first.','Every new notification also appears in a card at the bottom-right of the website. You can close it, or it disappears automatically after five seconds.','Mark all as read processes every unread notification and syncs normal read receipts. Select notification checkboxes to use Delete selected; the header checkbox selects the current list.','Turning off system notifications only stops computer alerts; it does not remove in-app records or website notification cards. Mark as read reduces the badge and syncs a receipt.','Delete confirms and removes only that notification. Sources include matter changes, steps, files, client actions/contact, schedules, and deadlines. Related content still requires permission.'],
-    ['Members and visibility explains access. Devices shows the name, at most a city-level estimate, IP, last activity, and current device; sync refreshes it. The site never requests, stores, or displays precise coordinates.','Sign out this device confirms and revokes one session; that device clears visible data and returns to login. Sign out all revokes all sessions.','Export encrypted backup downloads encrypted data/files; Restore selects and confirms a backup; View security events shows recent actions. These controls are available only to Carol.'],
-    ['Contains deleted matters and clients, subject to owner/creator permissions. Restore returns an item.','Permanently delete confirms and removes related records/files irreversibly. Checkboxes plus Bulk permanently delete handle several items; Cancel keeps them.'],
+    ['Sign in with your email and password. The eye icon shows or hides your password. While signing in, the button displays “Signing in” and cannot be clicked again. Use 中 / EN / ES to change the language. Repeated failed attempts temporarily block further attempts.','The top-left menu opens the sidebar and its red badge is the unread count. Sidebar buttons open each page; Quick tour reopens this guide.','The cloud button shows sync status and refreshes data/devices when selected. Sign out at the bottom-right of the sidebar asks for confirmation; 24 hours of inactivity also signs out.','New matter opens the full form. The Home page shows urgent matters, matters due this week, those awaiting your action, and all matters you can view. Select a matter to choose Edit matter or Work on matter.'],
+    ['Search by matter number, client, title, or current step. You can combine filters for practice area, owner, status, and who you are waiting for. Clear filters resets them. Select checkboxes and choose Bulk delete to move the items you can manage to the Recycle bin.','Import Excel/CSV accepts multiple files and validates fields; a sample is available after invalid input. Export CSV exports current results. New matter opens the form.','Client, opposing parties, and related parties are checked against visible existing records before creation; Check conflicts runs the check again at any time.','Selecting a row offers Edit matter or Work on matter. Editing covers client, title, area, owner, members, status, stage, next action/owner, due date, who you are waiting for, contact, notes, and recurrence. Save synchronizes your changes. Delete moves the item to the Recycle bin.','You can enter custom clients, practice areas, stages, and waiting parties. Entering a new client creates a record with just the client name. Changing the next-step owner starts a handoff, which the recipient completes by selecting Accept handoff. Undo last edit reverses the most recent edit that can still be undone.','On the work page, Complete step lets you record the result and enter the details for the next step. Cancel discards your changes.','Undo completed step reverses the latest completion; Completed steps and Activity show history; Export CSV exports this matter.','Add files accepts multiple files; files over 20 MB require confirmation. Uploading the same filename creates v2/v3 while preserving older downloadable versions.','Files are encrypted before upload. Select a filename and confirm the download to decrypt and download it. Removing a file also requires confirmation and the appropriate permission.','Before saving, the website checks the server version and stops if another person has already changed the matter.','Member permissions isolate matters and files; unauthorized content cannot be opened by direct URL.'],
+    ['Use Previous month and Next month to change the month. Today returns to the current month. Select a colored matter to choose whether to edit it or work on it.','Select a date background for New matter (date prefilled), Same-day reminder, or Cancel.','Save stores reminder date/time/text in Calendar and Notifications; Cancel discards. Select a blue reminder for details; Delete confirms; OK closes. Enabled system notifications also alert at the due time.'],
+    ['For a new client, enter the name, contact details, last contact date, communication status, and notes. Save creates the record; Cancel discards your changes.','Edit lets you update a record. Delete asks for confirmation and moves it to the Recycle bin. Use the row checkboxes or select all, then choose Bulk delete to delete several records.','Import Excel/CSV accepts multiple files and reports errors. Saved/custom clients feed New matter. Client actions appear in Notifications and also trigger system alerts if you have enabled them.'],
+    ['Shows clients who have not been contacted recently, whose response you are waiting for, or who need your next action. The badge shows the number needing follow-up and disappears when it reaches zero.','Select the client to open its matter. Mark as contacted now records the exact time, updates the client record, shows confirmation, and creates notifications.'],
+    ['Each member card shows their total workload, open matters, urgent matters, overdue matters, and matters awaiting their action. This page is read-only and updates when matters sync.','Carol can view all matters; other users do not gain access to hidden matter content.'],
+    ['We recommend enabling system notifications so matter, file, client, and schedule alerts can reach you outside this page; the browser asks permission first.','Every new notification also appears in a card at the bottom-right of the website. You can close it, or it disappears automatically after five seconds.','Mark all as read marks every unread notification as read and syncs the read receipts. Select notification checkboxes to use Delete selected; the header checkbox selects the current list.','Turning off system notifications only stops computer alerts; it does not remove in-app records or website notification cards. Mark as read reduces the badge and syncs a receipt.','Delete confirms and removes only that notification. Sources include matter changes, steps, files, client actions/contact, schedules, and deadlines. Related content still requires permission.'],
+    ['Team members and visibility rules explain who can access each matter. Signed-in devices shows each device’s name, approximate city-level location, IP address, and last activity, and identifies your current device. Sync refreshes the list. The site never requests, stores, or displays precise coordinates.','Sign out this device asks for confirmation, ends that device’s session, clears its displayed data, and returns it to the sign-in page. Sign out all devices ends every session, including this one.','Export encrypted backup downloads encrypted data/files; Restore selects and confirms a backup; View security events shows recent actions. These controls are available only to Carol.'],
+    ['Shows deleted matters and client records that you are allowed to manage as their owner or creator. Restore returns the item to its original page.','Permanently delete asks for confirmation and removes the related records and files. This cannot be undone. Select checkboxes to delete several items at once. Cancel leaves them unchanged.'],
   ],
   es: [
-    ['El acceso usa correo y contraseña; el ojo muestra/oculta la contraseña; Iniciar sesión se bloquea como “Iniciando sesión”; 中 / EN / ES cambia idioma; varios errores causan una espera.','El menú abre la barra lateral y su indicador rojo cuenta notificaciones. Los botones abren cada página; Guía rápida reabre esta ayuda.','La nube muestra y fuerza sincronización, incluida la lista de dispositivos. Cerrar sesión, en la esquina inferior derecha de la barra lateral, pide confirmación; 24 horas sin actividad también cierran la sesión.','Nuevo asunto abre el formulario completo. Las filas del inicio ofrecen Editar / Trabajar.'],
-    ['Busca por número de asunto, cliente, título o paso actual; área, responsable, estado y parte pendiente se combinan como filtros; Limpiar filtros los restablece. Casillas y Eliminar en lote envían elementos permitidos a la papelera.','Importar Excel/CSV admite varios archivos y valida; puede descargar muestra. Exportar CSV usa resultados actuales. Nuevo asunto abre el formulario.','Cliente, contrapartes y partes relacionadas se comparan con los registros visibles antes de crear; Comprobar conflictos repite la revisión.','Una fila ofrece Editar o Trabajar. Edición incluye cliente, título, área, responsable, miembros, estado, etapa, próxima acción/responsable, fecha, parte pendiente, contacto, notas y repetición. Guardar sincroniza; Eliminar envía a papelera.','Admite valores personalizados y crea clientes inexistentes con su nombre. Cambiar próximo responsable crea traspaso; Aceptar lo completa; Deshacer edición restaura un cambio válido.','Trabajar: Completar paso registra resultado y campos siguientes; Cancelar descarta.','Deshacer paso revierte; Pasos completados y Actividad muestran historial; Exportar CSV usa este asunto.','Añadir archivos admite varios; más de 20 MB pide confirmación. Subir el mismo nombre crea v2/v3 y conserva versiones anteriores descargables.','Los archivos se cifran antes de subir. Pulsar nombre confirma/descifra descarga; Eliminar confirma y exige permiso.','Antes de guardar, el sitio compara la versión del servidor y se detiene si otra persona ya modificó el asunto.','Permisos aíslan asuntos y archivos; una URL directa no evita las reglas.'],
-    ['Mes anterior/siguiente cambia; Hoy vuelve al actual. Los asuntos de colores abren Editar/Trabajar.','Pulsa fecha para Nuevo asunto (fecha rellenada), Recordatorio del día o Cancelar.','Guardar añade fecha/hora/texto a Calendario y Notificaciones; Cancelar descarta. Pulsa recordatorio azul para detalles; Eliminar confirma; Aceptar cierra. Los avisos del sistema alertan al vencer.'],
-    ['Nuevo cliente incluye nombre, contacto, teléfono, correo, último contacto, avance y notas; Guardar crea, Cancelar descarta.','Editar modifica; Eliminar confirma y envía a papelera. Casillas y Eliminar en lote procesan varios.','Importar Excel/CSV admite varios y muestra errores. Clientes guardados/personalizados alimentan Nuevo asunto. Las operaciones generan avisos internos y del sistema.'],
-    ['Muestra clientes sin contacto, pendientes o con tu próxima acción; el indicador cuenta y desaparece en cero.','Pulsa cliente para abrir asunto. Marcar como contactado ahora registra hora exacta, actualiza expediente, confirma y genera notificaciones.'],
-    ['Cada tarjeta muestra total, abiertos, urgentes, vencidos y pendientes. Es de consulta y sincroniza.','Carol puede ver todos los asuntos; los demás usuarios no obtienen contenido de asuntos ocultos.'],
-    ['Recomendamos activar las notificaciones del sistema para recibir avisos de asuntos, archivos, clientes y agenda fuera de esta página; el navegador pide permiso.','Cada notificación nueva también aparece en una tarjeta en la esquina inferior derecha del sitio. Puedes cerrarla o esperar a que desaparezca automáticamente después de cinco segundos.','Marcar todo como leído procesa todas las notificaciones pendientes y sincroniza los acuses de lectura. Marca las casillas para usar Eliminar seleccionadas; la casilla superior selecciona toda la lista actual.','Desactivar las notificaciones del sistema solo detiene los avisos del ordenador; no elimina los registros internos ni las tarjetas del sitio. Marcar como leída reduce el indicador y sincroniza el acuse.','Eliminar confirma y borra solo el aviso. Incluye cambios, pasos, archivos, clientes/contacto, agenda y fechas. El contenido exige permiso.'],
-    ['Miembros y visibilidad explica el acceso. Dispositivos muestra nombre, como máximo una estimación de ciudad, IP, actividad y dispositivo actual; sincronizar actualiza. El sitio nunca solicita, guarda ni muestra coordenadas precisas.','Cerrar este dispositivo confirma y revoca una sesión; allí borra datos visibles y vuelve al acceso. Cerrar todos revoca todos.','Exportar copia cifrada descarga datos/archivos; Restaurar elige y confirma; Ver eventos muestra acciones. Son controles administrativos.'],
-    ['Contiene asuntos y clientes eliminados según permisos. Restaurar devuelve.','Eliminar definitivamente confirma y borra registros/archivos sin vuelta atrás. Casillas y eliminación en lote procesan varios; Cancelar conserva.'],
+    ['Inicia sesión con tu correo y contraseña. El icono del ojo muestra u oculta la contraseña. Durante el acceso, el botón muestra «Iniciando sesión» y no se puede volver a pulsar. Usa 中 / EN / ES para cambiar de idioma. Varios intentos fallidos bloquean temporalmente nuevos intentos.','El menú abre la barra lateral y su indicador rojo cuenta notificaciones. Los botones abren cada página; Guía rápida vuelve a abrir este tutorial.','El botón de la nube muestra el estado de sincronización. Al pulsarlo, se sincronizan los datos y se actualiza la lista de dispositivos. Cerrar sesión, en la esquina inferior derecha de la barra lateral, pide confirmación; 24 horas sin actividad también cierran la sesión.','Nuevo asunto abre el formulario completo. Inicio muestra los asuntos urgentes, los que vencen esta semana, los que requieren tu intervención y todos los que puedes consultar. Selecciona un asunto para editarlo o trabajar en él.'],
+    ['Busca por número de asunto, cliente, título o paso actual. Puedes combinar los filtros de área, responsable, estado y persona o entidad de la que esperas respuesta. Limpiar filtros los restablece. Marca las casillas y selecciona Eliminar en lote para mover a la papelera los elementos que tienes permiso para gestionar.','Importar Excel/CSV permite seleccionar varios archivos y comprueba sus datos. Si el formato es incorrecto, puedes descargar un ejemplo. Exportar CSV descarga los resultados actuales. Nuevo asunto abre el formulario.','Cliente, contrapartes y partes relacionadas se comparan con los registros visibles antes de crear; Comprobar conflictos repite la revisión.','Una fila ofrece Editar o Trabajar. Edición incluye cliente, título, área, responsable, miembros, estado, etapa, próxima acción/responsable, fecha, persona o entidad de la que esperas respuesta, contacto, notas y repetición. Guardar sincroniza los cambios. Eliminar mueve el elemento a la papelera.','Puedes ingresar clientes, áreas, etapas y personas o entidades en espera personalizados. Si el cliente no existe, se crea un expediente con su nombre. Cambiar al responsable del siguiente paso inicia una entrega de trabajo, que el destinatario confirma con Aceptar traspaso. Deshacer edición revierte el último cambio que aún se puede deshacer.','En la página de trabajo, Completar paso permite registrar el resultado e indicar los datos del siguiente paso. Cancelar descarta los cambios.','Deshacer paso devuelve el asunto al paso anterior. Pasos completados y Actividad muestran el historial. Exportar CSV descarga los datos de este asunto.','Añadir archivos admite varios; más de 20 MB pide confirmación. Subir el mismo nombre crea v2/v3 y conserva versiones anteriores descargables.','Los archivos se cifran antes de subirlos. Selecciona el nombre de un archivo y confirma la descarga para descifrarlo y descargarlo. Para eliminarlo también debes confirmar la acción y tener permiso.','Antes de guardar, el sitio compara la versión del servidor y se detiene si otra persona ya modificó el asunto.','Permisos aíslan asuntos y archivos; una URL directa no evita las reglas.'],
+    ['Usa Mes anterior y Mes siguiente para cambiar de mes. Hoy vuelve al mes actual. Selecciona un asunto de color para editarlo o trabajar en él.','Selecciona una fecha para crear un asunto con esa fecha límite o agregar un recordatorio para ese día. Cancelar cierra la ventana.','Guardar añade fecha/hora/texto a Calendario y Notificaciones; Cancelar descarta. Pulsa recordatorio azul para detalles; Eliminar confirma; Aceptar cierra. Los avisos del sistema alertan al vencer.'],
+    ['Para un cliente nuevo, indica el nombre, los datos de contacto, la fecha del último contacto, el estado de la comunicación y las notas. Guardar crea el expediente; Cancelar descarta los cambios.','Editar permite modificar un expediente. Eliminar pide confirmación y lo mueve a la papelera. Marca las casillas de las filas o selecciona todas y usa Eliminar en lote para borrar varios expedientes.','Importar Excel/CSV admite varios y muestra errores. Los clientes guardados y los que agregues aparecen en la lista al crear un asunto. Las operaciones generan avisos internos y del sistema.'],
+    ['Muestra clientes sin contacto reciente, cuya respuesta esperas o que requieren tu intervención. El indicador muestra cuántos necesitan seguimiento y desaparece cuando el total es cero.','Pulsa cliente para abrir asunto. Marcar como contactado ahora registra hora exacta, actualiza expediente, confirma y genera notificaciones.'],
+    ['Cada tarjeta muestra la carga total del miembro y los asuntos en curso, urgentes, vencidos y pendientes de su intervención. Esta página es de consulta y se actualiza al sincronizar los asuntos.','Carol puede ver todos los asuntos; los demás usuarios no obtienen contenido de asuntos ocultos.'],
+    ['Recomendamos activar las notificaciones del sistema para recibir avisos de asuntos, archivos, clientes y agenda fuera de esta página; el navegador pide permiso.','Cada notificación nueva también aparece en una tarjeta en la esquina inferior derecha del sitio. Puedes cerrarla o esperar a que desaparezca automáticamente después de cinco segundos.','Marcar todo como leído marca todas las notificaciones pendientes como leídas y sincroniza las confirmaciones de lectura. Marca las casillas para usar Eliminar seleccionadas; la casilla superior selecciona toda la lista actual.','Desactivar las notificaciones del sistema solo detiene los avisos del ordenador; no elimina los registros internos ni las tarjetas del sitio. Marcar como leída reduce el indicador y sincroniza la confirmación de lectura.','Eliminar confirma y borra solo el aviso. Incluye cambios, pasos, archivos, clientes/contacto, agenda y fechas. El contenido exige permiso.'],
+    ['Los miembros y las reglas de visibilidad indican quién puede consultar cada asunto. Dispositivos conectados muestra el nombre, la ubicación aproximada a nivel de ciudad, la IP y la última actividad de cada dispositivo, e identifica el actual. Sincronizar actualiza la lista. El sitio no solicita, guarda ni muestra coordenadas precisas.','Cerrar sesión en este dispositivo pide confirmación, termina esa sesión, limpia los datos mostrados y vuelve a la página de acceso. Cerrar sesión en todos los dispositivos termina todas las sesiones, incluida la actual.','Descargar respaldo cifrado guarda una copia de los datos y archivos cifrados. Restaurar respaldo cifrado permite elegir un archivo de respaldo y pide confirmación. Ver eventos de seguridad muestra las acciones recientes. Estas funciones requieren permisos de administrador.'],
+    ['Aquí aparecen los asuntos y expedientes de clientes eliminados que tienes permiso para gestionar. Restaurar los devuelve a su página original.','Eliminar definitivamente pide confirmación y borra los registros y archivos relacionados de forma irreversible. Marca las casillas para eliminar varios elementos a la vez. Cancelar conserva los elementos.'],
   ],
 };
 
 TUTORIAL_DETAILS.zh[1][5] = '新建和修改事项可填写背景、优先级、开始日期、费用、收款、余额、联系人、联系邮箱、备注及原有工作流和权限字段；保存会加密同步，删除会移入回收站。';
-TUTORIAL_DETAILS.en[1][3] = 'Editing includes background, priority, start date, fees, payments, balance, contacts, notes, and the existing workflow and permission fields. Save syncs; Delete moves to trash.';
-TUTORIAL_DETAILS.es[1][3] = 'La edición incluye antecedentes, prioridad, fecha inicial, honorarios, pagos, saldo, contactos, notas y los campos existentes de flujo y permisos. Guardar sincroniza; Eliminar envía a la papelera.';
+TUTORIAL_DETAILS.en[1][3] = 'Editing includes background, priority, start date, fees, payments, balance, contacts, notes, and the existing workflow and permission fields. Save synchronizes your changes. Delete moves the item to the Recycle bin.';
+TUTORIAL_DETAILS.es[1][3] = 'La edición incluye antecedentes, prioridad, fecha inicial, honorarios, pagos, saldo, contactos, notas y los campos existentes de flujo y permisos. Guardar sincroniza los cambios. Eliminar mueve el elemento a la papelera.';
 TUTORIAL_DETAILS.zh[1][5] += ' 截止日期可留空，也可选择 ASAP；ASAP 事项每天提醒一次。';
 TUTORIAL_DETAILS.en[1][3] += ' The due date is optional and can be set to ASAP; ASAP matters generate one reminder each day.';
 TUTORIAL_DETAILS.es[1][3] += ' La fecha límite es opcional y puede marcarse como ASAP; los asuntos ASAP generan un aviso diario.';
 TUTORIAL_DETAILS.zh[1].push('最后一步负责人可点击“完成事项”；完成后事项变灰、沉底并默认折叠。展开后，仅事项总负责人本人可确认删除并移入回收站。');
-TUTORIAL_DETAILS.en[1].push('The final-step owner can select Complete matter. Completed matters turn gray, move to the bottom, and collapse by default. After expanding, only the matter owner can confirm deletion to the Recycle Bin.');
-TUTORIAL_DETAILS.es[1].push('El responsable del último paso puede elegir Completar asunto. Los asuntos completados se vuelven grises, pasan al final y quedan contraídos. Al expandirlos, solo el responsable general puede confirmar su envío a la papelera.');
+TUTORIAL_DETAILS.en[1].push('The person responsible for the final step can select Complete matter. Completed matters turn gray, move to the bottom, and collapse by default. After expanding, only the matter owner can confirm deletion to the Recycle Bin.');
+TUTORIAL_DETAILS.es[1].push('El responsable del último paso puede elegir Completar asunto. Los asuntos completados se vuelven grises, pasan al final y se muestran contraídos. Al expandirlos, solo el responsable general puede confirmar su envío a la papelera.');
 
 BEGINNER_TUTORIAL.zh.steps.splice(1,0,['全文搜索','搜索事项、客户、聊天、动态和文件名；结果严格按当前账号权限显示。']);
-BEGINNER_TUTORIAL.en.steps.splice(1,0,['Full search','Search matters, clients, chats, activity, and filenames; results follow the current account permissions.']);
-BEGINNER_TUTORIAL.es.steps.splice(1,0,['Búsqueda completa','Busca asuntos, clientes, chats, actividad y archivos; los resultados respetan los permisos actuales.']);
+BEGINNER_TUTORIAL.en.steps.splice(1,0,['Search all records','Search matters, clients, chats, activity, and filenames; results follow the current account permissions.']);
+BEGINNER_TUTORIAL.es.steps.splice(1,0,['Buscar en todos los registros','Busca asuntos, clientes, chats, actividad y archivos; los resultados respetan los permisos actuales.']);
 BEGINNER_TUTORIAL.zh.steps.splice(7,0,['期限计算','按自然日或工作日计算截止日期，并可一键创建提前 7、3、1 天提醒。'],['工作报告','按时间、客户、负责人和业务类型汇总事项，可导出 Excel/CSV 或打印为 PDF。']);
-BEGINNER_TUTORIAL.en.steps.splice(7,0,['Deadline calculator','Calculate calendar or business-day deadlines and create reminders 7, 3, and 1 days in advance.'],['Work reports','Summarize matters by date, client, owner, and area; export Excel/CSV or print to PDF.']);
-BEGINNER_TUTORIAL.es.steps.splice(7,0,['Calculadora de plazos','Calcula plazos naturales o hábiles y crea avisos 7, 3 y 1 días antes.'],['Informes de trabajo','Resume asuntos por fecha, cliente, responsable y área; exporta Excel/CSV o imprime en PDF.']);
+BEGINNER_TUTORIAL.en.steps.splice(7,0,['Deadline calculator','Calculate a deadline using calendar days or business days, then create reminders for 7 days, 3 days, and 1 day before it.'],['Work reports','Summarize matters by date, client, owner, and area; export Excel/CSV or print to PDF.']);
+BEGINNER_TUTORIAL.es.steps.splice(7,0,['Calculadora de plazos','Calcula los plazos en días naturales o hábiles y crea recordatorios para 7 días, 3 días y 1 día antes.'],['Informes de trabajo','Resume asuntos por fecha, cliente, responsable y área; exporta Excel/CSV o imprime en PDF.']);
 BEGINNER_TUTORIAL.zh.steps.splice(10,0,['聊天','母子聊天支持引用事项、客户档案、步骤或事项文件，也可上传加密文件随消息发送。']);
 BEGINNER_TUTORIAL.en.steps.splice(10,0,['Chat','Private family chat supports references to matters, clients, steps or matter files and encrypted file uploads.']);
-BEGINNER_TUTORIAL.es.steps.splice(10,0,['Chat','El chat familiar admite referencias a asuntos, clientes, pasos o archivos y archivos cifrados.']);
+BEGINNER_TUTORIAL.es.steps.splice(10,0,['Chat','El chat de Carol y Benson permite compartir referencias a asuntos, expedientes de clientes, pasos y archivos, así como enviar archivos cifrados.']);
 TUTORIAL_DETAILS.zh.splice(1,0,['输入至少两个字符后点击“搜索”；结果包括事项、客户、聊天、动态和文件名。','点击结果打开相关事项或客户档案；没有权限的数据不会出现。']);
 TUTORIAL_DETAILS.en.splice(1,0,['Enter at least two characters and select Search; results include matters, clients, chats, activity, and filenames.','Select a result to open it. Content outside your permissions never appears.']);
 TUTORIAL_DETAILS.es.splice(1,0,['Introduce al menos dos caracteres y pulsa Buscar; incluye asuntos, clientes, chats, actividad y archivos.','Pulsa un resultado para abrirlo. Nunca aparece contenido sin permiso.']);
 TUTORIAL_DETAILS.zh.splice(7,0,['填写起始日期、天数和计算方式；工作日模式会排除周末及手工填写的节假日。','“计算截止日”显示结果；“创建 7／3／1 天前提醒”会把三次提醒加入日历和通知。','计算结果仅供工作管理，法定期限应由律师复核。'],['选择日期范围、客户、负责人和业务类型后点击“生成报告”。','“导出 Excel/CSV”下载表格；“打印／导出 PDF”打开浏览器打印窗口。','报告只统计当前账号有权查看的事项。']);
-TUTORIAL_DETAILS.en.splice(7,0,['Set the start date, number of days, and method. Business-day mode excludes weekends and entered holidays.','Calculate shows the date; Create reminders adds alerts 7, 3, and 1 days beforehand.','The result supports workflow planning and must be legally verified.'],['Choose the date range, client, owner, and area, then Generate.','Export Excel/CSV downloads a table; Print / export PDF opens the print dialog.','Reports include only matters this account may view.']);
-TUTORIAL_DETAILS.es.splice(7,0,['Indica fecha inicial, días y método. El modo hábil excluye fines de semana y festivos indicados.','Calcular muestra la fecha; Crear avisos añade recordatorios 7, 3 y 1 días antes.','El resultado sirve para gestión y debe verificarse jurídicamente.'],['Elige fechas, cliente, responsable y área, y pulsa Generar.','Exportar Excel/CSV descarga una tabla; Imprimir / exportar PDF abre la impresión.','El informe solo incluye asuntos permitidos.']);
+TUTORIAL_DETAILS.en.splice(7,0,['Set the start date, number of days, and method. Business-day mode excludes weekends and entered holidays.','Calculate shows the date; Create reminders adds alerts 7, 3, and 1 days beforehand.','Use this result for work planning only. A lawyer must verify any legal deadline.'],['Choose a date range, client, owner, and practice area, then select Generate.','Export Excel/CSV downloads a table; Print / export PDF opens the print dialog.','Reports include only matters this account may view.']);
+TUTORIAL_DETAILS.es.splice(7,0,['Indica fecha inicial, días y método. El modo hábil excluye fines de semana y festivos indicados.','Calcular muestra la fecha; Crear avisos añade recordatorios 7, 3 y 1 días antes.','El resultado solo sirve para organizar el trabajo. Un abogado debe verificar los plazos legales.'],['Elige un intervalo de fechas, cliente, responsable y área, y selecciona Generar.','Exportar Excel/CSV descarga una tabla; Imprimir / exportar PDF abre la impresión.','El informe solo incluye los asuntos que tienes permiso para consultar.']);
 TUTORIAL_DETAILS.zh.splice(10,0,['在消息框输入文字。','“引用”可选择事项、客户档案、已完成步骤或事项中的文件；文件卡片可按原事项权限安全下载。','“上传文件并发送”已整合到“+”菜单，会先在本机加密，再把文件和消息一起发出。','收到或发出消息后聊天会自动滚到底部；同步不会清空正在输入的草稿。']);
-TUTORIAL_DETAILS.en.splice(10,0,['Write a message.','Reference a matter, client record, completed step, or matter file. File cards download securely under the source matter permissions.','Upload files and send is inside the + menu; files are encrypted on this device first.','Chat follows received and sent messages to the bottom, while sync preserves the draft being typed.']);
-TUTORIAL_DETAILS.es.splice(10,0,['Escribe un mensaje.','Referencia un asunto, cliente, paso completado o archivo del asunto. Las tarjetas descargan con los permisos del asunto original.','Subir archivos y enviar está dentro del menú +; los archivos se cifran primero en este dispositivo.','El chat baja al final al recibir o enviar mensajes y la sincronización conserva el borrador.']);
+TUTORIAL_DETAILS.en.splice(10,0,['Write a message.','Reference a matter, client record, completed step, or matter file. You can download a referenced file only if you have access to its original matter.','Upload files and send is inside the + menu; files are encrypted on this device first.','Chat scrolls to the latest message when a message is sent or received. Syncing does not erase the draft you are typing.']);
+TUTORIAL_DETAILS.es.splice(10,0,['Escribe un mensaje.','Comparte una referencia a un asunto, expediente de cliente, paso completado o archivo. La descarga de archivos sigue sujeta a los permisos del asunto original.','Subir archivos y enviar está dentro del menú +; los archivos se cifran primero en este dispositivo.','El chat baja al final al recibir o enviar mensajes y la sincronización conserva el borrador.']);
 TUTORIAL_DETAILS.zh[10].push('在任意消息上点击右键可选择“删除”；删除只会让这条消息对你隐藏，另一名成员仍然可以看到。');
 TUTORIAL_DETAILS.en[10].push('Right-click any message and choose Delete to hide it only for your account; the other member can still see it.');
 TUTORIAL_DETAILS.es[10].push('Haz clic derecho en cualquier mensaje y elige Eliminar para ocultarlo solo en tu cuenta; el otro miembro seguirá viéndolo.');
@@ -268,7 +268,7 @@ BEGINNER_TUTORIAL.en.steps[9][1] = 'Matter, file, client, and schedule activity 
 BEGINNER_TUTORIAL.es.steps[9][1] = 'Los avisos de asuntos, archivos, clientes y agenda aparecen en Notificaciones. Los chats permanecen en su página, pero pueden generar alertas.';
 TUTORIAL_DETAILS.zh[2][3] = '“新建事项”打开完整表单；点击事项行选择“编辑事项”或“在事项中工作”。团队消息统一从侧边栏“聊天”进入。';
 TUTORIAL_DETAILS.en[2][1] = 'Import Excel/CSV validates multiple files and offers a sample when needed. Export CSV uses current results. New matter opens the full form; team messages are sent from Chat.';
-TUTORIAL_DETAILS.es[2][1] = 'Importar Excel/CSV valida varios archivos y ofrece una muestra. Exportar CSV usa los resultados. Nuevo asunto abre el formulario; los mensajes se envían desde Chat.';
+TUTORIAL_DETAILS.es[2][1] = 'Importar Excel/CSV comprueba los datos de varios archivos y ofrece un ejemplo si lo necesitas. Exportar CSV descarga los resultados actuales. Nuevo asunto abre el formulario completo. Los mensajes se envían desde la página Chat.';
 TUTORIAL_DETAILS.zh[9][6] = '通知来源包括事项创建/修改/删除、步骤完成、文件上传/移除、客户操作、日程及截止提醒；聊天消息不进入通知列表。';
 TUTORIAL_DETAILS.en[9][4] = 'Delete removes only that notification. Sources include matter changes, steps, files, client actions, schedules, and deadlines; chat messages stay out of this list.';
 TUTORIAL_DETAILS.es[9][4] = 'Eliminar borra solo ese aviso. Incluye cambios, pasos, archivos, clientes, agenda y fechas; los chats no aparecen en esta lista.';
@@ -276,8 +276,8 @@ TUTORIAL_DETAILS.zh[5].push('客户档案支持多个联系人和多条关联关
 TUTORIAL_DETAILS.en[5].push('Client records support multiple contacts and relationships; enter one per line using the “|” format shown in the form.');
 TUTORIAL_DETAILS.es[5].push('Los clientes admiten varios contactos y relaciones; escribe uno por línea con el formato “|” del formulario.');
 TUTORIAL_DETAILS.zh[11].push('Carol 可在“数据完整性巡检”点击“开始巡检”，检查加密标记、孤立动态、文件路径、权限关系和密钥状态。');
-TUTORIAL_DETAILS.en[11].push('Carol can select Run integrity check to inspect encryption markers, orphaned activity, file paths, permissions, and key state.');
-TUTORIAL_DETAILS.es[11].push('Carol puede ejecutar la revisión de integridad para comprobar cifrado, actividad huérfana, archivos, permisos y claves.');
+TUTORIAL_DETAILS.en[11].push('Carol can select Run integrity check to inspect encryption markers, activity records without a matching item, file paths, permissions, and key state.');
+TUTORIAL_DETAILS.es[11].push('Carol puede ejecutar la revisión de integridad para comprobar cifrado, registros de actividad sin un elemento asociado, archivos, permisos y claves.');
 
 const GUIDE_ROUTES = ['#/','#/search','#/matters','#/calendar','#/clients','#/followups','#/team','#/deadline','#/reports','#/inbox','#/chat','#/settings','#/trash'];
 const GUIDE_UI = {
@@ -300,7 +300,7 @@ const FEATURE_COPY = {
     calendar:'Calendar', followups:'Client follow-up', team:'Team workload', reminders:'Automatic reminders', remindersEmpty:'No upcoming or overdue reminders.',
     overdue:'Overdue', dueSoon:'Due soon', staleClient:'No recent client contact', waitingClient:'Waiting on client', days:'days', today:'Today',
     quick:'Quick add', quickSubmit:'Create now', handoff:'Handoff', handoffPending:'Waiting for {name} to accept the handoff', handoffAccept:'Accept handoff', handoffAccepted:'Handoff accepted',
-    workloadOpen:'Open', workloadRed:'Urgent', workloadOverdue:'Overdue', workloadWaiting:'Waiting on member',
+    workloadOpen:'Open', workloadRed:'Urgent', workloadOverdue:'Overdue', workloadWaiting:'Awaiting my action',
     previous:'Previous month', nextMonth:'Next month', noCalendar:'No matters due this month',
     recurrence:'Repeat', recurrenceNone:'Does not repeat', recurrenceWeekly:'Weekly', recurrenceMonthly:'Monthly', recurrenceUntil:'Repeat until (optional)',
     followupEmpty:'No clients need follow-up right now.', lastContact:'Last contacted', contactNow:'Mark as contacted now',
@@ -309,7 +309,7 @@ const FEATURE_COPY = {
     calendar:'Calendario', followups:'Seguimiento', team:'Carga del equipo', reminders:'Recordatorios automáticos', remindersEmpty:'No hay recordatorios próximos ni vencidos.',
     overdue:'Vencido', dueSoon:'Vence pronto', staleClient:'Sin contacto reciente', waitingClient:'Esperando al cliente', days:'días', today:'Hoy',
     quick:'Creación rápida', quickSubmit:'Crear ahora', handoff:'Traspaso', handoffPending:'Esperando que {name} acepte el traspaso', handoffAccept:'Aceptar traspaso', handoffAccepted:'Traspaso aceptado',
-    workloadOpen:'Abiertos', workloadRed:'Urgentes', workloadOverdue:'Vencidos', workloadWaiting:'Pendientes del miembro',
+    workloadOpen:'Abiertos', workloadRed:'Urgentes', workloadOverdue:'Vencidos', workloadWaiting:'Pendientes de mi intervención',
     previous:'Mes anterior', nextMonth:'Mes siguiente', noCalendar:'No hay asuntos con vencimiento este mes',
     recurrence:'Repetición', recurrenceNone:'No se repite', recurrenceWeekly:'Semanal', recurrenceMonthly:'Mensual', recurrenceUntil:'Repetir hasta (opcional)',
     followupEmpty:'No hay clientes pendientes de seguimiento.', lastContact:'Último contacto', contactNow:'Marcar como contactado ahora',
@@ -332,11 +332,11 @@ const STR = {
   'login.signingIn': ['登录中…', 'Signing in…', 'Iniciando sesión…'],
   'login.captchaRequired': ['请先完成人机验证。', 'Complete the security check first.', 'Completa primero la verificación de seguridad.'],
   'login.demoTitle': ['演示账号', 'Demo accounts', 'Cuentas de demostración'],
-  'login.localMode': ['本地安全测试模式：仅使用本机演示数据，不连接正式 Supabase。', 'Safe local test mode: demo data only; production Supabase is disconnected.', 'Modo local seguro: solo datos de demostración; Supabase de producción está desconectado.'],
+  'login.localMode': ['本地安全测试模式：仅使用本机演示数据，不连接正式 Supabase。', 'Safe local test mode: demo data only; production Supabase is disconnected.', 'Modo de prueba local seguro: solo utiliza datos de demostración de este dispositivo y no se conecta a Supabase de producción.'],
   'login.localEnter': ['以 {name} 身份进入演示', 'Enter demo as {name}', 'Entrar en demo como {name}'],
   'login.hint': ['用不同账号登录，可以看到负责人、成员和管理员之间的权限差异。',
     'Sign in with different accounts to see the permission differences between owners, members, and the administrator.',
-    'Entra con distintas cuentas para ver las diferencias de permisos entre responsables, miembros y administración.'],
+    'Inicia sesión con distintas cuentas para ver las diferencias de permisos entre responsables, miembros y el administrador.'],
   'login.errNoUser': ['没有找到这个邮箱对应的成员。', 'No team member matches that email.', 'No hay ningún miembro con ese correo.'],
   'login.errBadPass': ['密码错误，还剩 {n} 次机会！', 'Incorrect password. {n} attempts remaining!', 'Contraseña incorrecta. ¡Quedan {n} intentos!'],
   'login.errExpired': ['登录已过期，请重新登录。', 'Your session expired. Please sign in again.', 'Tu sesión ha caducado. Inicia sesión de nuevo.'],
@@ -347,10 +347,10 @@ const STR = {
   'nav.matters': ['事项', 'Matters', 'Asuntos'],
   'nav.inbox': ['通知', 'Notifications', 'Notificaciones'],
   'nav.chat': ['聊天', 'Chat', 'Chat'],
-  'chat.desc': ['母子全局聊天。可引用事项、客户档案、步骤或文件，也可上传加密文件发送。', 'Private family chat. Reference matters, clients, steps or files, and send encrypted uploads.', 'Chat privado familiar. Referencia asuntos, clientes, pasos o archivos y envía archivos cifrados.'],
+  'chat.desc': ['母子全局聊天。可引用事项、客户档案、步骤或文件，也可上传加密文件发送。', 'Private chat for Carol and Benson. Link to matters, client records, steps, or files, and send encrypted files.', 'Chat privado de Carol y Benson. Comparte referencias a asuntos, expedientes de clientes, pasos o archivos y envía archivos cifrados.'],
   'chat.mentions': ['@ 成员（可多选）', '@ Members (select multiple)', '@ Miembros (selección múltiple)'],
   'chat.reference': ['+ 引用只读卡片', '+ Attach a read-only card', '+ Adjuntar tarjeta de solo lectura'],
-  'chat.noReference': ['不引用', 'No attachment', 'Sin adjunto'],
+  'chat.noReference': ['不引用', 'No reference', 'Sin referencia'],
   'chat.referencePopup': ['引用', 'Reference', 'Referencia'],
   'chat.messagePlaceholder': ['输入团队消息…', 'Write a team message…', 'Escribe un mensaje al equipo…'],
   'chat.send': ['发送', 'Send', 'Enviar'],
@@ -392,10 +392,10 @@ const STR = {
   'dash.kpi.red': ['🔴 红色事项', '🔴 Red matters', '🔴 Asuntos rojos'],
   'dash.kpi.redFoot': ['需要立即处理', 'Needs immediate action', 'Requieren acción inmediata'],
   'dash.kpi.due': ['📅 本周到期', '📅 Due this week', '📅 Vencen esta semana'],
-  'dash.kpi.dueFoot': ['7 天内截止', 'Due within 7 days', 'Vencen en 7 días'],
-  'dash.kpi.mine': ['⏳ 等我推进', '⏳ Waiting on me', '⏳ Pendientes de mí'],
+  'dash.kpi.dueFoot': ['7 天内截止', 'Due within 7 days', 'Vencen dentro de 7 días'],
+  'dash.kpi.mine': ['⏳ 等我推进', '⏳ Waiting on me', '⏳ Pendientes de mi intervención'],
   'dash.kpi.mineFoot': ['我要做的事情', 'Things I need to do', 'Mis tareas'],
-  'dash.kpi.visible': ['👀 我能看到', '👀 I can see', '👀 Puedo ver'],
+  'dash.kpi.visible': ['👀 我能看到', '👀 Matters I can view', '👀 Asuntos que puedo ver'],
   'dash.kpi.visibleAdmin': ['Carol · 全部事项', 'Carol · all matters', 'Carol · todos los asuntos'],
   'dash.kpi.visibleMember': ['仅我是项目成员的事项', 'Only matters I am assigned to', 'Solo asuntos en los que participo'],
   'dash.today': ['今天要处理的', 'To do today', 'Para hoy'],
@@ -411,7 +411,7 @@ const STR = {
   'list.desc': ['共 {n} 条', '{n} matters', '{n} asuntos'],
   'list.descAdmin': ['（Carol，全部事项）', '(Carol, all matters)', '(Carol, todos los asuntos)'],
   'list.descMember': ['（只含你是项目成员的事项）', '(only matters you are assigned to)', '(solo asuntos en los que participas)'],
-  'list.export': ['导出CSV表格', 'Export CSV spreadsheet', 'Exportar tabla CSV'],
+  'list.export': ['导出CSV表格', 'Export CSV', 'Exportar CSV'],
   'list.bulkDelete': ['批量删除', 'Bulk delete', 'Eliminar en lote'],
   'list.import': ['Excel/CSV导入', 'Import Excel/CSV', 'Importar Excel/CSV'],
   'modal.import.title': ['Excel/CSV导入事项', 'Import matters from Excel/CSV', 'Importar asuntos desde Excel/CSV'],
@@ -424,14 +424,14 @@ const STR = {
   'modal.import.yes': ['查看示例文件', 'View sample file', 'Ver archivo de ejemplo'],
   'modal.import.no': ['否', 'No', 'No'],
   'modal.import.sample': ['示例文件', 'Sample file', 'Archivo de ejemplo'],
-  'modal.export.title': ['导出CSV表格', 'Export CSV spreadsheet', 'Exportar tabla CSV'],
-  'modal.export.body': ['CSV 表格可用 Excel 打开。', 'CSV spreadsheets can be opened in Excel.', 'Las tablas CSV se pueden abrir con Excel.'],
+  'modal.export.title': ['导出CSV表格', 'Export CSV', 'Exportar CSV'],
+  'modal.export.body': ['CSV 表格可用 Excel 打开。', 'You can open CSV files in Excel.', 'Puedes abrir los archivos CSV en Excel.'],
   'modal.export.confirm': ['下载CSV表格', 'Download CSV', 'Descargar CSV'],
   'list.search': ['搜索客户、事项、这一步', 'Search client, matter, current step', 'Buscar cliente, asunto, paso actual'],
   'list.allAreas': ['全部业务类型', 'All practice areas', 'Todas las áreas'],
   'list.allOwners': ['全部负责人', 'All owners', 'Todos los responsables'],
   'list.allStatus': ['全部状态', 'All statuses', 'Todos los estados'],
-  'list.allWaiting': ['全部等待对象', 'All waiting statuses', 'Todos los estados de espera'],
+  'list.allWaiting': ['全部等待对象', 'All waiting parties', 'Todas las personas o entidades en espera'],
   'list.clear': ['清除筛选', 'Clear filters', 'Limpiar filtros'],
   'list.empty': ['没有符合条件的事项。', 'No matters match these filters.', 'Ningún asunto coincide con los filtros.'],
   'th.no': ['编号', 'No.', 'Nº'],
@@ -459,24 +459,24 @@ const STR = {
   'inbox.systemUnsupported': ['此浏览器不支持系统通知', 'System notifications are not supported', 'Este navegador no admite notificaciones del sistema'],
   'system.title': ['新通知', 'New notification', 'Nueva notificación'],
   'inbox.empty': ['还没有通知。', 'No notifications yet.', 'Todavía no hay notificaciones.'],
-  'inbox.markRead': ['已读', 'Mark read', 'Marcar como leído'],
+  'inbox.markRead': ['已读', 'Mark as read', 'Marcar como leída'],
   'inbox.markAllRead': ['全部已读', 'Mark all as read', 'Marcar todo como leído'],
   'inbox.selectAll': ['全选通知', 'Select all notifications', 'Seleccionar todas las notificaciones'],
   'inbox.bulkDelete': ['批量删除', 'Delete selected', 'Eliminar seleccionadas'],
   'inbox.delete': ['删除消息', 'Delete message', 'Eliminar mensaje'],
   'chat.delete': ['删除', 'Delete', 'Eliminar'],
-  'chat.bulkDelete': ['批量删除', 'Delete multiple', 'Eliminar varios'],
+  'chat.bulkDelete': ['批量删除', 'Delete multiple messages messages', 'Eliminar varios mensajes mensajes'],
   'chat.deleteSelected': ['删除选中的消息', 'Delete selected messages', 'Eliminar mensajes seleccionados'],
-  'chat.cancelBulk': ['取消批量删除', 'Cancel bulk delete', 'Cancelar eliminación múltiple'],
-  'chat.recall': ['撤回', 'Recall', 'Retirar'],
+  'chat.cancelBulk': ['取消批量删除', 'Cancel selection', 'Cancelar selección'],
+  'chat.recall': ['撤回', 'Unsend', 'Anular envío'],
   'chat.deleteConfirmTitle': ['确认删除消息', 'Delete message?', '¿Eliminar mensaje?'],
-  'chat.deleteConfirmBody': ['删除后仅你自己看不到这条消息。', 'After deletion, only you will no longer see this message.', 'Después de eliminarlo, solo tú dejarás de ver este mensaje.'],
+  'chat.deleteConfirmBody': ['删除后仅你自己看不到这条消息。', 'This message will be hidden from your view only. Other members can still see it.', 'Este mensaje se ocultará solo para ti. Los demás miembros podrán seguir viéndolo.'],
   'chat.bulkConfirmTitle': ['确认批量删除', 'Delete selected messages?', '¿Eliminar los mensajes seleccionados?'],
-  'chat.bulkConfirmBody': ['确定删除选中的 {n} 条消息吗？删除后仅你自己看不到。', 'Delete the selected {n} messages? Only you will no longer see them.', '¿Eliminar los {n} mensajes seleccionados? Solo tú dejarás de verlos.'],
-  'chat.recallConfirmTitle': ['确认撤回消息', 'Recall message?', '¿Retirar mensaje?'],
-  'chat.recallConfirmBody': ['撤回后所有人都看不到这条消息。', 'After recall, nobody will be able to see this message.', 'Después de retirarlo, nadie podrá ver este mensaje.'],
-  'inbox.read': ['已读', 'Read', 'Leído'],
-  'inbox.unread': ['未读', 'Unread', 'No leído'],
+  'chat.bulkConfirmBody': ['确定删除选中的 {n} 条消息吗？删除后仅你自己看不到。', 'Delete the {n} selected messages from your view? Other members will still be able to see them.', '¿Ocultar los {n} mensajes seleccionados solo para ti? Los demás miembros podrán seguir viéndolos.'],
+  'chat.recallConfirmTitle': ['确认撤回消息', 'Unsend message?', '¿Anular envío mensaje?'],
+  'chat.recallConfirmBody': ['撤回后所有人都看不到这条消息。', 'This message will be removed for everyone.', 'Este mensaje dejará de ser visible para todos.'],
+  'inbox.read': ['已读', 'Read', 'Leída'],
+  'inbox.unread': ['未读', 'Unread', 'No leída'],
   'inbox.new': ['{actor} 新建了事项“{title}”。当前步骤：“{next}”，由 {owner} 负责。当前事项状态：{status}。',
     '{actor} created “{title}”. Current step: “{next}”, assigned to {owner}. Current status: {status}.',
     '{actor} creó «{title}». Paso actual: «{next}», a cargo de {owner}. Estado actual: {status}.'],
@@ -496,7 +496,7 @@ const STR = {
     '{actor} completed the “{step}” step in “{title}”. Next, “{next}” is assigned to {owner}. Current status: {status}.',
     '{actor} completó el paso «{step}» de «{title}». El siguiente paso, «{next}», está a cargo de {owner}. Estado actual: {status}.'],
   'inbox.matterCompleted': ['事项“{title}”已完成，最后一步负责人是“{owner}”。',
-    'Matter “{title}” is complete. The final-step owner was “{owner}”.',
+    'Matter “{title}” is complete. “{owner}” was responsible for the final step.',
     'El asunto «{title}» se completó. El responsable del último paso fue «{owner}».'],
   'inbox.stepUndo': ['{actor} 撤回了事项“{title}”的步骤完成记录，当前步骤回到“{step}”，由 {owner} 负责。',
     '{actor} undid a completed step in “{title}”. The current step is again “{step}”, assigned to {owner}.',
@@ -531,7 +531,7 @@ const STR = {
   'wait.none': ['—', '—', '—'],
   'wait.client': ['客户', 'Client', 'Cliente'],
   'wait.counterparty': ['对方律师', 'Opposing counsel', 'Abogado de la contraparte'],
-  'wait.authority': ['政府部门', 'Government authority', 'Autoridad'],
+  'wait.authority': ['政府部门', 'Government authority', 'Dependencia gubernamental'],
   'wait.notary': ['墨西哥公证', 'Mexican notary', 'Notaría (México)'],
   'wait.bank': ['银行', 'Bank', 'Banco'],
   'wait.ofac': ['OFAC', 'OFAC', 'OFAC'],
@@ -546,11 +546,11 @@ const STR = {
   'stage.research': ['法律研究', 'Legal research', 'Investigación legal'],
   'stage.drafting': ['文件起草', 'Drafting', 'Redacción'],
   'stage.filing': ['申报递交', 'Filing / submission', 'Presentación'],
-  'stage.gov': ['政府审批', 'Government review', 'Revisión de la autoridad'],
+  'stage.gov': ['政府审批', 'Government approval', 'Aprobación de la autoridad'],
   'stage.closing': ['交割结项', 'Closing', 'Cierre'],
   'stage.hold': ['暂停', 'On hold', 'En pausa'],
 
-  'role.carol': ['中国律师 · 团队负责人', 'China-qualified lawyer · Team lead', 'Abogada en China · Líder del equipo'],
+  'role.carol': ['中国律师 · 团队负责人', 'China-qualified lawyer · Team lead', 'Abogada habilitada para ejercer en China · Responsable del equipo'],
   'role.benson': ['协作成员', 'Team member', 'Miembro del equipo'],
 
   'back.toList': ['← 返回事项列表', '← Back to matters', '← Volver a asuntos'],
@@ -577,7 +577,7 @@ const STR = {
   'detail.lastContact': ['最后联系客户', 'Last client contact', 'Último contacto con el cliente'],
   'detail.next': ['现在要做什么？', 'What needs to be done now?', '¿Qué hay que hacer ahora?'],
   'detail.reason': ['状态说明（黄／红必填）', 'Status note (required for yellow / red)', 'Nota de estado (obligatoria si es amarillo o rojo)'],
-  'detail.reasonPh': ['例如：等墨方土地意见，客户在催', 'e.g. Waiting for the Mexico land-use opinion; the client is following up', 'p. ej. A la espera del dictamen sobre el terreno en México; el cliente está dando seguimiento'],
+  'detail.reasonPh': ['例如：等墨方土地意见，客户在催', 'e.g. Waiting for the Mexico land-use opinion; the client is asking for an update', 'p. ej. A la espera del dictamen sobre el terreno en México; el cliente está dando seguimiento'],
   'form.reasonPh': ['为什么急', 'Why is it urgent?', '¿Por qué es urgente?'],
   'detail.background': ['背景', 'Background', 'Antecedentes'],
   'detail.priority': ['优先级', 'Priority', 'Prioridad'],
@@ -591,7 +591,7 @@ const STR = {
   'detail.members': ['项目成员', 'Matter members', 'Miembros del asunto'],
   'detail.membersHint': ['只有勾进来的人能打开这条事项，没勾的人连列表里都看不到。Carol 始终能看到全部。负责人是唯一对结果负责的人。',
     'Only the people selected here can open this matter; everyone else will not even see it in the list. Carol can always see all matters. The owner is the person accountable for the outcome.',
-    'Solo las personas marcadas aquí pueden abrir este asunto; las demás ni siquiera lo verán en la lista. Carol siempre puede verlos todos. El responsable es quien rinde cuentas del resultado.'],
+    'Solo las personas marcadas aquí pueden abrir este asunto; las demás ni siquiera lo verán en la lista. Carol siempre puede verlos todos. El responsable es la única persona a cargo del resultado del asunto.'],
   'detail.save': ['保存修改', 'Save changes', 'Guardar cambios'],
   'detail.undoEdit': ['撤回上次修改', 'Undo last edit', 'Deshacer última modificación'],
   'detail.delete': ['删除这条事项', 'Delete this matter', 'Eliminar este asunto'],
@@ -614,7 +614,7 @@ const STR = {
   'detail.step.button': ['完成当前步骤 →', 'Complete this step →', 'Completar este paso →'],
   'detail.matterComplete': ['完成事项', 'Complete matter', 'Completar asunto'],
   'detail.completed': ['事项已完成', 'Matter completed', 'Asunto completado'],
-  'detail.completedMeta': ['完成于 {when} · 最后一步负责人：{owner}', 'Completed {when} · Final-step owner: {owner}', 'Completado {when} · Responsable del último paso: {owner}'],
+  'detail.completedMeta': ['完成于 {when} · 最后一步负责人：{owner}', 'Completed {when} · Person responsible for the final step: {owner}', 'Completado {when} · Responsable del último paso: {owner}'],
   'detail.completedExpand': ['展开', 'Expand', 'Expandir'],
   'detail.completedCollapse': ['收起', 'Collapse', 'Contraer'],
   'detail.deleteCompleted': ['删除已完成事项', 'Delete completed matter', 'Eliminar asunto completado'],
@@ -623,9 +623,9 @@ const STR = {
     'Al completar este paso, indicarás la etapa, el estado y la fecha límite siguientes, a quién o qué se espera, la próxima acción y su responsable.'],
   'detail.step.hintOther': ['只有当前步骤负责人 {name} 才能完成这一步。', 'Only the owner of the current step, {name}, can complete it.', 'Solo el responsable del paso actual, {name}, puede completarlo.'],
   'detail.step.hintAdmin': ['Carol 可以代为完成这一步（正常由 {name} 负责）。',
-    'Carol can complete this step on their behalf (normally {name}).',
-    'Carol puede completar este paso (normalmente lo hace {name}).'],
-  'detail.undo.button': ['撤销到上一步【{text}】', 'Undo to previous step [{text}]', 'Deshacer al paso anterior [{text}]'],
+    'Carol can complete this step on behalf of {name}, who is normally responsible for it.',
+    'Carol puede completar este paso en nombre de {name}, quien normalmente es responsable de él.'],
+  'detail.undo.button': ['撤销到上一步【{text}】', 'Return to the previous step [{text}]', 'Volver al paso anterior [{text}]'],
   'detail.undo.hint': ['撤销会把事项退回上一步，并删掉那条完成记录。',
     'Undo sends the matter back one step and removes that completion record.',
     'Deshacer devuelve el asunto un paso atrás y borra ese registro.'],
@@ -652,7 +652,7 @@ const STR = {
   'detail.entry.next': ['下一步更新为：{next}', 'Next step set to: {next}', 'Próximo paso: {next}'],
   'detail.entry.due': ['截止日期更新为 {date}（{rel}）', 'Due date set to {date} ({rel})', 'Fecha límite: {date} ({rel})'],
   'detail.entry.owner': ['负责人变更为 {name}', 'Owner changed to {name}', 'Responsable cambiado a {name}'],
-  'detail.entry.waiting': ['等待谁更新为：{w}', 'Waiting for set to: {w}', 'Esperando a: {w}'],
+  'detail.entry.waiting': ['等待谁更新为：{w}', 'Now waiting for: {w}', 'Esperando a: {w}'],
   'detail.entry.edited': ['更新了事项信息', 'Matter details updated', 'Datos del asunto actualizados'],
   'detail.entry.editUndo': ['撤回了上次修改', 'Undid the last edit', 'Deshizo la última modificación'],
   'detail.entry.note': ['{text}', '{text}', '{text}'],
@@ -662,7 +662,7 @@ const STR = {
   'detail.entry.restored': ['从回收站恢复', 'Restored from recycle bin', 'Restaurado desde la papelera'],
   'detail.entry.stepUndo': ['撤销到上一步：{text}', 'Returned to the previous step: {text}', 'Se volvió al paso anterior: {text}'],
   'detail.entry.stepDone': ['完成步骤：{text}（负责人 {owner}）', 'Step completed: {text} (owner {owner})', 'Paso completado: {text} (responsable {owner})'],
-  'detail.entry.matterCompleted': ['事项已完成（最后一步负责人 {owner}）', 'Matter completed (final-step owner {owner})', 'Asunto completado (responsable del último paso: {owner})'],
+  'detail.entry.matterCompleted': ['事项已完成（最后一步负责人 {owner}）', 'Matter completed (final step handled by {owner})', 'Asunto completado (responsable del último paso: {owner})'],
   'detail.entry.stageMove': ['阶段推进：{from} → {to}', 'Stage changed: {from} → {to}', 'Cambio de etapa: {from} → {to}'],
   'detail.entry.advanced': ['状态 {status}｜下一步：{next}（{owner}，{due}）', 'Status {status} | next: {next} ({owner}, {due})', 'Estado {status} | siguiente: {next} ({owner}, {due})'],
   'detail.entry.chat': ['发送消息：{message}', 'Message sent: {message}', 'Mensaje enviado: {message}'],
@@ -683,7 +683,7 @@ const STR = {
   'settings.loginHint': ['使用团队分配的邮箱和密码登录。',
     'Sign in with the email address and password assigned to your team account.',
     'Inicia sesión con el correo y la contraseña asignados a tu cuenta del equipo.'],
-  'settings.defaultTeam': ['新事项默认勾选谁', 'Default members for new matters', 'Miembros predeterminados'],
+  'settings.defaultTeam': ['新事项默认勾选谁', 'Default members for new matters', 'Miembros predeterminados para asuntos nuevos para asuntos nuevos'],
   'settings.defaultTeamHint': ['真正的门禁是事项里的「项目成员」：只有被勾选的人能打开它，别人连列表里都看不到。这张表只是新建时的默认值，每一条事项都可以单独调整。<br>Carol 始终能看到全部事项。',
     'Access is controlled by the “Matter members” list: only selected people can open a matter, and everyone else will not even see it. This table only sets the default members for new matters; each matter can be adjusted separately.<br>Carol can always see all matters.',
     'El control real son los «Miembros del asunto»: solo quienes estén marcados pueden abrirlo y los demás ni lo ven en la lista. Esta tabla es solo el valor predeterminado y cada asunto puede ajustarse.<br>Carol siempre puede verlos todos.'],
@@ -711,7 +711,7 @@ const STR = {
   'syncConflict.body': ['服务器上的事项已经更新。为避免覆盖他人的修改，本次保存已停止。请重新载入最新内容后再修改。', 'The matter has changed on the server. Saving stopped to avoid overwriting someone else’s work. Reload the latest version before editing again.', 'El asunto cambió en el servidor. Se detuvo el guardado para no sobrescribir el trabajo de otra persona. Vuelve a cargar la versión más reciente antes de editar.'],
   'syncConflict.reload': ['重新载入最新内容', 'Reload latest version', 'Cargar la versión más reciente'],
   'clients.title': ['客户档案', 'Client records', 'Expedientes de clientes'],
-  'clients.desc': ['集中记录客户资料与沟通进度。', 'Client details and communication progress.', 'Datos del cliente y progreso de comunicación.'],
+  'clients.desc': ['集中记录客户资料与沟通进度。', 'Client details and communication progress.', 'Datos de los clientes y estado de las comunicaciones.'],
   'clients.new': ['新建客户', 'New client', 'Nuevo cliente'],
   'clients.import': ['Excel/CSV 导入', 'Import Excel/CSV', 'Importar Excel/CSV'],
   'clients.empty': ['还没有客户档案。', 'No client records yet.', 'Aún no hay expedientes de clientes.'],
@@ -719,7 +719,7 @@ const STR = {
   'clients.contact': ['联系人', 'Contact person', 'Persona de contacto'],
   'clients.phone': ['电话', 'Phone', 'Teléfono'],
   'clients.email': ['邮箱', 'Email', 'Correo electrónico'],
-  'clients.progress': ['沟通进度', 'Communication progress', 'Progreso de comunicación'],
+  'clients.progress': ['沟通进度', 'Communication status', 'Estado de la comunicación'],
   'clients.lastContact': ['最后联系', 'Last contact', 'Último contacto'],
   'clients.notes': ['备注', 'Notes', 'Notas'],
   'clients.actions': ['操作', 'Actions', 'Acciones'],
@@ -785,9 +785,9 @@ const STR = {
   'modal.file.hint': ['支持同时选择多个文件。文件会先在本机加密，再上传到私有存储。超过 20 MB 时需要确认。', 'You can select multiple files. Each file is encrypted on this device before upload to private storage. Files over 20 MB require confirmation.', 'Puedes seleccionar varios archivos. Cada archivo se cifra en este dispositivo antes de subirlo al almacenamiento privado. Los archivos de más de 20 MB requieren confirmación.'],
   'modal.file.submit': ['加密并上传', 'Encrypt and upload', 'Cifrar y subir'],
   'modal.file.uploading': ['上传中…', 'Uploading…', 'Subiendo…'],
-  'modal.fileLarge.title': ['继续上传大文件？', 'Continue uploading large file?', '¿Continuar subiendo el archivo grande?'],
-  'modal.fileLarge.body': ['上传的文件大于 20MB，继续可能导致设备卡顿、增加存储空间占用。确定继续上传？', 'The uploaded file is larger than 20 MB. Continuing may slow down your device and use more storage. Continue uploading?', 'El archivo supera los 20 MB. Continuar puede ralentizar el dispositivo y aumentar el uso de almacenamiento. ¿Continuar con la carga?'],
-  'modal.fileLarge.confirm': ['确定继续上传', 'Continue uploading', 'Continuar carga'],
+  'modal.fileLarge.title': ['继续上传大文件？', 'Continue uploading large file?', '¿Continuar con la carga del archivo grande?'],
+  'modal.fileLarge.body': ['上传的文件大于 20MB，继续可能导致设备卡顿、增加存储空间占用。确定继续上传？', 'This file is larger than 20 MB. Uploading it may slow down your device and use more storage. Continue?', 'El archivo supera los 20 MB. Continuar puede ralentizar el dispositivo y aumentar el uso de almacenamiento. ¿Continuar con la carga?'],
+  'modal.fileLarge.confirm': ['确定继续上传', 'Continue uploading', 'Continuar con la carga'],
   'modal.fileDownload.title': ['确认下载文件', 'Confirm file download', 'Confirmar descarga'],
   'modal.fileDownload.body': ['要下载 {name} 吗？', 'Download {name}?', '¿Descargar {name}?'],
   'modal.fileDownload.confirm': ['下载', 'Download', 'Descargar'],
@@ -807,10 +807,10 @@ const STR = {
   'modal.complete.title': ['完成当前步骤', 'Complete the current step', 'Completar el paso actual'],
   'modal.complete.stage': ['下一步阶段', 'Next stage', 'Etapa siguiente'],
   'modal.complete.nextOwner': ['下一步负责人', 'Owner of the next step', 'Responsable del próximo paso'],
-  'modal.complete.aboutTo': ['即将完成这一步', 'About to complete', 'A punto de completar'],
+  'modal.complete.aboutTo': ['即将完成这一步', 'Step to be completed', 'Paso que vas a completar'],
   'modal.complete.afterHint': ['填完了，这条事项就进入下一步。下面填的是<b>完成之后</b>的新状态。',
-    'Once you save, the matter moves to the next step. Fill in the new state <b>after</b> completion.',
-    'Al guardar, el asunto pasa al siguiente paso. Rellena el estado <b>posterior</b>.'],
+    'Saving will move the matter to the next step. Enter the details that should apply <b>after</b> completing this step.',
+    'Al guardar, el asunto pasará al siguiente paso. Indica los datos que deben aplicarse <b>después</b> de completar este paso.'],
   'modal.complete.submit': ['完成这一步', 'Complete step', 'Completar paso'],
   'modal.completeMatter.title': ['完成这个事项？', 'Complete this matter?', '¿Completar este asunto?'],
   'modal.completeMatter.body': ['确认事项“{title}”已经全部完成吗？\n\n完成后会通知事项成员，并在列表中变灰、沉底和折叠。', 'Confirm that “{title}” is fully complete?\n\nMembers will be notified, and the matter will turn gray, move to the bottom, and collapse in the list.', '¿Confirmas que «{title}» está totalmente completado?\n\nSe avisará a los miembros y el asunto se volverá gris, pasará al final y quedará contraído.'],
@@ -870,7 +870,7 @@ const STR = {
   'modal.denyStep.body': ['只有当前步骤负责人 <b>{name}</b> 才能完成这一步。<br><br>当前步骤：{next}',
     'Only the owner of the current step, <b>{name}</b>, can complete it.<br><br>Current step: {next}',
     'Solo el responsable del paso actual, <b>{name}</b>, puede completarlo.<br><br>Paso actual: {next}'],
-  'modal.undo.title': ['撤销到上一步？', 'Undo to the previous step?', '¿Deshacer al paso anterior?'],
+  'modal.undo.title': ['撤销到上一步？', 'Return to the previous step?', '¿Volver al paso anterior?'],
   'modal.undo.body': ['「{text}」会重新变成当前待办步骤（负责人 {owner}，截止 {due}），刚才那条完成记录会被删掉。\n\n这一步通常是用来修正误操作。',
     '“{text}” becomes the current pending step again (owner {owner}, due {due}), and the completion record is removed.\n\nUse this to fix a mistake.',
     '«{text}» vuelve a ser el paso pendiente (responsable {owner}, vence {due}) y se borra el registro de finalización.\n\nSirve para corregir un error.'],
@@ -878,7 +878,7 @@ const STR = {
   'modal.undoEdit.title': ['撤回上次修改？', 'Undo the last edit?', '¿Deshacer la última modificación?'],
   'modal.undoEdit.body': ['将撤回 {name} 在 {when} 保存的那次事项修改。聊天、文件、步骤和删除记录不会受影响。',
     'This will undo the matter edit saved by {name} at {when}. Chat, files, steps and deletion history are not affected.',
-    'Se deshará la modificación del asunto guardada por {name} a las {when}. El chat, los archivos, los pasos y el historial de eliminación no se verán afectados.'],
+    'Se deshará la modificación del asunto guardada por {name} ({when}). El chat, los archivos, los pasos y el historial de eliminación no se verán afectados.'],
   'modal.undoEdit.confirm': ['撤回修改', 'Undo edit', 'Deshacer modificación'],
   'modal.denyUndoEdit.title': ['无法撤回修改', 'Cannot undo this edit', 'No se puede deshacer esta modificación'],
   'modal.denyUndoEdit.body': ['只有 Carol，或上次修改事项的人 {name}，可以撤回这次修改。',
@@ -901,11 +901,11 @@ const STR = {
   'modal.bulkDeleteNotifications.confirm': ['删除 {n} 条通知', 'Delete {n} notifications', 'Eliminar {n} notificaciones'],
   'modal.denyUndo.title': ['无法撤销', 'Cannot undo', 'No se puede deshacer'],
   'modal.denyUndo.body': ['只有 Carol，或刚完成这一步的人，可以撤销。<br><br>最后完成这一步的是 {name}。',
-    'Only Carol, or the person who completed the step, can undo.<br><br>The last completion was by {name}.',
-    'Solo Carol o quien completó el paso puede deshacer.<br><br>La última finalización fue de {name}.'],
+    'Only Carol, or the person who completed the step, can undo.<br><br>{name} completed the most recent step.',
+    'Solo Carol o quien completó el paso puede deshacer.<br><br>{name} completó el último paso.'],
   'modal.delete.adminNote': ['\n\n（Carol 操作：这条事项的负责人是 {name}）', '\n\n(Carol action: the matter owner is {name})', '\n\n(Acción de Carol: el responsable es {name})'],
   'modal.complete.adminNote': ['Carol 操作：这一步正常由 {name} 负责。', 'Carol action: {name} is normally responsible for this step.', 'Acción de Carol: normalmente {name} es responsable de este paso.'],
-  'toast.undoDone': ['已撤销，回到「{text}」', 'Undone — back to “{text}”', 'Deshecho: vuelta a «{text}»'],
+  'toast.undoDone': ['已撤销，回到「{text}」', 'Undone — back to “{text}”', 'Se deshizo el cambio. Se volvió a «{text}»'],
   'toast.editUndoDone': ['已撤回上次修改', 'Last edit undone', 'Última modificación deshecha'],
   'toast.noEditToUndo': ['没有可撤回的事项修改', 'There is no matter edit to undo', 'No hay ninguna modificación que deshacer'],
   'toast.noSteps': ['这条事项还没有完成过步骤，不能撤销。', 'No completed steps to undo yet.', 'Todavía no hay pasos completados que deshacer.'],
@@ -942,9 +942,9 @@ const STR = {
   'toast.systemDenied': ['系统通知已被浏览器阻止', 'System notifications have been blocked by the browser', 'El navegador ha bloqueado las notificaciones del sistema'],
   'toast.loggedOut': ['已退出登录', 'Signed out', 'Sesión cerrada'],
   'toast.reset': ['已重置为演示数据', 'Demo data restored', 'Datos de demo restablecidos'],
-  'toast.areaDefault': ['已按业务类型默认勾选项目成员', 'Members reset to this area\'s defaults', 'Miembros restablecidos para esta área'],
+  'toast.areaDefault': ['已按业务类型默认勾选项目成员', 'Members reset to this area\'s defaults', 'Se seleccionaron los miembros predeterminados de esta área'],
   'toast.needClient': ['客户、事项名称、下一步、截止日期都必须填写', 'Client, matter name, next step and due date are required', 'Cliente, nombre, próximo paso y fecha límite son obligatorios'],
-  'toast.needReason': ['选了黄色或红色，请写一句原因', 'Yellow or red needs a short reason', 'Amarillo o rojo requiere un motivo'],
+  'toast.needReason': ['选了黄色或红色，请写一句原因', 'Please explain why the status is yellow or red', 'Indica por qué el estado es amarillo o rojo'],
   'toast.needNext': ['请填写下一步做什么', 'Please fill in the next step', 'Indica el próximo paso'],
   'toast.needDue': ['请填写截止日期', 'Please set a due date', 'Indica la fecha límite'],
   'toast.needStatus': ['请选择状态', 'Please choose a status', 'Elige un estado'],
@@ -986,7 +986,7 @@ const STR = {
   'csv.notes': ['备注', 'Notes', 'Notas'],
   'csv.reason': ['状态说明', 'Status note', 'Nota de estado'],
 
-  'fmt.notSet': ['未设定', 'Not set', 'Sin fecha'],
+  'fmt.notSet': ['未设定', 'Not set', 'Sin definir'],
   'fmt.overdue': ['逾期 {n} 天', '{n} days overdue', 'Vencido hace {n} días'],
   'fmt.today': ['今天到期', 'Due today', 'Vence hoy'],
   'fmt.tomorrow': ['明天到期', 'Due tomorrow', 'Vence mañana'],
@@ -1046,8 +1046,8 @@ function statusName(k) { return t('status.' + k); }
 function statusShort(k) { return t('status.' + k + '.short'); }
 
 const PRACTICE_AREAS = [
-  { id: 'mx_invest', name: { zh: '墨西哥公司／投资', en: 'Mexico Corporate / Investment', es: 'Derecho corporativo / Inversión en México' }, restricted: false },
-  { id: 'mx_reg', name: { zh: '墨西哥监管', en: 'Mexico Regulatory', es: 'Regulación mexicana' }, restricted: false },
+  { id: 'mx_invest', name: { zh: '墨西哥公司／投资', en: 'Corporate matters / Investment in Mexico', es: 'Derecho corporativo / Inversión en México' }, restricted: false },
+  { id: 'mx_reg', name: { zh: '墨西哥监管', en: 'Regulatory matters in Mexico', es: 'Regulación en México' }, restricted: false },
   { id: 'sanctions', name: { zh: '制裁／涉美', en: 'Sanctions / U.S.-related', es: 'Sanciones / Asuntos relacionados con EE. UU.' }, restricted: true, members: ['carol', 'benson'] },
   { id: 'aml', name: { zh: '反洗钱／跨境支付', en: 'AML / Cross-border Payments', es: 'Prevención de lavado de dinero / Pagos transfronterizos' }, restricted: false },
   { id: 'dispute', name: { zh: '争议解决', en: 'Dispute Resolution', es: 'Resolución de disputas' }, restricted: false },
@@ -1240,8 +1240,8 @@ function seedMatters() {
       title: { zh: '墨西哥设厂项目', en: 'Mexico plant setup', es: 'Proyecto de planta en México' },
       area: 'mx_invest', owner: 'carol', team: all, stage: 'Due Diligence',
       status: 'yellow',
-      reason: { zh: '等墨方土地权属意见，客户在催', en: 'Waiting for the land-title opinion from Mexico; the client is following up', es: 'A la espera del dictamen sobre la titularidad del terreno en México; el cliente está dando seguimiento' },
-      next: { zh: '墨方核实土地权属并出具摘要', en: 'Verify land title in Mexico and issue a memo', es: 'Verificar títulos de propiedad y emitir un memo' },
+      reason: { zh: '等墨方土地权属意见，客户在催', en: 'Waiting for the land-title opinion from Mexico; the client is asking for an update', es: 'A la espera del dictamen sobre la titularidad del terreno en México; el cliente está dando seguimiento' },
+      next: { zh: '墨方核实土地权属并出具摘要', en: 'Verify land ownership in Mexico and prepare a summary', es: 'Verificar la titularidad del terreno en México y preparar un resumen' },
       nextOwner: 'benson',
       due: iso(addDays(6)), waiting: 'notary',
       files: [{ name: { zh: '土地权属摘要_v01.pdf（Google Drive）', en: 'Land-title-memo_v01.pdf (Google Drive)', es: 'Memo-titulos_v01.pdf (Google Drive)' }, url: 'https://drive.google.com/' }],
@@ -1251,7 +1251,7 @@ function seedMatters() {
         { text: { zh: '签署委托协议与收费确认', en: 'Engagement letter signed and fees confirmed', es: 'Carta de encargo firmada y honorarios confirmados' },
           owner: 'carol', due: iso(addDays(-30)), at: Date.now() - 30 * 86400000, by: 'carol',
           note: { zh: '客户当天回签', en: 'Client signed the same day', es: 'El cliente firmó el mismo día' } },
-        { text: { zh: '收集公司基础文件（章程、股东名册）', en: 'Collected corporate documents (charter, cap table)', es: 'Documentos corporativos recopilados (estatutos, accionistas)' },
+        { text: { zh: '收集公司基础文件（章程、股东名册）', en: 'Collected corporate documents (articles of incorporation, shareholder register)', es: 'Documentos corporativos recopilados (estatutos, registro de accionistas)' },
           owner: 'carol', due: iso(addDays(-12)), at: Date.now() - 12 * 86400000, by: 'carol',
           prev: { stage: 'Engagement', status: 'green', reason: '', team: all } },
       ],
@@ -1282,7 +1282,7 @@ function seedMatters() {
       area: 'mx_reg', owner: 'benson', team: all, stage: 'Government Review',
       status: 'red',
       reason: { zh: '客户资料逾期两周，签证预约快到了', en: 'Client documents are two weeks late and the visa appointment is close', es: 'Documentos con dos semanas de retraso y la cita de visa se acerca' },
-      next: { zh: '催客户补齐无犯罪记录双认证', en: 'Follow up with the client for the authenticated criminal-record certificates', es: 'Solicitar al cliente los certificados de antecedentes penales debidamente legalizados' },
+      next: { zh: '催客户补齐无犯罪记录双认证', en: 'Follow up with the client for the authenticated criminal-record certificates', es: 'Solicitar al cliente los certificados de no antecedentes penales con las dos legalizaciones requeridas' },
       nextOwner: 'benson',
       due: iso(addDays(2)), waiting: 'client',
       files: [], lastContact: iso(addDays(-9)), notes: '',
@@ -2761,8 +2761,8 @@ function globalSearchMatches(rawQuery) {
 
 function viewGlobalSearch() {
   const q=state.globalSearch||'', rows=globalSearchMatches(q);
-  const body=q.trim().length<2?`<div class="empty">${esc(L({zh:'请输入至少 2 个字符。',en:'Enter at least two characters.',es:'Introduce al menos dos caracteres.'}))}</div>`:rows.length?rows.map(row=>`<a class="search-result" href="${esc(row.href)}"><span class="search-type">${esc(row.type)}</span><b>${esc(row.title)}</b><small>${esc(row.subtitle||'')}</small></a>`).join(''):`<div class="empty">${esc(L({zh:'没有找到符合权限范围的结果。',en:'No permitted records matched.',es:'No se encontraron registros permitidos.'}))}</div>`;
-  return `<div class="page-head"><div><h1>${esc(L({zh:'全文搜索',en:'Full search',es:'Búsqueda completa'}))}</h1><div class="desc">${esc(L({zh:'搜索事项、客户、聊天、动态和文件名，只显示你有权查看的内容。',en:'Search matters, clients, chats, activity, and filenames within your permissions.',es:'Busca asuntos, clientes, chats, actividad y archivos dentro de tus permisos.'}))}</div></div></div><div class="card card-pad"><form data-action="global-search" class="search-form"><input name="q" type="search" value="${esc(q)}" placeholder="${esc(L({zh:'输入名称、编号、聊天文字或文件名',en:'Name, number, chat text, or filename',es:'Nombre, número, chat o archivo'}))}"><button class="btn btn-primary" type="submit">${esc(L({zh:'搜索',en:'Search',es:'Buscar'}))}</button></form></div><div class="card search-results">${body}</div>`;
+  const body=q.trim().length<2?`<div class="empty">${esc(L({zh:'请输入至少 2 个字符。',en:'Enter at least two characters.',es:'Introduce al menos dos caracteres.'}))}</div>`:rows.length?rows.map(row=>`<a class="search-result" href="${esc(row.href)}"><span class="search-type">${esc(row.type)}</span><b>${esc(row.title)}</b><small>${esc(row.subtitle||'')}</small></a>`).join(''):`<div class="empty">${esc(L({zh:'没有找到符合权限范围的结果。',en:'No results found among the records you can access.',es:'No se encontraron resultados entre los registros que puedes consultar.'}))}</div>`;
+  return `<div class="page-head"><div><h1>${esc(L({zh:'全文搜索',en:'Search all records',es:'Buscar en todos los registros'}))}</h1><div class="desc">${esc(L({zh:'搜索事项、客户、聊天、动态和文件名，只显示你有权查看的内容。',en:'Search matters, client records, chats, activity, and filenames. Only results you are allowed to view are shown.',es:'Busca asuntos, expedientes de clientes, chats, actividad y nombres de archivos. Solo se muestran resultados que tienes permiso para consultar.'}))}</div></div></div><div class="card card-pad"><form data-action="global-search" class="search-form"><input name="q" type="search" value="${esc(q)}" placeholder="${esc(L({zh:'输入名称、编号、聊天文字或文件名',en:'Name, number, chat text, or filename',es:'Nombre, número, chat o archivo'}))}"><button class="btn btn-primary" type="submit">${esc(L({zh:'搜索',en:'Search',es:'Buscar'}))}</button></form></div><div class="card search-results">${body}</div>`;
 }
 
 function addBusinessDays(start,days,holidays){
@@ -2773,7 +2773,7 @@ function addBusinessDays(start,days,holidays){
 
 function viewDeadlineCalculator(){
   const r=state.deadlineResult;
-  return `<div class="page-head"><div><h1>${esc(L({zh:'期限计算器',en:'Deadline calculator',es:'Calculadora de plazos'}))}</h1><div class="desc">${esc(L({zh:'按自然日或工作日计算；工作日会跳过周末和指定节假日。结果仅供工作管理，法定期限仍应人工复核。',en:'Count calendar or business days, excluding weekends and entered holidays. Always verify statutory deadlines.',es:'Calcula días naturales o hábiles, omitiendo fines de semana y festivos. Verifica siempre los plazos legales.'}))}</div></div></div><div class="card card-pad"><form data-action="calculate-deadline"><div class="grid-2"><div class="field"><label class="req">${esc(L({zh:'起始日期',en:'Start date',es:'Fecha inicial'}))}</label><input type="date" name="startDate" required value="${esc(r&&r.startDate||new Date().toISOString().slice(0,10))}"></div><div class="field"><label class="req">${esc(L({zh:'期限天数',en:'Number of days',es:'Número de días'}))}</label><input type="number" min="0" step="1" name="days" required value="${esc(r&&r.days||15)}"></div><div class="field"><label>${esc(L({zh:'计算方式',en:'Counting method',es:'Método'}))}</label><select name="mode"><option value="calendar">${esc(L({zh:'自然日',en:'Calendar days',es:'Días naturales'}))}</option><option value="business" ${r&&r.mode==='business'?'selected':''}>${esc(L({zh:'工作日',en:'Business days',es:'Días hábiles'}))}</option></select></div><div class="field"><label>${esc(L({zh:'节假日（逗号或换行分隔）',en:'Holidays (comma or line separated)',es:'Festivos (coma o línea)'}))}</label><textarea name="holidays" rows="3" placeholder="2026-10-01, 2026-10-02">${esc(r&&r.holidaysText||'')}</textarea></div></div><button class="btn btn-primary" type="submit">${esc(L({zh:'计算截止日',en:'Calculate',es:'Calcular'}))}</button></form></div>${r?`<div class="card card-pad deadline-result"><span>${esc(L({zh:'计算结果',en:'Result',es:'Resultado'}))}</span><b>${esc(r.date)}</b><small>${esc(r.mode==='business'?L({zh:'已排除周末和指定节假日',en:'Weekends and listed holidays excluded',es:'Se excluyeron fines de semana y festivos'}):L({zh:'按自然日计算',en:'Calendar-day count',es:'Conteo de días naturales'}))}</small><button class="btn" type="button" data-action="deadline-reminders">${esc(L({zh:'创建 7／3／1 天前提醒',en:'Create 7 / 3 / 1-day reminders',es:'Crear avisos 7 / 3 / 1 días antes'}))}</button></div>`:''}`;
+  return `<div class="page-head"><div><h1>${esc(L({zh:'期限计算器',en:'Deadline calculator',es:'Calculadora de plazos'}))}</h1><div class="desc">${esc(L({zh:'按自然日或工作日计算；工作日会跳过周末和指定节假日。结果仅供工作管理，法定期限仍应人工复核。',en:'Calculate deadlines using calendar days or business days. Business days exclude weekends and the holidays you enter. Use the result for work planning only; always verify legal deadlines separately.',es:'Calcula plazos en días naturales o hábiles. Los días hábiles excluyen los fines de semana y los festivos que indiques. Usa el resultado solo para organizar el trabajo y verifica los plazos legales por separado.'}))}</div></div></div><div class="card card-pad"><form data-action="calculate-deadline"><div class="grid-2"><div class="field"><label class="req">${esc(L({zh:'起始日期',en:'Start date',es:'Fecha inicial'}))}</label><input type="date" name="startDate" required value="${esc(r&&r.startDate||new Date().toISOString().slice(0,10))}"></div><div class="field"><label class="req">${esc(L({zh:'期限天数',en:'Number of days',es:'Número de días'}))}</label><input type="number" min="0" step="1" name="days" required value="${esc(r&&r.days||15)}"></div><div class="field"><label>${esc(L({zh:'计算方式',en:'Counting method',es:'Método'}))}</label><select name="mode"><option value="calendar">${esc(L({zh:'自然日',en:'Calendar days',es:'Días naturales'}))}</option><option value="business" ${r&&r.mode==='business'?'selected':''}>${esc(L({zh:'工作日',en:'Business days',es:'Días hábiles'}))}</option></select></div><div class="field"><label>${esc(L({zh:'节假日（逗号或换行分隔）',en:'Holidays (separate dates with commas or new lines)',es:'Días festivos (separa las fechas con comas o saltos de línea)'}))}</label><textarea name="holidays" rows="3" placeholder="2026-10-01, 2026-10-02">${esc(r&&r.holidaysText||'')}</textarea></div></div><button class="btn btn-primary" type="submit">${esc(L({zh:'计算截止日',en:'Calculate',es:'Calcular'}))}</button></form></div>${r?`<div class="card card-pad deadline-result"><span>${esc(L({zh:'计算结果',en:'Result',es:'Resultado'}))}</span><b>${esc(r.date)}</b><small>${esc(r.mode==='business'?L({zh:'已排除周末和指定节假日',en:'Weekends and listed holidays excluded',es:'Se excluyeron fines de semana y festivos'}):L({zh:'按自然日计算',en:'Calendar-day count',es:'Conteo de días naturales'}))}</small><button class="btn" type="button" data-action="deadline-reminders">${esc(L({zh:'创建 7／3／1 天前提醒',en:'Create 7 / 3 / 1-day reminders',es:'Crear recordatorios 7, 3 y 1 días antes'}))}</button></div>`:''}`;
 }
 
 function reportFilteredMatters(){
@@ -2799,10 +2799,10 @@ async function runIntegrityReport(){
   const ids=new Set(matters.map(m=>String(m.id))),orphan=logs.filter(l=>!ids.has(String(l.matterId))),issues=[];
   let missingPath=0,plainFiles=0,badTeams=0;
   matters.filter(m=>!m.deletedAt).forEach(m=>{(m.files||[]).forEach(f=>{if(f.encrypted&&!f.storagePath)missingPath++;if(f.storagePath&&!f.encrypted)plainFiles++;});if(m.kind!=='schedule'&&m.owner&&!(m.team||[]).includes(m.owner))badTeams++;});
-  if(orphan.length)issues.push(`${orphan.length} ${L({zh:'条动态没有对应记录',en:'activity records have no matching item',es:'registros de actividad sin elemento'})}`);
+  if(orphan.length)issues.push(`${orphan.length} ${L({zh:'条动态没有对应记录',en:'activity records have no matching item',es:'registros de actividad sin un asunto o cliente asociado'})}`);
   if(missingPath)issues.push(`${missingPath} ${L({zh:'个加密文件缺少存储路径',en:'encrypted files lack a storage path',es:'archivos cifrados sin ruta'})}`);
-  if(plainFiles)issues.push(`${plainFiles} ${L({zh:'个已存储文件缺少加密标记',en:'stored files lack an encryption marker',es:'archivos almacenados sin marca de cifrado'})}`);
-  if(badTeams)issues.push(`${badTeams} ${L({zh:'个事项负责人不在成员列表中',en:'matters have an owner outside the member list',es:'asuntos con responsable fuera de miembros'})}`);
+  if(plainFiles)issues.push(`${plainFiles} ${L({zh:'个已存储文件缺少加密标记',en:'stored files are missing an encryption marker',es:'archivos almacenados sin marca de cifrado'})}`);
+  if(badTeams)issues.push(`${badTeams} ${L({zh:'个事项负责人不在成员列表中',en:'matters have an owner outside the member list',es:'asuntos cuyo responsable no aparece en la lista de miembros'})}`);
   const cryptoReady=!!(globalThis.LCBCrypto&&LCBCrypto.state&&LCBCrypto.state.ready);if(!cryptoReady)issues.push(L({zh:'当前会话未解锁加密钥匙',en:'Encryption keys are not unlocked in this session',es:'Las claves no están desbloqueadas'}));
   try{
     const [remoteMatters,publicKeys,privateKeys,wrappedKeys]=await Promise.all(['matters','lcb_public_keys','lcb_private_keys','lcb_matter_keys'].map(fetchBackupRows));
@@ -2818,7 +2818,7 @@ async function runIntegrityReport(){
 function integrityPanel(){
   if(!isAdmin())return '';
   const r=state.integrityResult;
-  return `<div class="card card-pad" style="margin-top:16px"><div class="section-title">${esc(L({zh:'数据完整性巡检',en:'Data integrity check',es:'Revisión de integridad'}))}</div><div class="hint" style="margin-bottom:12px">${esc(L({zh:'检查加密标记、孤立动态、文件路径、权限关系和当前密钥状态。',en:'Checks encryption markers, orphaned activity, file paths, permissions, and key state.',es:'Revisa cifrado, actividad huérfana, archivos, permisos y claves.'}))}</div><button class="btn" type="button" data-action="run-integrity-check">${esc(L({zh:'开始巡检',en:'Run check',es:'Ejecutar'}))}</button>${r?`<div class="integrity-result"><b>${r.issues.length?`${r.issues.length} ${esc(L({zh:'项需要关注',en:'items need attention',es:'puntos requieren atención'}))}`:esc(L({zh:'未发现明显问题',en:'No obvious issues found',es:'No se encontraron problemas evidentes'}))}</b><small>${esc(fmtStamp(r.at))} · ${r.count} ${esc(L({zh:'条记录',en:'records',es:'registros'}))}</small>${r.issues.length?`<ul>${r.issues.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>`:''}</div>`;
+  return `<div class="card card-pad" style="margin-top:16px"><div class="section-title">${esc(L({zh:'数据完整性巡检',en:'Data integrity check',es:'Revisión de integridad'}))}</div><div class="hint" style="margin-bottom:12px">${esc(L({zh:'检查加密标记、孤立动态、文件路径、权限关系和当前密钥状态。',en:'Checks encryption markers, activity records without a matching item, file paths, permissions, and encryption keys.',es:'Revisa las marcas de cifrado, los registros de actividad sin un elemento asociado, las rutas de archivos, los permisos y las claves.'}))}</div><button class="btn" type="button" data-action="run-integrity-check">${esc(L({zh:'开始巡检',en:'Run check',es:'Ejecutar'}))}</button>${r?`<div class="integrity-result"><b>${r.issues.length?`${r.issues.length} ${esc(L({zh:'项需要关注',en:'items need attention',es:'elementos requieren atención'}))}`:esc(L({zh:'未发现明显问题',en:'No obvious issues found',es:'No se encontraron problemas evidentes'}))}</b><small>${esc(fmtStamp(r.at))} · ${r.count} ${esc(L({zh:'条记录',en:'records',es:'registros'}))}</small>${r.issues.length?`<ul>${r.issues.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>`:''}</div>`;
 }
 
 /* ------------------------------ 视图：事项列表 ------------------------------ */
@@ -3644,7 +3644,7 @@ function modalClientForm(mo) {
   const value=k=>esc(c&&c[k]||'');
   const contacts=(c&&c.contacts||[]).map(x=>[x.name,x.role,x.phone,x.email].join(' | ')).join('\n');
   const relations=(c&&c.relations||[]).map(x=>[x.name,x.type,x.note].join(' | ')).join('\n');
-  return modalFrame(t(c?'clients.edit':'clients.new'),`<form id="client-form" data-action="save-client">${c?`<input type="hidden" name="id" value="${esc(c.id)}">`:''}<div class="grid-2"><div class="field"><label class="req">${esc(t('clients.name'))}</label><input name="clientName" value="${value('clientName')}" required></div><div class="field"><label>${esc(t('clients.lastContact'))}</label><input type="date" name="lastContact" value="${esc(String(c&&c.lastContact||'').slice(0,10))}"></div><div class="field"><label>${esc(t('clients.progress'))}</label><input name="communicationProgress" value="${value('communicationProgress')}"></div></div><div class="field"><label>${esc(L({zh:'联系人（每行：姓名 | 职务 | 电话 | 邮箱）',en:'Contacts (one per line: name | role | phone | email)',es:'Contactos (una línea: nombre | cargo | teléfono | correo)'}))}</label><textarea name="contactsText" rows="5">${esc(contacts)}</textarea></div><div class="field"><label>${esc(L({zh:'关联方（每行：名称 | 关系类型 | 说明）',en:'Related parties (one per line: name | relationship | note)',es:'Partes relacionadas (una línea: nombre | relación | nota)'}))}</label><textarea name="relationsText" rows="5">${esc(relations)}</textarea></div><div class="field"><label>${esc(t('clients.notes'))}</label><textarea name="notes" rows="4">${value('notes')}</textarea></div></form>`,
+  return modalFrame(t(c?'clients.edit':'clients.new'),`<form id="client-form" data-action="save-client">${c?`<input type="hidden" name="id" value="${esc(c.id)}">`:''}<div class="grid-2"><div class="field"><label class="req">${esc(t('clients.name'))}</label><input name="clientName" value="${value('clientName')}" required></div><div class="field"><label>${esc(t('clients.lastContact'))}</label><input type="date" name="lastContact" value="${esc(String(c&&c.lastContact||'').slice(0,10))}"></div><div class="field"><label>${esc(t('clients.progress'))}</label><input name="communicationProgress" value="${value('communicationProgress')}"></div></div><div class="field"><label>${esc(L({zh:'联系人（每行：姓名 | 职务 | 电话 | 邮箱）',en:'Contacts (one per line: name | job title | phone | email)',es:'Contactos (uno por línea: nombre | cargo | teléfono | correo)'}))}</label><textarea name="contactsText" rows="5">${esc(contacts)}</textarea></div><div class="field"><label>${esc(L({zh:'关联方（每行：名称 | 关系类型 | 说明）',en:'Related parties (one per line: name | relationship | note)',es:'Partes relacionadas (una por línea: nombre | relación | nota)'}))}</label><textarea name="relationsText" rows="5">${esc(relations)}</textarea></div><div class="field"><label>${esc(t('clients.notes'))}</label><textarea name="notes" rows="4">${value('notes')}</textarea></div></form>`,
     `<button class="btn" type="button" data-action="close-modal">${esc(t('modal.cancel'))}</button><button class="btn btn-primary" type="submit" form="client-form">${esc(t('clients.save'))}</button>`);
 }
 function modalClientImport() {
@@ -4033,7 +4033,7 @@ const CLIENT_IMPORT_ALIASES = {
   contactPerson:['联系人','主要联系人','联络人','contact person','contact','primary contact','persona de contacto','contacto principal'],
   phone:['电话','手机','联系电话','手机号','phone','mobile','telephone','phone number','teléfono','telefono','móvil','movil'],
   email:['邮箱','电子邮箱','邮件','email','email address','e-mail','correo electrónico','correo electronico','correo'],
-  communicationProgress:['沟通进度','进度','跟进状态','沟通状态','communication progress','progress','follow-up status','contact status','progreso de comunicación','progreso de comunicacion','estado de seguimiento'],
+  communicationProgress:['沟通进度','进度','跟进状态','沟通状态','communication progress','communication status','progress','follow-up status','contact status','progreso de comunicación','progreso de comunicacion','estado de la comunicación','estado de la comunicacion','estado de seguimiento'],
   lastContact:['最后联系','最后一次联系','最后联系时间','最近联系','last contact','last contacted','last contact date','último contacto','ultimo contacto','fecha del último contacto','fecha del ultimo contacto'],
   notes:['备注','说明','补充信息','notes','note','remarks','comments','nota','notas','observaciones','comentarios'],
   contactsText:['多个联系人','联系人列表','其他联系人','contacts','contact list','additional contacts','contactos','lista de contactos'],
@@ -4060,8 +4060,8 @@ function validClientImportFormat(rows) {
 function importSample(kind) {
   const samples = kind === 'clients' ? {
     zh: { heads:['客户名称','联系人','电话','邮箱','沟通进度','最后联系','备注','多个联系人','关联方'], required:[0], filename:'客户档案导入示例.xls' },
-    en: { heads:['Client name','Contact person','Phone','Email','Communication progress','Last contact','Notes','Contacts','Related parties'], required:[0], filename:'client-record-import-sample.xls' },
-    es: { heads:['Nombre del cliente','Persona de contacto','Teléfono','Correo electrónico','Progreso de comunicación','Último contacto','Notas','Contactos','Partes relacionadas'], required:[0], filename:'ejemplo-importacion-clientes.xls' },
+    en: { heads:['Client name','Contact person','Phone','Email','Communication status','Last contact','Notes','Contacts','Related parties'], required:[0], filename:'client-record-import-sample.xls' },
+    es: { heads:['Nombre del cliente','Persona de contacto','Teléfono','Correo electrónico','Estado de la comunicación','Último contacto','Notas','Contactos','Partes relacionadas'], required:[0], filename:'ejemplo-importacion-clientes.xls' },
   } : {
     zh: { heads:['客户','事项名称','对方当事人','关联方','业务类型','当前阶段','状态','截止日期','截止方式','等待谁','现在要做什么','负责人','事项成员','下一步负责人','背景','优先级','开始日期','费用总额','已收款','余额','联系人','联系邮箱','最后联系客户','重复事项','重复至','风险原因','备注'], required:[0,1,6,10], filename:'事项导入示例.xls' },
     en: { heads:['Client','Matter name','Opposing parties','Related parties','Practice area','Stage','Status','Due date','Due setting','Waiting for','Next step','Owner','Matter members','Next step owner','Background','Priority','Start date','Total fee','Payments received','Balance','Contact name','Contact email','Last client contact','Recurrence','Repeat until','Risk reason','Notes'], required:[0,1,6,10], filename:'matter-import-sample.xls' },
