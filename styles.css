@@ -475,4 +475,15 @@ table.grid td.nw{white-space:nowrap}
 .dark-mode .inbox-item.is-read{background:var(--card)}
 .dark-mode .inbox-item.is-unread{background:#243144}
 .dark-mode input,.dark-mode textarea,.dark-mode select{color-scheme:dark}
+/* Interaction surfaces must follow the mode, not the old light-only hover rules. */
+.dark-mode{--interaction-bg:#303d4f;--interaction-border:#52657e}
+.dark-mode table.grid tbody tr:is(:hover,:active){background:var(--interaction-bg)}
+.dark-mode :is(.mobile-drawer-head button,.chat-file-card){background:var(--card);color:var(--ink)}
+.dark-mode :is(.btn,.mobile-nav-toggle,.mobile-drawer-head button,.nav-scroll-btn,.nav a,.nav-tutorial,.lang-switch button,.web-notice-close,.chat-tool-close,.member-item,.row,.search-result,.calendar-cell,.settings-entry,.chat-file-card):is(:hover,:active,:focus-visible){background:var(--interaction-bg);border-color:var(--interaction-border);color:var(--ink)}
+.dark-mode .chat-tool[open]>summary,.dark-mode .chat-upload-button:hover span,.dark-mode .chat-upload-button:active span{background:var(--interaction-bg);border-color:var(--interaction-border);color:var(--ink)}
+.dark-mode .sync-pill.ok:is(:hover,:active,:focus-visible){background:#224c3b;border-color:#397558;color:var(--green)}
+.dark-mode .sync-pill.error:is(:hover,:active,:focus-visible){background:#552d30;border-color:#875056;color:var(--red)}
+.dark-mode .btn-primary:is(:hover,:active,:focus-visible),.dark-mode .nav a.active:is(:hover,:active,:focus-visible),.dark-mode .lang-switch button.on:is(:hover,:active,:focus-visible){background:var(--brand-gradient,var(--brand));border-color:transparent;color:var(--brand-text,#fff)}
+.dark-mode .btn-danger-solid{background:#b42318;color:#fff}
+.dark-mode .btn-danger-solid:is(:hover,:active,:focus-visible){background:#912018;border-color:#b42318;color:#fff}
 }
