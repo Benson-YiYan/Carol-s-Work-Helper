@@ -26,7 +26,7 @@
     }),
     users: Object.freeze([
       Object.freeze({ id: 'carol', name: 'Carol', short: 'C', email: '13726111370@163.com', roleKey: 'role.carol', admin: true }),
-      Object.freeze({ id: 'benson', name: 'Benson', short: 'B', email: 'yanyi13411696203@163.com', roleKey: 'role.benson', admin: false }),
+      Object.freeze({ id: 'benson', name: 'Benson', short: 'B', email: 'yanyi13411696203@163.com', roleKey: 'role.benson', admin: true }),
     ]),
     turnstileSiteKey: '0x4AAAAAAE9qa19vTf_RD4DG',
     branding: Object.freeze({

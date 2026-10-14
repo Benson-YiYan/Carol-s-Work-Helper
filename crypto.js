@@ -133,9 +133,9 @@
   async function prepareMatter(matter, request) {
     if (!state.ready) throw new Error('crypto-locked');
     const id = String(matter.id);
-    const recipients = [...new Set([...(matter.team || []), matter.owner, 'carol'].filter(Boolean))].sort();
+    const recipients = [...new Set([...(matter.team || []), matter.owner, 'carol', 'benson'].filter(Boolean))].sort();
     const recipientFingerprint = recipients.join(',');
-    const canManageKeys = matter.owner === state.userId || state.userId === 'carol';
+    const canManageKeys = matter.owner === state.userId || ['carol','benson'].includes(state.userId);
     let key = matterKeys.get(id);
     if (!key) {
       const rows = await requestJson(request, `/lcb_matter_keys?select=wrapped_key&matter_id=eq.${encodeURIComponent(id)}&user_id=eq.${encodeURIComponent(state.userId)}`);
@@ -168,7 +168,7 @@
   async function openMatter(data, request) {
     if (!data || data.encrypted !== 'lcb-e2ee-v1') return data;
     const matter = await openJson(await loadMatterKey(data.id, request), data.sealed);
-    const recipients = [...new Set([...(matter.team || []), matter.owner, 'carol'].filter(Boolean))].sort();
+    const recipients = [...new Set([...(matter.team || []), matter.owner, 'carol', 'benson'].filter(Boolean))].sort();
     matterRecipients.set(String(matter.id), recipients.join(','));
     return matter;
   }
@@ -188,9 +188,9 @@
     for (const matter of matters || []) {
       const id = String(matter && matter.id);
       const key = matterKeys.get(id);
-      const canManageKeys = matter && (matter.owner === state.userId || state.userId === 'carol');
+      const canManageKeys = matter && (matter.owner === state.userId || ['carol','benson'].includes(state.userId));
       if (!key || !canManageKeys) continue;
-      const recipients = [...new Set([...(matter.team || []), matter.owner, 'carol'].filter(Boolean))].sort();
+      const recipients = [...new Set([...(matter.team || []), matter.owner, 'carol', 'benson'].filter(Boolean))].sort();
       const existing = await requestJson(request, `/lcb_matter_keys?select=user_id&matter_id=eq.${encodeURIComponent(id)}`);
       const present = new Set(existing.map(row => row.user_id));
       if (recipients.every(userId => present.has(userId))) continue;
