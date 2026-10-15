@@ -465,6 +465,7 @@ table.grid td.nw{white-space:nowrap}
 .dark-mode{--ink:#e7edf5;--ink-2:#bcc8d7;--ink-3:#9baabd;--line:#3b485b;--line-2:#303d4f;--bg:#101722;--card:#18222f;--red:#ff8a80;--red-soft:#402526;--yellow:#ffd18a;--yellow-soft:#3b3021;--green:#70d9ab;--green-soft:#193b30}
 .dark-mode body,.dark-mode .login-wrap{background:var(--bg);color:var(--ink)}
 .dark-mode .topbar{background:rgba(24,34,47,.96)}
+.dark-mode .mobile-drawer-account{background:var(--card);color:var(--ink)}
 .dark-mode :is(.field input,.field select,.field textarea,.btn,.nav-shell,.lang-switch,.nav-scroll-btn,.mobile-nav-toggle,.user-chip,.modal,.modal-foot,.web-notice-card,.guide-coach,.calendar-wrap,.workload-card,.tutorial-topic,.chat-message-body,.chat-context-menu,.chat-choice-list label,.chat-tool>summary,.chat-tool-pop,.chat-input-area textarea,.chat-upload-button span){background:var(--card);color:var(--ink);border-color:var(--line)}
 .dark-mode :is(th,.member-item,.file-item,.drawer-foot,.inbox-item,.step-box,.notice,.tag-area,.avatar,.inbox-avatar,.calendar-item,.chat-reference-card){background:#243144;color:var(--ink)}
 .dark-mode :is(.btn:hover,.tutorial-topic:hover,.chat-tool>summary:hover,.chat-choice-list label:hover,.chat-context-menu button:hover,tr:hover td){background:#303d4f;color:var(--ink)}

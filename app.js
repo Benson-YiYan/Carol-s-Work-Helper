@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610142340';
+const APP_VERSION = '202610150842';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -565,7 +565,7 @@ const STR = {
   'detail.area': ['业务类型', 'Practice area', 'Área'],
   'detail.areaHint': ['换业务类型会自动把项目成员改成该类事项的默认成员。', 'Changing the practice area resets the matter members to the defaults for that area.', 'Al cambiar el área de práctica, los miembros del asunto vuelven a la selección predeterminada para esa área.'],
   'detail.stage': ['当前阶段', 'Current stage', 'Etapa actual'],
-  'detail.owner': ['负责人（唯一）', 'Sole owner', 'Único responsable'],
+  'detail.owner': ['事项总负责人', 'Matter owner', 'Responsable general del asunto'],
   'detail.nextOwner': ['谁做这一步？', 'Who will do this step?', '¿Quién hará este paso?'],
   'detail.status': ['状态', 'Status', 'Estado'],
   'detail.due': ['截止日期', 'Due date', 'Fecha límite'],
@@ -3179,6 +3179,18 @@ function viewMatter(id,mode) {
           <div class="grid-2">
             <div class="field"><label>${esc(t('detail.client'))}</label><input data-field="client" value="${esc(L(m.client))}"></div>
             <div class="field"><label>${esc(t('detail.title'))}</label><input data-field="title" value="${esc(L(m.title))}"></div>
+            <div class="field"><label>${esc(t('detail.area'))}</label>${areaField}
+              <div class="hint">${esc(t('detail.areaHint'))}</div></div>
+            <div class="field"><label>${esc(t('detail.owner'))}</label><select data-field="owner">${ownerOpts}</select></div>
+            <div class="field" style="grid-column:1/-1"><label>${esc(t('detail.stage'))}</label>${stageField}</div>
+            <div class="field"><label>${esc(t('detail.next'))}</label><input data-field="next" value="${esc(L(m.next))}"></div>
+            <div class="field"><label>${esc(t('detail.nextOwner'))}</label><select data-field="nextOwner">${nextOwnerOpts}</select></div>
+            <div class="field"><label>${esc(t('detail.dueMode'))}</label><select data-field="dueMode"><option value="date" ${/^\d{4}-\d{2}-\d{2}$/.test(m.due||'')?'selected':''}>${esc(t('detail.dueDate'))}</option><option value="asap" ${m.due==='ASAP'?'selected':''}>${esc(t('detail.dueAsap'))}</option><option value="none" ${!m.due?'selected':''}>${esc(t('detail.dueNone'))}</option></select></div>
+            <div class="field"><label>${esc(t('detail.due'))}</label><input type="date" data-field="due" value="${esc(/^\d{4}-\d{2}-\d{2}$/.test(m.due||'')?m.due:'')}"></div>
+            <div class="field"><label>${esc(ft('recurrence'))}</label><select data-field="recurrence">${recurrenceOpts}</select></div>
+            <div class="field"><label>${esc(ft('recurrenceUntil'))}</label><input type="date" data-field="recurrenceUntil" value="${esc(m.recurrenceUntil || '')}"></div>
+            <div class="field"><label>${esc(t('detail.status'))}</label><select data-field="status">${statusOpts}</select></div>
+            <div class="field"><label>${esc(t('detail.reason'))}</label><input data-field="reason" value="${esc(L(m.reason))}" placeholder="${esc(t('detail.reasonPh'))}"></div>
             <div class="field"><label>${esc(t('detail.counterparties'))}</label><input data-field="counterparties" value="${esc(m.counterparties || '')}"></div>
             <div class="field"><label>${esc(t('detail.relatedParties'))}</label><input data-field="relatedParties" value="${esc(m.relatedParties || '')}"></div>
             <div class="field"><label>${esc(t('detail.priority'))}</label><input data-field="priority" value="${esc(m.priority || '')}"></div>
@@ -3188,22 +3200,10 @@ function viewMatter(id,mode) {
             <div class="field"><label>${esc(t('detail.balance'))}</label><input data-field="balance" value="${esc(m.balance || '')}"></div>
             <div class="field"><label>${esc(t('detail.contactName'))}</label><input data-field="contactName" value="${esc(m.contactName || '')}"></div>
             <div class="field"><label>${esc(t('detail.contactEmail'))}</label><input data-field="contactEmail" value="${esc(m.contactEmail || '')}"></div>
-            <div class="field"><label>${esc(t('detail.area'))}</label>${areaField}
-              <div class="hint">${esc(t('detail.areaHint'))}</div></div>
-            <div class="field"><label>${esc(t('detail.stage'))}</label>${stageField}</div>
-            <div class="field"><label>${esc(t('detail.owner'))}</label><select data-field="owner">${ownerOpts}</select></div>
-            <div class="field"><label>${esc(t('detail.nextOwner'))}</label><select data-field="nextOwner">${nextOwnerOpts}</select></div>
-            <div class="field"><label>${esc(t('detail.status'))}</label><select data-field="status">${statusOpts}</select></div>
-            <div class="field"><label>${esc(t('detail.dueMode'))}</label><select data-field="dueMode"><option value="date" ${/^\d{4}-\d{2}-\d{2}$/.test(m.due||'')?'selected':''}>${esc(t('detail.dueDate'))}</option><option value="asap" ${m.due==='ASAP'?'selected':''}>${esc(t('detail.dueAsap'))}</option><option value="none" ${!m.due?'selected':''}>${esc(t('detail.dueNone'))}</option></select></div>
-            <div class="field"><label>${esc(t('detail.due'))}</label><input type="date" data-field="due" value="${esc(/^\d{4}-\d{2}-\d{2}$/.test(m.due||'')?m.due:'')}"></div>
             <div class="field"><label>${esc(t('detail.waiting'))}</label>${waitField}</div>
             <div class="field"><label>${esc(t('detail.lastContact'))}</label><input type="date" data-field="lastContact" value="${esc(String(m.lastContact||'').slice(0,10))}"></div>
-            <div class="field"><label>${esc(ft('recurrence'))}</label><select data-field="recurrence">${recurrenceOpts}</select></div>
-            <div class="field"><label>${esc(ft('recurrenceUntil'))}</label><input type="date" data-field="recurrenceUntil" value="${esc(m.recurrenceUntil || '')}"></div>
           </div>
           <div class="field"><label>${esc(t('detail.background'))}</label><textarea data-field="background" rows="4">${esc(m.background || '')}</textarea></div>
-          <div class="field"><label>${esc(t('detail.next'))}</label><input data-field="next" value="${esc(L(m.next))}"></div>
-          <div class="field"><label>${esc(t('detail.reason'))}</label><input data-field="reason" value="${esc(L(m.reason))}" placeholder="${esc(t('detail.reasonPh'))}"></div>
           <div class="field"><label>${esc(t('detail.notes'))}</label><textarea data-field="notes" rows="3">${esc(L(m.notes))}</textarea></div>
           <div class="field"><label>${esc(t('detail.members'))}</label><div class="member-list">${teamBoxes}</div>
             <div class="hint">${esc(t('detail.membersHint'))}</div></div>
@@ -3765,8 +3765,9 @@ function modalNewMatter() {
             <div class="field"><label class="req">${esc(t('detail.title'))}</label><input name="title" required></div>
             <div class="field"><label class="req">${esc(t('detail.area'))}</label>${areaField}</div>
             <div class="field"><label class="req">${esc(t('detail.owner'))}</label><select name="owner">${ownerOpts}</select></div>
-            <div class="field"><label class="req">${esc(t('detail.stage'))}</label>${stageField}</div>
+            <div class="field" style="grid-column:1/-1"><label class="req">${esc(t('detail.stage'))}</label>${stageField}</div>
             <div class="field"><label class="req">${esc(t('detail.next'))}</label><input name="next" required></div>
+            <div class="field"><label>${esc(t('detail.nextOwner'))}</label><select name="nextOwner">${nextOwnerOpts}</select></div>
             <div class="field"><label>${esc(t('detail.dueMode'))}</label><select name="dueMode"><option value="date" selected>${esc(t('detail.dueDate'))}</option><option value="asap">${esc(t('detail.dueAsap'))}</option><option value="none">${esc(t('detail.dueNone'))}</option></select></div>
             <div class="field"><label>${esc(t('detail.due'))}</label><input type="date" name="due" value="${esc(state.modal.due || '')}"></div>
             <div class="field"><label>${esc(ft('recurrence'))}</label><select name="recurrence"><option value="none">${esc(ft('recurrenceNone'))}</option><option value="weekly">${esc(ft('recurrenceWeekly'))}</option><option value="monthly">${esc(ft('recurrenceMonthly'))}</option></select></div>
@@ -3783,9 +3784,9 @@ function modalNewMatter() {
             <div class="field"><label>${esc(t('detail.contactName'))}</label><input name="contactName"></div>
             <div class="field"><label>${esc(t('detail.contactEmail'))}</label><input name="contactEmail"></div>
             <div class="field"><label>${esc(t('detail.waiting'))}</label>${waitField}</div>
+            <div class="field"><label>${esc(t('detail.lastContact'))}</label><input type="date" name="lastContact" value="${esc(iso(today()))}"></div>
           </div>
           <div class="field"><label>${esc(t('detail.background'))}</label><textarea name="background" rows="4"></textarea></div>
-          <div class="field"><label>${esc(t('detail.nextOwner'))}</label><select name="nextOwner">${nextOwnerOpts}</select></div>
           <div class="field"><label>${esc(t('detail.notes'))}</label><textarea name="notes" rows="3"></textarea></div>
           <div class="field"><label>${esc(t('detail.members'))}</label>
             <div class="member-list">
