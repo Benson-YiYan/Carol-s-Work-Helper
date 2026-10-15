@@ -62,6 +62,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),http=require('node:
   const fieldOrder=locator=>locator.evaluateAll(fields=>fields.map(el=>{const input=el.querySelector('input[name],select[name],textarea[name],input[data-field],select[data-field],textarea[data-field]');return input&&(input.name||input.getAttribute('data-field'));}).filter(Boolean));
   const newOrder=await fieldOrder(page.locator('[data-action="create-matter"] .field'));
   assert.equal(newOrder[newOrder.indexOf('next')+1],'nextOwner','step assignee immediately follows next step');
+  await page.locator('[data-action="create-matter"]').evaluate(async el=>{await Promise.all(el.getAnimations({subtree:true}).map(animation=>animation.finished.catch(()=>{})));});
   const nextBox=await page.locator('[name="next"]').boundingBox(),ownerBox=await page.locator('[name="nextOwner"]').boundingBox();
   assert.ok(Math.abs(nextBox.y-ownerBox.y)<3&&ownerBox.x>nextBox.x,'next step and assignee share a row');
   assert.equal(await page.locator('[name="owner"]').locator('..').locator('label').innerText(),'事项总负责人');
