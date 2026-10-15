@@ -59,11 +59,11 @@ const {chromium}=require('playwright'),fs=require('node:fs'),http=require('node:
    matters=[{id:'layout-test',no:'TEST',client:'Temporary client',title:'Temporary layout',area:PRACTICE_AREAS[0].id,owner,team:[owner],stage:STAGES[0],status:'green',next:'Temporary step',nextOwner:owner,due:'2026-10-30',waiting:'none',files:[],steps:[],notes:'Temporary notes'}];
    logs=[];go('#/matters');state.modal={type:'new-matter'};render();
   });
+  const stableBox=async sel=>{const loc=page.locator(sel);let prev=null;for(let i=0;i<60;i++){const box=await loc.boundingBox();if(prev&&box&&Math.abs(prev.x-box.x)<.5&&Math.abs(prev.y-box.y)<.5&&Math.abs(prev.width-box.width)<.5)return box;prev=box;await page.waitForTimeout(50);}return prev;};
   const fieldOrder=locator=>locator.evaluateAll(fields=>fields.map(el=>{const input=el.querySelector('input[name],select[name],textarea[name],input[data-field],select[data-field],textarea[data-field]');return input&&(input.name||input.getAttribute('data-field'));}).filter(Boolean));
   const newOrder=await fieldOrder(page.locator('[data-action="create-matter"] .field'));
   assert.equal(newOrder[newOrder.indexOf('next')+1],'nextOwner','step assignee immediately follows next step');
-  await page.locator('[data-action="create-matter"]').evaluate(async el=>{await Promise.all(el.getAnimations({subtree:true}).map(animation=>animation.finished.catch(()=>{})));});
-  const nextBox=await page.locator('[name="next"]').boundingBox(),ownerBox=await page.locator('[name="nextOwner"]').boundingBox();
+  const nextBox=await stableBox('[name="next"]'),ownerBox=await stableBox('[name="nextOwner"]');
   assert.ok(Math.abs(nextBox.y-ownerBox.y)<3&&ownerBox.x>nextBox.x,'next step and assignee share a row');
   assert.equal(await page.locator('[name="owner"]').locator('..').locator('label').innerText(),'事项总负责人');
   if(process.env.SCREENSHOT_DIR)await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,(family?'family':'team')+'-new-matter-layout.png')});
@@ -72,7 +72,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),http=require('node:
   const editOrder=await fieldOrder(page.locator('.matter-edit-pane fieldset .field'));
   assert.deepEqual(editOrder,newOrder,'edit and new matter have identical field ordering');
   assert.equal(await page.locator('[data-field="title"]').inputValue(),'Temporary layout','existing values survive layout change');
-  const editNext=await page.locator('[data-field="next"]').boundingBox(),editOwner=await page.locator('[data-field="nextOwner"]').boundingBox();
+  const editNext=await stableBox('[data-field="next"]'),editOwner=await stableBox('[data-field="nextOwner"]');
   assert.ok(Math.abs(editNext.y-editOwner.y)<3&&editOwner.x>editNext.x,'edit step and assignee share a row');
   if(process.env.SCREENSHOT_DIR)await page.screenshot({path:path.join(process.env.SCREENSHOT_DIR,(family?'family':'team')+'-edit-matter-layout.png')});
   for(const [language,label] of [['en','Matter owner'],['es','Responsable general del asunto'],['zh','事项总负责人']]){
