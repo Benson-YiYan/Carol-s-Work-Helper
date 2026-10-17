@@ -11,7 +11,7 @@
 const SITE_CONFIG = globalThis.LCBSiteConfig;
 if (!SITE_CONFIG) throw new Error('Mother-son site configuration is missing.');
 const KEY = SITE_CONFIG.storageKeys;
-const APP_VERSION = '202610150936';
+const APP_VERSION = '202610171658';
 let newerVersion = '';
 let versionNoticeClosed = false;
 async function checkForNewVersion() { if (LOCAL_TEST_MODE) return false; try { const r=await fetch('./version.json?check='+Date.now(),{cache:'no-store'}); if(!r.ok)return null; const d=await r.json(); if(d&&String(d.version)>APP_VERSION){newerVersion=String(d.version);render();return true;} } catch (_) {return null;} return false; }
@@ -331,6 +331,12 @@ const STR = {
   'login.signin': ['登录', 'Sign in', 'Iniciar sesión'],
   'login.signingIn': ['登录中…', 'Signing in…', 'Iniciando sesión…'],
   'login.captchaRequired': ['请先完成人机验证。', 'Complete the security check first.', 'Completa primero la verificación de seguridad.'],
+  'login.captchaLoading': ['正在加载安全验证…', 'Loading security check…', 'Cargando la verificación de seguridad…'],
+  'login.captchaSlow': ['安全验证加载或响应较慢，请稍候，也可以重试。', 'The security check is taking longer than usual. Please wait or retry.', 'La verificación de seguridad está tardando más de lo habitual. Espera o vuelve a intentarlo.'],
+  'login.captchaFailed': ['安全验证加载失败，请重试。', 'The security check could not load. Please retry.', 'No se pudo cargar la verificación de seguridad. Vuelve a intentarlo.'],
+  'login.captchaExpired': ['安全验证已过期，请重新验证。', 'The security check has expired. Please verify again.', 'La verificación de seguridad ha caducado. Verifica de nuevo.'],
+  'login.captchaReady': ['请在上方完成安全验证。', 'Complete the security check above.', 'Completa la verificación de seguridad de arriba.'],
+  'login.captchaRetry': ['重试', 'Retry', 'Reintentar'],
   'login.demoTitle': ['演示账号', 'Demo accounts', 'Cuentas de demostración'],
   'login.localMode': ['本地安全测试模式：仅使用本机演示数据，不连接正式 Supabase。', 'Safe local test mode: demo data only; production Supabase is disconnected.', 'Modo de prueba local seguro: solo utiliza datos de demostración de este dispositivo y no se conecta a Supabase de producción.'],
   'login.localEnter': ['以 {name} 身份进入演示', 'Enter demo as {name}', 'Entrar en demo como {name}'],
@@ -1452,6 +1458,8 @@ let loginCountdownEmail = '';
 const TURNSTILE_SITE_KEY = SITE_CONFIG.turnstileSiteKey;
 let turnstileToken = '';
 let turnstileWidgetId = null;
+let turnstileAttempt = 0;
+let turnstileWaitTimer = null;
 let matters = REMOTE_ENABLED ? [] : (load(KEY.matters, null) || []);
 let logs = REMOTE_ENABLED ? [] : (load(KEY.logs, null) || []);
 let seq = REMOTE_ENABLED ? 0 : load(KEY.seq, 0);
@@ -2499,25 +2507,68 @@ function viewLogin() {
           <label>${esc(t('login.password'))}</label>
           <input type="password" name="password" value="${esc(state.loginDraft.password)}" placeholder="••••••••" autocomplete="current-password" required>
         </div>
-        ${LOCAL_TEST_MODE ? `<div class="hint local-test-notice">${esc(t('login.localMode'))}</div><div class="local-test-users">${USERS.map(u=>`<button class="btn" type="button" data-action="local-login" data-user="${u.id}">${esc(t('login.localEnter',{name:u.name}))}</button>`).join('')}</div>` : `<div id="turnstile-login" class="turnstile-login" aria-label="Security verification"></div><button class="btn btn-primary btn-block" type="submit">${esc(t('login.signin'))}</button>`}
+        ${LOCAL_TEST_MODE ? `<div class="hint local-test-notice">${esc(t('login.localMode'))}</div><div class="local-test-users">${USERS.map(u=>`<button class="btn" type="button" data-action="local-login" data-user="${u.id}">${esc(t('login.localEnter',{name:u.name}))}</button>`).join('')}</div>` : `<div id="turnstile-login" class="turnstile-login" aria-label="Security verification"></div><div class="hint" role="status" aria-live="polite" style="margin-bottom:14px"><span id="turnstile-status">${esc(t('login.captchaLoading'))}</span> <button id="turnstile-retry" class="btn btn-sm" type="button" hidden>${esc(t('login.captchaRetry'))}</button></div><button class="btn btn-primary btn-block" type="submit">${esc(t('login.signin'))}</button>`}
         <div class="err">${esc(err)}</div>
       </form>
     </div>
   </div>`;
 }
 
-function renderTurnstile() {
+function renderTurnstile(retry = false) {
   if (LOCAL_TEST_MODE) return;
   const container = document.getElementById('turnstile-login');
-  if (!container || !globalThis.turnstile) return;
+  if (!container) return;
+  const button = document.getElementById('turnstile-retry');
+  const status = document.getElementById('turnstile-status');
+  if (button) button.onclick = () => renderTurnstile(true);
+  if (!retry && container.dataset.mounted) return;
+  clearTimeout(turnstileWaitTimer);
+  const attempt = ++turnstileAttempt;
+  const active = () => attempt === turnstileAttempt && container.isConnected;
+  const update = (key, allowRetry = false) => {
+    if (!active()) return;
+    if (status) status.textContent = key ? t(key) : '';
+    if (button) button.hidden = !allowRetry;
+  };
+  const finish = (key, allowRetry = false) => {
+    if (!active()) return;
+    clearTimeout(turnstileWaitTimer);
+    update(key, allowRetry);
+  };
   turnstileToken = '';
-  turnstileWidgetId = globalThis.turnstile.render(container, {
+  update('login.captchaLoading');
+  turnstileWaitTimer = setTimeout(() => update('login.captchaSlow', true), 15000);
+  if (!globalThis.turnstile) {
+    document.querySelectorAll('script[src^="https://challenges.cloudflare.com/turnstile/v0/api.js"]').forEach(script => script.addEventListener('error', () => finish('login.captchaFailed', true), { once: true }));
+    if (retry) {
+      document.querySelectorAll('script[src^="https://challenges.cloudflare.com/turnstile/v0/api.js"]').forEach(script => script.remove());
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit';
+      script.async = true;
+      script.onerror = () => finish('login.captchaFailed', true);
+      document.head.appendChild(script);
+    }
+    return;
+  }
+  if (retry && turnstileWidgetId !== null) {
+    try { globalThis.turnstile.remove(turnstileWidgetId); } catch (_) {}
+  }
+  container.replaceChildren();
+  container.dataset.mounted = 'true';
+  try {
+    turnstileWidgetId = globalThis.turnstile.render(container, {
     sitekey: TURNSTILE_SITE_KEY,
     theme: 'auto',
-    callback(token) { turnstileToken = token; },
-    'expired-callback'() { turnstileToken = ''; },
-    'error-callback'() { turnstileToken = ''; },
-  });
+    callback(token) { if (active()) { turnstileToken = token; finish(''); } },
+    'before-interactive-callback'() { finish('login.captchaReady'); },
+    'expired-callback'() { if (active()) { turnstileToken = ''; finish('login.captchaExpired', true); } },
+    'timeout-callback'() { if (active()) { turnstileToken = ''; finish('login.captchaSlow', true); } },
+    'error-callback'() { if (active()) { turnstileToken = ''; finish('login.captchaFailed', true); } },
+    });
+  } catch (_) {
+    delete container.dataset.mounted;
+    finish('login.captchaFailed', true);
+  }
 }
 
 globalThis.onTurnstileLoad = () => {
@@ -5488,7 +5539,7 @@ document.addEventListener('submit', async ev => {
     if (Date.now() < loginBlockedUntil) { startLoginCountdown(email); return; }
     if (!turnstileToken) {
       state.loginError = t('login.captchaRequired');
-      render();
+      form.querySelector('.err').textContent = state.loginError;
       return;
     }
     if (!setFormBusy(form, t('login.signingIn'))) return;
